@@ -21,4 +21,4 @@ We encourage you to actively engage with the content, experiment with the code, 
 
 ## Note
 
-this project mainly focus on using Laravel to develop APIs and not the Web. so if you are using Laravel to build some kind of Website then you may need to visit some other project.
+This project primarily focuses on utilizing Laravel for developing APIs rather than web applications. If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
