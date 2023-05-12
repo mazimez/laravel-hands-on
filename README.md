@@ -18,3 +18,7 @@ To get started with this Laravel learning project:
 4. If you have a good knowledge of Laravel and would like to contribute or enhance any branch, feel free to submit your updates to this repository.
 
 We encourage you to actively engage with the content, experiment with the code, and explore Laravel's capabilities.
+
+## Note
+
+this project mainly focus on using Laravel to develop APIs and not the Web. so if you are using Laravel to build some kind of Website then you may need to visit some other project.
