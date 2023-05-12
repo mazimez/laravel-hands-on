@@ -1,29 +1,29 @@
-# Exception Handling
+# API Versioning
 
-This branch focuses on exception handling in Laravel and provides an example implementation in the [Handler.php](app/Exceptions/Handler.php) file.
+This branch focuses on versioning of APIs to manage changes and keep different versions separate while ensuring compatibility.
 
 ## Description
 
-The [Handler.php](app/Exceptions/Handler.php) file is responsible for managing exceptions in Laravel applications. It acts as a central hub for handling and customizing error responses.
-
-In this branch, you'll find an example implementation of [Handler.php](app/Exceptions/Handler.php) that demonstrates how to handle different types of exceptions. You can customize this file to suit your specific error handling requirements.
+In this project, API versioning is implemented to maintain the stability of existing APIs and introduce new features or updates without breaking the functionality for existing users. The initial version, V1, is implemented and deployed on the production server. Subsequent versions, such as V2, are created for introducing new features or making changes while keeping the older versions intact.
 
 ## Files
 
--   [Handler.php](app/Exceptions/Handler.php): Customize this file to handle errors according to your needs.
+-   [RouteServiceProvider.php](app/Providers/RouteServiceProvider.php): Updated this provider to configure the usage of version-specific route files, 'v1.php' and 'v2.php', based on the requested API version.
+-   [v1.php](routes/api/v1.php): Contains routes specific to the V1 version of the APIs.
+-   [v2.php](routes/api/v2.php): Contains routes specific to the V2 version of the APIs.
 
 ## Instructions
 
-To understand and work with exception handling in Laravel:
+To implement API versioning in your project, follow these steps:
 
-1. Open the [Handler.php](app/Exceptions/Handler.php) file.
-2. Study the existing exception handling code provided.
-3. Customize the code according to your project's requirements.
+1. Update the [RouteServiceProvider.php](app/Providers/RouteServiceProvider.php) file to instruct Laravel to use version-specific route files instead of the default routes.
+2. Create a new folder, `api`, inside the `routes` folder. Inside the `api` folder, create separate route files for each version of the APIs, such as `v1.php` and `v2.php`. You can define your own folder structure if desired.
+3. Add test routes in the version-specific route files, for example, `/test` route in both `v1.php` and `v2.php`. You can access these routes in the browser using the endpoints `api/v1/test` and `api/v2/test`. Depending on the version, the returned response will vary.
 
-Feel free to modify and expand the exception handling logic in [Handler.php](app/Exceptions/Handler.php) based on your application's specific needs.
+This approach allows you to differentiate API endpoints based on their version, ensuring backward compatibility and enabling different versions to coexist. When using controllers for each route, you can organize them into separate folders like 'v1' and 'v2', accommodating future versions as needed.
 
 ## Resources
 
--   [Laravel Documentation on Exception Handling](https://laravel.com/docs/10.x/errors#introduction)
+-   [Laravel 8 API Versioning](https://dev.to/dalelantowork/laravel-8-api-versioning-4e8)
 
-Refer to the Laravel documentation for more information and detailed explanations on exception handling in Laravel.
+For additional examples and information about API versioning in Laravel, refer to the provided resource link.

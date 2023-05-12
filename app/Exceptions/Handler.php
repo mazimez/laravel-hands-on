@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof ModelNotFoundException) {
                 $modelName = strtolower(class_basename($exception->getModel()));
-                return $this->errorResponse(__('messages.model_not_exists'), 200);
+                return $this->errorResponse("This resource does not exist", 200);
             }
 
             if ($exception instanceof AuthenticationException) {
@@ -85,11 +85,11 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof MethodNotAllowedHttpException) {
-                return $this->errorResponse(__('messages.invalid_method'), 405);
+                return $this->errorResponse("Invalid Method for this end point", 405);
             }
 
             if ($exception instanceof NotFoundHttpException) {
-                return $this->errorResponse(__('messages.url_not_found'), 403);
+                return $this->errorResponse("Specified URL not found", 403);
             }
 
             if ($exception instanceof HttpException) {
