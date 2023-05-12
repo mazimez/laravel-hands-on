@@ -1,20 +1,29 @@
-# Laravel Hands On
+# Exception Handling
 
-This repository aims to provide a learning resource for people who are interested in learning Laravel.
+This branch focuses on exception handling in Laravel and provides an example implementation in the [Handler.php](app/Exceptions/Handler.php) file.
 
 ## Description
 
-This repository is structured into different branches, with each branch focusing on a specific topic in Laravel. Each branch contains a README file explaining a little but about that topic and providing hands-on examples and code samples.
+The [Handler.php](app/Exceptions/Handler.php) file is responsible for managing exceptions in Laravel applications. It acts as a central hub for handling and customizing error responses.
 
-The main goal of this repository is to offer the best practices for each Laravel topic, allowing learners to gain a solid understanding of Laravel's various aspects.
+In this branch, you'll find an example implementation of [Handler.php](app/Exceptions/Handler.php) that demonstrates how to handle different types of exceptions. You can customize this file to suit your specific error handling requirements.
+
+## Files
+
+-   [Handler.php](app/Exceptions/Handler.php): Customize this file to handle errors according to your needs.
 
 ## Instructions
 
-To get started with this Laravel learning project:
+To understand and work with exception handling in Laravel:
 
-1. Explore the different branches of this repository to find the specific Laravel topic you want to learn.
-2. Read the README file in each branch to understand the topic's concept and its relevance in Laravel development.
-3. Follow the provided instructions and explore the accompanying code samples to gain practical experience and deepen your understanding of the topic.
-4. If you have a good knowledge of Laravel and would like to contribute or enhance any branch, feel free to submit your updates to this repository.
+1. Open the [Handler.php](app/Exceptions/Handler.php) file.
+2. Study the existing exception handling code provided.
+3. Customize the code according to your project's requirements.
 
-We encourage you to actively engage with the content, experiment with the code, and explore Laravel's capabilities.
+Feel free to modify and expand the exception handling logic in [Handler.php](app/Exceptions/Handler.php) based on your application's specific needs.
+
+## Resources
+
+-   [Laravel Documentation on Exception Handling](https://laravel.com/docs/10.x/errors#introduction)
+
+Refer to the Laravel documentation for more information and detailed explanations on exception handling in Laravel.
