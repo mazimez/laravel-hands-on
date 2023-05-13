@@ -1,29 +1,31 @@
-# API Versioning
+# Localization
 
-This branch focuses on versioning of APIs to manage changes and keep different versions separate while ensuring compatibility.
+The localization feature allows your project to handle content in different languages effectively.
 
 ## Description
 
-In this project, API versioning is implemented to maintain the stability of existing APIs and introduce new features or updates without breaking the functionality for existing users. The initial version, V1, is implemented and deployed on the production server. Subsequent versions, such as V2, are created for introducing new features or making changes while keeping the older versions intact.
+In this project, localization is implemented using a Middleware. This Middleware checks the header in API calls, and if the header for localization is provided, the project dynamically sets its language based on the header value.
 
 ## Files
 
--   [RouteServiceProvider.php](app/Providers/RouteServiceProvider.php): Updated this provider to configure the usage of version-specific route files, 'v1.php' and 'v2.php', based on the requested API version.
--   [v1.php](routes/api/v1.php): Contains routes specific to the V1 version of the APIs.
--   [v2.php](routes/api/v2.php): Contains routes specific to the V2 version of the APIs.
+-   [localization.php](app/Http/Middleware/localization.php): This file contains the middleware code responsible for handling different languages. Add the `localization` middleware to your project.
+-   [Kernel.php](app/Http/Kernel.php): Register the `localization` middleware in the Kernel file, giving it a suitable name such as "localization".
+-   [v1.php](routes/api/v1.php): Include the middleware for all the routes that need to be localized, such as the test route in the v1.php file.
+-   [messages.php](lang/en/messages.php): Create a new file named `messages.php` in the `lang/en` folder (or any other desired language folder). This file will contain all the language keys used in your project.
 
 ## Instructions
 
-To implement API versioning in your project, follow these steps:
+To implement Localization in your project, follow these steps:
 
-1. Update the [RouteServiceProvider.php](app/Providers/RouteServiceProvider.php) file to instruct Laravel to use version-specific route files instead of the default routes.
-2. Create a new folder, `api`, inside the `routes` folder. Inside the `api` folder, create separate route files for each version of the APIs, such as `v1.php` and `v2.php`. You can define your own folder structure if desired.
-3. Add test routes in the version-specific route files, for example, `/test` route in both `v1.php` and `v2.php`. You can access these routes in the browser using the endpoints `api/v1/test` and `api/v2/test`. Depending on the version, the returned response will vary.
+1. Create a middleware named [localization.php](app/Http/Middleware/localization.php) that handles and determines the required language based on the headers passed in the API call.
+2. Register this middleware in the [Kernel.php](app/Http/Kernel.php) file, enabling its usage in your project's routes.
+3. Before using the middleware, explore the `lang` folder, which contains a default `en` folder for English language files.
+4. Create additional language folders based on the languages needed for your project. For example, you can create a `sv` folder for Swedish language support.
+5. Each language folder should include files like `auth.php`, `pagination.php`, etc., which store language-specific strings. Additionally, create a new file for each language to store your project's output messages.
+6. Once you have set up your language folders, you can utilize the language keys you defined in your routes and controllers using the `__('messages.key_name')` syntax. Here, `messages` refers to the file storing the output messages, and `key_name` represents the translation key.
 
-This approach allows you to differentiate API endpoints based on their version, ensuring backward compatibility and enabling different versions to coexist. When using controllers for each route, you can organize them into separate folders like 'v1' and 'v2', accommodating future versions as needed.
+To test the implementation, you can use tools like Postman to make API calls, where you have the option to provide custom headers. Pass a header key-value pair (e.g., `X-App-Locale`) to specify the desired language, and the project will dynamically change the language based on its value.
 
 ## Resources
 
--   [Laravel 8 API Versioning](https://dev.to/dalelantowork/laravel-8-api-versioning-4e8)
-
-For additional examples and information about API versioning in Laravel, refer to the provided resource link.
+-   [Laravel Documentation](https://laravel.com/docs/10.x/localization)
