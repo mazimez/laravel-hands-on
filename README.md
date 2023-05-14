@@ -9,6 +9,7 @@ With Migration, you can easily create tables that align with your project's requ
 ## Files
 
 - [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php): new migration file for new table `posts`
+- [Post.php](app/Models/Post.php): new Model file for new table `posts`
 
 ## Instructions
 
