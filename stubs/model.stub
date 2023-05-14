@@ -1,25 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace {{ namespace }};
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class {{ class }} extends Model
 {
     use HasFactory;
 
     //public $timestamps = false;
 
     //TABLE
-    public $table = 'posts';
+    public $table = '';
 
     //FILLABLE
-    protected $fillable = [
-        'user_id',
-        'title',
-        'description'
-    ];
+    protected $fillable = [];
 
     //HIDDEN
     protected $hidden = [];
@@ -43,5 +39,5 @@ class Post extends Model
     //{
     //    return $data;
     //}
-
+    
 }
