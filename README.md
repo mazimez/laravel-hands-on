@@ -12,6 +12,7 @@ In this project, localization is implemented using a Middleware. This Middleware
 -   [Kernel.php](app/Http/Kernel.php): Register the `localization` middleware in the Kernel file, giving it a suitable name such as "localization".
 -   [v1.php](routes/api/v1.php): Include the middleware for all the routes that need to be localized, such as the test route in the v1.php file.
 -   [messages.php](lang/en/messages.php): Create a new file named `messages.php` in the `lang/en` folder (or any other desired language folder). This file will contain all the language keys used in your project.
+-   [Handler.php](app/Exceptions/Handler.php): update exception handling file or any other file with static string and replace it with keys from `lang` folder
 
 ## Instructions
 
