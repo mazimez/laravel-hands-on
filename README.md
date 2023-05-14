@@ -1,32 +1,31 @@
-# Localization
+# Migration
 
-The localization feature allows your project to handle content in different languages effectively.
+The migration feature allows your project to create and manage the database directly from the code, eliminating the need for separate SQL queries.
 
 ## Description
 
-In this project, localization is implemented using a Middleware. This Middleware checks the header in API calls, and if the header for localization is provided, the project dynamically sets its language based on the header value.
+With Migration, you can easily create tables that align with your project's requirements, defining all the necessary columns and relationships between them. It also provides a convenient rollback feature to revert changes and the ability to clear the entire database if needed.
 
 ## Files
 
--   [localization.php](app/Http/Middleware/localization.php): This file contains the middleware code responsible for handling different languages. Add the `localization` middleware to your project.
--   [Kernel.php](app/Http/Kernel.php): Register the `localization` middleware in the Kernel file, giving it a suitable name such as "localization".
--   [v1.php](routes/api/v1.php): Include the middleware for all the routes that need to be localized, such as the test route in the v1.php file.
--   [messages.php](lang/en/messages.php): Create a new file named `messages.php` in the `lang/en` folder (or any other desired language folder). This file will contain all the language keys used in your project.
--   [Handler.php](app/Exceptions/Handler.php): update exception handling file or any other file with static string and replace it with keys from `lang` folder
+- [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php): new migration file for new table `posts`
 
 ## Instructions
 
-To implement Localization in your project, follow these steps:
+To use Migration, navigate to the `database` -> `migrations` folder. You will find default files for tables like `users` and `personal_access_tokens`.
 
-1. Create a middleware named [localization.php](app/Http/Middleware/localization.php) that handles and determines the required language based on the headers passed in the API call.
-2. Register this middleware in the [Kernel.php](app/Http/Kernel.php) file, enabling its usage in your project's routes.
-3. Before using the middleware, explore the `lang` folder, which contains a default `en` folder for English language files.
-4. Create additional language folders based on the languages needed for your project. For example, you can create a `sv` folder for Swedish language support.
-5. Each language folder should include files like `auth.php`, `pagination.php`, etc., which store language-specific strings. Additionally, create a new file for each language to store your project's output messages.
-6. Once you have set up your language folders, you can utilize the language keys you defined in your routes and controllers using the `__('messages.key_name')` syntax. Here, `messages` refers to the file storing the output messages, and `key_name` represents the translation key.
+In our example, we will create migration files for a system where users can create posts, comment on them, and like them.
 
-To test the implementation, you can use tools like Postman to make API calls, where you have the option to provide custom headers. Pass a header key-value pair (e.g., `X-App-Locale`) to specify the desired language, and the project will dynamically change the language based on its value.
+1. To create a table, use the command `php artisan make:migration create_table_name_table`. This will generate a file for the specified `table_name`.
+2. Each migration file for a table begins with a timestamp. Laravel executes the migrations in the order of these timestamps, with older files running first. If you want a table to be created before the default tables, simply modify the timestamp to an earlier date than the default files.
+3. In your table migration files, you can define relationships between tables using the `foreignId()` method. For example, in the [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php) file, we created a relationship with the `users` table.
+4. It is recommended to make all fields in the table nullable using the `nullable()` method. Additionally, consider assigning default values to columns as good practice.
+5. When naming tables, use meaningful names that reflect their purpose. For instance, the table storing post comments can be named `post_comments`, and the table for post likes can be named `post_likes`. Table names should be in plural form, such as `users` and `posts`.
+6. Similarly, for column names, choose descriptive names that indicate their data type. For example, if a column has a boolean data type, prefix its name with `is_`, such as `is_blocked` or `is_active`. If a column represents a datetime value, append `_at` at the end, like `created_at`, `updated_at`, or `deleted_at`.
+
+Once you have defined your migration files, run the `php artisan migrate` command to create all the tables in the database.
+remeber to set-up your .env file to connect to a DataBase
 
 ## Resources
 
--   [Laravel Documentation](https://laravel.com/docs/10.x/localization)
+- [Laravel Documentation](https://laravel.com/docs/10.x/migrations)
