@@ -1,35 +1,47 @@
-# Migration
+# Seeder and Factory
 
-The migration feature allows your project to create and manage the database directly from the code, eliminating the need for separate SQL queries.
+Seeders and factories are essential components in Laravel for adding sample or dummy data to your database. They provide a convenient way to populate your database with data required for your system to run properly.
 
 ## Description
 
-With Migration, you can easily create tables that align with your project's requirements, defining all the necessary columns and relationships between them. It also provides a convenient rollback feature to revert changes and the ability to clear the entire database if needed.
+Seeders are used to add initial data to your database, such as creating an admin user, adding categories to an e-commerce system, or populating states and cities for a social media application.
+
+Factories, on the other hand, allow you to generate realistic and random data for your database tables. They are particularly useful when you need to create multiple records with different values quickly.
 
 ## Files
 
-- [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php): new migration file for new table `posts`
+- [UserSeeder](database/seeders/UserSeeder.php): Seeder file for populating the `users` table.
+- [PostSeeder](database/seeders/PostSeeder.php): Seeder file for adding data to the `posts` table.
+- [DatabaseSeeder](database/seeders/DatabaseSeeder.php): Seeder file responsible for running all other seeders.
+- [PostFactory](database/factories/PostFactory.php): Factory file for generating data for the `posts` table.
+- [UserFactory](database/factories/UserFactory.php): Factory file for generating data for the `users` table.
 
 ## Instructions
 
-To use Migration, navigate to the `database` -> `migrations` folder. You will find default files for tables like `users` and `personal_access_tokens`.
+To use seeders and factories in your Laravel project, follow these steps:
 
-In our example, we will create migration files for a system where users can create posts, comment on them, and like them.
+1. Open the `database` -> `seeders` folder. You'll find a file named `DatabaseSeeder.php`, which is used to run all the seeders in your project.
 
-1. To create a table, use the command `php artisan make:migration create_table_name_table`. This will generate a file for the specified `table_name`.
-2. Each migration file for a table begins with a timestamp. Laravel executes the migrations in the order of these timestamps, with older files running first. If you want a table to be created before the default tables, simply modify the timestamp to an earlier date than the default files.
-3. In your table migration files, you can define relationships between tables using the `foreignId()` method. For example, in the [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php) file, we created a relationship with the `users` table.
-4. It is recommended to make all fields in the table nullable using the `nullable()` method. Additionally, consider assigning default values to columns as good practice.
-5. When naming tables, use meaningful names that reflect their purpose. For instance, the table storing post comments can be named `post_comments`, and the table for post likes can be named `post_likes`. Table names should be in plural form, such as `users` and `posts`.
-6. Similarly, for column names, choose descriptive names that indicate their data type. For example, if a column has a boolean data type, prefix its name with `is_`, such as `is_blocked` or `is_active`. If a column represents a datetime value, append `_at` at the end, like `created_at`, `updated_at`, or `deleted_at`.
-7. each table in DB should have a Model too. you can create a model with command like `php artisan make:model ModelName`. the `model` for `users` table is given by default, we will create a `Post` for our `posts` table.keep in mind that Model name should be in singular form, like Post(not posts),User(not users). also model name should be in `PascalCase` (capitalizes the first letter of each word and removes spaces or underscores between words).
-8. naming Model correctly is important because Laravel tries to find the table based on it's model name, so if Model is named `Post` then laravel try to find the table named `posts`. but you can also specify the table name in the Model file like `public $table = 'table_name';`. this way even if table names or model names are not correct it will still point to correct table.
-9. `Model` has a `$fillable` attribute where you can define/declare all the fields in the table or that Model. there are many more attributes in `Model` that we will discuss in later branches.
+2. Let's create a seeder for the `Post` model as an example. Use the command `php artisan make:seeder PostSeeder` to generate a seeder file. Note that the seeder name should follow PascalCase and end with `Seeder`.
 
-Once you have defined your migration files, run the `php artisan migrate` command to create all the tables in the database.
-remeber to set-up your .env file to connect to a DataBase
+3. In the seeder file, you can write the code to create and add dummy/sample data to the database. For instance, in `UserSeeder` you can add a default user with an email of `test@gmail.com` and a password of `password` (encrypted form)
+
+4. If you need to create multiple users with random data, you can utilize factories. To create a factory for a model, use the command `php artisan make:factory PostFactory`. This will generate a new factory file in the `factories` folder.
+
+5. In the generated [PostFactory.php](database/factories/PostFactory.php) file, you can use the [Faker](https://github.com/FakerPHP/Faker) library to generate random data for the columns in the table. You can also define separate methods in the factory to provide specific values for certain columns. For example, in [UserFactory.php](database/factories/UserFactory.php), we have `unverified()` and `verified()` methods to create users with specific attributes.
+
+6. Once the factory is ready, you can use it in the seeder to generate any amount of data you need. For example, `User::factory(10)->unverified()->create()` will create ten unverified users.
+
+7. You can also leverage relationships defined in your models to generate data related to other models. We will cover this topic in more detail in later branches.
+
+8. To run a specific seeder, use the command `php artisan db:seed --class=UserSeeder`. This will execute the `UserSeeder` and populate the database with users.
+
+9. Usually, you'll have multiple seeders, and running them individually is not efficient. To run all seeders at once, you need to register them in the [DatabaseSeeder.php](database/seeders/UserSeeder.php) file.
+
+10. Add each seeder class to an array in the `run()` method of `DatabaseSeeder.php`. The seeders will execute in the order they appear in the array.
+11. you can use `php artisan migrate:fresh --seed` command to clear your existing Database and run all migration and also run all seeders, all of that in just 1 command.
 
 ## Resources
 
-- [Laravel Documentation for migration](https://laravel.com/docs/10.x/migrations)
-- [Laravel Documentation for Model](https://laravel.com/docs/10.x/eloquent)
+- [Laravel Documentation for Seeders](https://laravel.com/docs/10.x/seeding#writing-seeders)
+- [Laravel Documentation for Factoris](https://laravel.com/docs/10.x/eloquent-factories#main-content)
