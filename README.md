@@ -1,30 +1,36 @@
-# Stubs in Laravel
+# Authentication(Sanctum)
 
-In Laravel, whenever we use commands like `php artisan make:...`, they generate files such as models, migrations, seeders, factories, and more. These files come with default code, and that is made possible through the use of stubs.
+Authentication is a crucial process where users verify their identity to perform specific tasks within a system. In the context of APIs, authentication is primarily done using tokens, such as Bearer tokens or JWT tokens.
 
 ## Description
 
-Stubs serve as templates in Laravel, providing a starting point for generating files. They save us time by eliminating the need to write everything from scratch.
-
-Moreover, Laravel allows us to customize these stubs according to our specific needs.
+ Laravel provides a package called Sanctum that simplifies the implementation of authentication in your project.
 
 ## Files
 
-- [model.stub](stubs/model.stub): Updated model stub file.
-- [Post](app/Models/Post.php): Updated model based on the stub.
+- [UserController.php](app/Http/Controllers/Api/v1/UserController.php): Contains the UserController class responsible for handling authentication-related tasks.
+- [LoginRequest.php](app/Http/Requests/Api/v1/LoginRequest.php): Defines the LoginRequest class used to validate the API call parameters.
+- [v1.php](routes/api/v1.php): Adds the necessary routes for login and other API endpoints.
 
 ## Instructions
 
-To access the stub files and customize them, follow these steps:
+To implement authentication, follow these steps:
 
-1. Run the command `php artisan stub:publish` to publish all the stub files. This will create a new folder called `stubs`, which contains all the `.stub` files. You can modify any of these files to match your desired template.
+1. Create a route (API) that accepts the user's email and password as parameters, verifies the password (referred to as the login API), and returns a Bearer token if the password is correct.
 
-2. Let's focus on the `Model` stub as an example. In this stub, I have made some enhancements. I added default attributes such as `$fillable`, `$hidden`, and `$with`, which are commonly used in our projects. Additionally, I included `public $table = '';` and `public $timestamps = false;`. Feel free to add any template code you need, while ensuring that it does not generate any errors.
+2. Create a controller named `UserController` to handle all user-related tasks. You can generate this controller using the following command: `php artisan make:controller Api/v1/UserController --api`. This command generates a controller within the `Api` folder and the `v1` subfolder. The `--api` flag adds default methods to the controller that will be used later.
 
-3. After updating the stubs according to your requirements, whenever you create files like models, factories, etc., they will be generated based on your customized template. For example, I created the `Post` model, and it was created with our custom template code.
+3. Create a request class, `LoginRequest`, to validate the parameters required for the login API. Generate this request using the command `php artisan make:request Api/v1/LoginRequest`. This request should be created within the `Api` folder and the `v1` subfolder. Add the necessary validations to the `LoginRequest` class, such as verifying that the email is in the correct format and exists in the `users` table.
 
-By customizing the stubs, you can align the generated files with your preferred structure and code conventions, making your work more efficient.
+4. In the `UserController`, implement the login method. Use the `LoginRequest` to validate the parameters, then find the user with the given email and verify their password using the `password_verify` method.
+
+5. If the password is correct, use the `createToken` method on the user object to generate a Bearer token for that user. Don't forget to add the `HasApiTokens` trait to the `User` model to indicate that Sanctum should use this model for authentication.
+
+6. Once you have the token, return the user's data along with the token. To authenticate a user in any subsequent API calls, include the token in the header as a 'Bearer' token. Additionally, ensure that all APIs requiring user authentication are protected using the `auth:sanctum` middleware.
+
+7. To test these APIs, you can use a client like Postman. We've provided a public Postman collection for this project, which you can access [here](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Resources
 
-- [Laravel Documentation on Stub Customization](https://laravel.com/docs/10.x/artisan#stub-customization)
+- [Laravel Documentation](https://laravel.com/docs/10.x/sanctum)
+- [Authentication example](https://dev.to/shanisingh03/laravel-api-authentication-using-laravel-sanctum-edg)
