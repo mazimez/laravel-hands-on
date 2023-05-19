@@ -1,36 +1,42 @@
-# Authentication(Sanctum)
+# FILE-MANAGEMENT
 
-Authentication is a crucial process where users verify their identity to perform specific tasks within a system. In the context of APIs, authentication is primarily done using tokens, such as Bearer tokens or JWT tokens.
+File management is crucial for project organization. Laravel offers various methods to effectively handle files within your project.
 
 ## Description
 
- Laravel provides a package called Sanctum that simplifies the implementation of authentication in your project.
+As projects grow, managing files solely within Laravel's Storage folder becomes challenging. To overcome this, alternative storage systems like AWS S3 or Google Cloud are often utilized to store files.
 
 ## Files
 
-- [UserController.php](app/Http/Controllers/Api/v1/UserController.php): Contains the UserController class responsible for handling authentication-related tasks.
-- [LoginRequest.php](app/Http/Requests/Api/v1/LoginRequest.php): Defines the LoginRequest class used to validate the API call parameters.
-- [v1.php](routes/api/v1.php): Adds the necessary routes for login and other API endpoints.
+- [.env.example](.env.example): Update the `FILESYSTEM_DISK` and `APP_URL` variables according to your requirements.
+- [filesystems.php](config/filesystems.php): Configure this file to create a symbolic link.
+- [FileManager.php](app/Traits/FileManager.php): Incorporate this trait to manage files.
+- [v1.php](routes/api/v1.php): Add a new route for file uploads.
+- [TestController.php](app/Http/Controllers/Api/v1/TestController.php): Controller for handling file uploads.
 
 ## Instructions
 
-To implement authentication, follow these steps:
+Follow these steps to manage your files effectively:
 
-1. Create a route (API) that accepts the user's email and password as parameters, verifies the password (referred to as the login API), and returns a Bearer token if the password is correct.
+1. Open the `.env` file and locate the `FILESYSTEM_DISK` variable. This variable determines the storage location for your files. By default, it is set to `local`, but you should update it to `public` for easier accessibility via public URLs. Additionally, update the `APP_URL` variable to reflect the host where your project is running (e.g., `http://127.0.0.1:8000`). This URL will be used to generate public URLs for any images in your project.
 
-2. Create a controller named `UserController` to handle all user-related tasks. You can generate this controller using the following command: `php artisan make:controller Api/v1/UserController --api`. This command generates a controller within the `Api` folder and the `v1` subfolder. The `--api` flag adds default methods to the controller that will be used later.
+2. Once the `.env` file is configured, open [filesystems.php](config/filesystems.php). This file contains the configuration related to file management in your project. Familiarize yourself with its contents (for more information, refer to the Laravel documentation). Pay particular attention to the `links` section at the end of the file. This section is used to create a symbolic link from the `storage` folder to the `public` folder. Since the `public` folder serves as the entry point of your project, all files should be accessible from there. To create the symbolic link, run the following command: `php artisan storage:link`. This will create a symbolic link in the `public` folder, making it appear as though all the files are located there. You can find more information about symbolic links on the internet.
 
-3. Create a request class, `LoginRequest`, to validate the parameters required for the login API. Generate this request using the command `php artisan make:request Api/v1/LoginRequest`. This request should be created within the `Api` folder and the `v1` subfolder. Add the necessary validations to the `LoginRequest` class, such as verifying that the email is in the correct format and exists in the `users` table.
+3. With the project now set up to handle files, create a trait called [FileManager.php](app/Traits/FileManager.php). This trait contains two methods: `saveFile` for storing files and `deleteFile` for removing files.
 
-4. In the `UserController`, implement the login method. Use the `LoginRequest` to validate the parameters, then find the user with the given email and verify their password using the `password_verify` method.
+4. To test the file management functionality, create a new API route called `upload-file`. This route should accept a file and save it in storage. Connect this route to [TestController.php](app/Http/Controllers/Api/v1/TestController.php) and utilize the [FileManager.php](app/Traits/FileManager.php) trait to handle the file upload.
 
-5. If the password is correct, use the `createToken` method on the user object to generate a Bearer token for that user. Don't forget to add the `HasApiTokens` trait to the `User` model to indicate that Sanctum should use this model for authentication.
+5. You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this API. After invoking the API, the file should be stored in your `Storage` folder. The API will return a URL for the uploaded file. Open this URL in a browser, and if everything is set up correctly, you should be able to view the uploaded file.
 
-6. Once you have the token, return the user's data along with the token. To authenticate a user in any subsequent API calls, include the token in the header as a 'Bearer' token. Additionally, ensure that all APIs requiring user authentication are protected using the `auth:sanctum` middleware.
+6. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127
 
-7. To test these APIs, you can use a client like Postman. We've provided a public Postman collection for this project, which you can access [here](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
+.0.0.1:8000/storage/` represents the file path.
+
+7. After invoking the API to remove a file, attempting to access the file's URL will result in it not being displayed since it has been deleted.
+
+This is one approach to uploading and deleting files in your Laravel project. There are many other methods available, some of which are explained in the provided resources.
 
 ## Resources
 
-- [Laravel Documentation](https://laravel.com/docs/10.x/sanctum)
-- [Authentication example](https://dev.to/shanisingh03/laravel-api-authentication-using-laravel-sanctum-edg)
+- [Laravel Documentation](https://laravel.com/docs/10.x/filesystem#main-content)
+- [File Management Example](https://larainfo.com/blogs/laravel-9-rest-api-image-upload-with-validation-example)
