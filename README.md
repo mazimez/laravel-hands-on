@@ -28,9 +28,7 @@ Follow these steps to manage your files effectively:
 
 5. You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this API. After invoking the API, the file should be stored in your `Storage` folder. The API will return a URL for the uploaded file. Open this URL in a browser, and if everything is set up correctly, you should be able to view the uploaded file.
 
-6. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127
-
-.0.0.1:8000/storage/` represents the file path.
+6. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127.0.0.1:8000/storage/` represents the file path.
 
 7. After invoking the API to remove a file, attempting to access the file's URL will result in it not being displayed since it has been deleted.
 
