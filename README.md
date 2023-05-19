@@ -24,7 +24,7 @@ We encourage you to actively engage with the content, experiment with the code, 
 This project primarily focuses on utilizing Laravel for developing APIs rather than web applications. If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
 
 ## Where to Start
-you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following the Order you should follow to go thorough each branch
+you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following is the Order that you should follow to go thorough each branch
 
 1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits)
 2. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning)
