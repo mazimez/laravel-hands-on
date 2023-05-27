@@ -27,12 +27,13 @@ This project primarily focuses on utilizing Laravel for developing APIs rather t
 you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following is the Order that you should follow to go thorough each branch
 
 1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits)
-2. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning)
-3. [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling)
+2. [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling)
+3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning)
 4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)
 5. [migration](https://github.com/mazimez/laravel-hands-on/tree/migration)
 6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)
 7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)
 8. [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum)
 9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)
+10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)
 
