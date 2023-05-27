@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -23,6 +22,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => fake()->numerify('##########'),
             'password' => bcrypt('password'),
+            'profile_image'=>fake()->randomElement(config('default_images')),
         ];
     }
 

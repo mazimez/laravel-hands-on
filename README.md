@@ -1,40 +1,30 @@
-# FILE-MANAGEMENT
+# File Seeder
 
-File management is crucial for project organization. Laravel offers various methods to effectively handle files within your project.
+The File Seeder is a Laravel utility that allows efficient management of files within the framework. Creating a Seeder is a recommended approach to adding default images to our system, thereby generating sample data.
 
 ## Description
 
-As projects grow, managing files solely within Laravel's Storage folder becomes challenging. To overcome this, alternative storage systems like AWS S3 or Google Cloud are often utilized to store files.
+The File Seeder enables the addition of default files, such as Images, Videos, PDFs, etc., to our storage. These files can be used by other Seeders to incorporate representative data.
 
 ## Files
 
-- [.env.example](.env.example): Update the `FILESYSTEM_DISK` and `APP_URL` variables according to your requirements.
-- [filesystems.php](config/filesystems.php): Configure this file to create a symbolic link.
-- [FileManager.php](app/Traits/FileManager.php): Incorporate this trait to manage files.
-- [v1.php](routes/api/v1.php): Add a new route for file uploads.
-- [TestController.php](app/Http/Controllers/Api/v1/TestController.php): Controller for handling file uploads.
+-   [public](public): Contains default images to be seeded in the project.
+-   [default_images.php](config/default_images.php): Creates a configuration file with a list of image names.
+-   [ImageSeeder.php](database/seeders/ImageSeeder.php): Copies files from the Public folder to the storage system.
+-   [UserFactory.php](database/factories/UserFactory.php): Utilizes the `default_images` configuration in the factory.
 
 ## Instructions
 
-Follow these steps to manage your files effectively:
+Follow these steps to create a Seeder for Images:
 
-1. Open the `.env` file and locate the `FILESYSTEM_DISK` variable. This variable determines the storage location for your files. By default, it is set to `local`, but you should update it to `public` for easier accessibility via public URLs. Additionally, update the `APP_URL` variable to reflect the host where your project is running (e.g., `http://127.0.0.1:8000`). This URL will be used to generate public URLs for any images in your project.
+1. Begin by selecting images from the internet and placing them in the `public` folder. These images will serve as the default images. Next, create a configuration file, [default_images.php](config/default_images.php), within the `config` folder. Add the names of all the image files to an array in this configuration file.
 
-2. Once the `.env` file is configured, open [filesystems.php](config/filesystems.php). This file contains the configuration related to file management in your project. Familiarize yourself with its contents (for more information, refer to the Laravel documentation). Pay particular attention to the `links` section at the end of the file. This section is used to create a symbolic link from the `storage` folder to the `public` folder. Since the `public` folder serves as the entry point of your project, all files should be accessible from there. To create the symbolic link, run the following command: `php artisan storage:link`. This will create a symbolic link in the `public` folder, making it appear as though all the files are located there. You can find more information about symbolic links on the internet.
+2. Proceed to create a Seeder, [ImageSeeder.php](database/seeders/ImageSeeder.php). This Seeder iterates through each image specified in the `default_images` configuration and stores it in our storage system. Ensure that you have `php artisan serve` running and that the `.env` file is correctly configured with the `APP_URL`. Failure to do so may result in Laravel being unable to access the default images. Once you execute the [ImageSeeder.php](database/seeders/ImageSeeder.php), the images will be copied from the [public](public) folder to the [public](storage/app/public/) folder within the `storage` directory. These images can now be utilized by other seeders.
 
-3. With the project now set up to handle files, create a trait called [FileManager.php](app/Traits/FileManager.php). This trait contains two methods: `saveFile` for storing files and `deleteFile` for removing files.
+3. Let's utilize the `default_images` to add images to the `profile_image` column in the `users` table. We will utilize the [UserFactory.php](database/factories/UserFactory.php) to incorporate sample data. In this factory, we employ the `default_images` configuration to add the image path to the `profile_image` field. This path can be used to display the image in both web and app interfaces. Further details regarding this functionality will be discussed in subsequent branches.
 
-4. To test the file management functionality, create a new API route called `upload-file`. This route should accept a file and save it in storage. Connect this route to [TestController.php](app/Http/Controllers/Api/v1/TestController.php) and utilize the [FileManager.php](app/Traits/FileManager.php) trait to handle the file upload.
+4. Additionally, include the [ImageSeeder.php](database/seeders/ImageSeeder.php) in our [DatabaseSeeder.php](database/seeders/DatabaseSeeder.php) file, placing it above all other seeders. This ensures that whenever someone seeds the data, they will also receive these default images.
 
-5. You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this API. After invoking the API, the file should be stored in your `Storage` folder. The API will return a URL for the uploaded file. Open this URL in a browser, and if everything is set up correctly, you should be able to view the uploaded file.
+5. You may be wondering why we can't simply copy the images directly to the `storage` folder, eliminating the need for the [ImageSeeder.php](database/seeders/ImageSeeder.php). This is true when using local storage; however, if you transition to a storage service such as `AWS` or `Google Cloud`, direct file copying will not be possible. Therefore, having this Seeder that can perform the copying process for us proves to be beneficial.
 
-6. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127.0.0.1:8000/storage/` represents the file path.
-
-7. After invoking the API to remove a file, attempting to access the file's URL will result in it not being displayed since it has been deleted.
-
-This is one approach to uploading and deleting files in your Laravel project. There are many other methods available, some of which are explained in the provided resources.
-
-## Resources
-
-- [Laravel Documentation](https://laravel.com/docs/10.x/filesystem#main-content)
-- [File Management Example](https://larainfo.com/blogs/laravel-9-rest-api-image-upload-with-validation-example)
+Feel free to replicate the same process to create seeders for videos, PDFs, and any other file types you require.
