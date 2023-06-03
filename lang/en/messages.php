@@ -12,4 +12,10 @@ return [
     "user_detail_returned" => "User Detail returned successfully",
     "file_uploaded" => "File Uploaded",
     "file_deleted" => "File Deleted",
+    "post_list_returned" => "Posts list returned successfully",
+    "post_detail_returned" => "Post detail returned successfully",
+    "post_deleted" => "Post deleted successfully",
+    "post_created" => "Post created successfully",
+    "post_updated" => "Post Updated successfully",
+    "nothing_to_update" => "Nothing to update",
 ];

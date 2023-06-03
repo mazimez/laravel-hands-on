@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Traits\SaveFile;
-use Illuminate\Foundation\Http\FormRequest;
 
 Route::group(['middleware' => ['localization']], function () {
     Route::get('test', function () {
@@ -18,6 +16,15 @@ Route::group(['middleware' => ['localization']], function () {
         //USER
         Route::group(['prefix' => 'users'], function () {
             Route::get('/detail', 'v1\UserController@show');
+        });
+
+        //POST
+        Route::group(['prefix' => 'posts'], function () {
+            Route::get('/', 'v1\PostController@index');
+            Route::get('/{post}', 'v1\PostController@show');
+            Route::post('/store', 'v1\PostController@store');
+            Route::post('{post}/update', 'v1\PostController@update');
+            Route::delete('{post}/delete', 'v1\PostController@destroy');
         });
     });
 });

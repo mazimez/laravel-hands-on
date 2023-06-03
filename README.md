@@ -1,30 +1,34 @@
-# File Seeder
+# Basic CRUD Operations
 
-The File Seeder is a Laravel utility that allows efficient management of files within the framework. Creating a Seeder is a recommended approach to adding default images to our system, thereby generating sample data.
+CRUD stands for Create, Read, Update, and Delete. In any project or system, CRUD operations are essential for managing resources such as posts, products, blogs, etc. These operations are typically handled through APIs.
 
 ## Description
 
-The File Seeder enables the addition of default files, such as Images, Videos, PDFs, etc., to our storage. These files can be used by other Seeders to incorporate representative data.
+For each CRUD operation, we will have a separate API. Depending on the project's requirements, the number of APIs needed may vary. Additionally, we will explore the concept of pagination to efficiently handle large amounts of data.
 
 ## Files
 
--   [public](public): Contains default images to be seeded in the project.
--   [default_images.php](config/default_images.php): Creates a configuration file with a list of image names.
--   [ImageSeeder.php](database/seeders/ImageSeeder.php): Copies files from the Public folder to the storage system.
--   [UserFactory.php](database/factories/UserFactory.php): Utilizes the `default_images` configuration in the factory.
+- [PostController.php](app/Http/Controllers/Api/v1/PostController.php): This controller is responsible for handling the CRUD operations.
+- [v1.php](routes/api/v1.php): In this file, we define the routes that connect to the controller's methods.
+- [PostCreateRequest](app/Http/Requests/Api/v1/PostCreateRequest.php): This request class is used to validate the input data for creating a post.
+- [PostUpdateRequest.php](app/Http/Requests/Api/v1/PostUpdateRequest.php): This request class is used to validate the input data for updating a post.
 
 ## Instructions
 
-Follow these steps to create a Seeder for Images:
+We will be implementing CRUD operations for our Post resource (table).
 
-1. Begin by selecting images from the internet and placing them in the `public` folder. These images will serve as the default images. Next, create a configuration file, [default_images.php](config/default_images.php), within the `config` folder. Add the names of all the image files to an array in this configuration file.
+1. Create the [PostController.php](app/Http/Controllers/Api/v1/PostController.php) using the `--api` flag. This controller already contains pre-built methods such as `index`, `store`, `show`, etc., corresponding to each CRUD operation.
 
-2. Proceed to create a Seeder, [ImageSeeder.php](database/seeders/ImageSeeder.php). This Seeder iterates through each image specified in the `default_images` configuration and stores it in our storage system. Ensure that you have `php artisan serve` running and that the `.env` file is correctly configured with the `APP_URL`. Failure to do so may result in Laravel being unable to access the default images. Once you execute the [ImageSeeder.php](database/seeders/ImageSeeder.php), the images will be copied from the [public](public) folder to the [public](storage/app/public/) folder within the `storage` directory. These images can now be utilized by other seeders.
+2. Add five new routes to the `posts` group in the [v1.php](routes/api/v1.php) route file. Each route's endpoint should be connected to a specific method in the controller. Note the usage of [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding) by passing the `post` variable in the route.
 
-3. Let's utilize the `default_images` to add images to the `profile_image` column in the `users` table. We will utilize the [UserFactory.php](database/factories/UserFactory.php) to incorporate sample data. In this factory, we employ the `default_images` configuration to add the image path to the `profile_image` field. This path can be used to display the image in both web and app interfaces. Further details regarding this functionality will be discussed in subsequent branches.
+3. Let's start with the `index` method, which retrieves a list of all the posts in the database. Use the [Post.php](app/Models/Post.php) model and employ the [simplePaginate](https://laravel.com/docs/10.x/pagination#simple-pagination) function for pagination. Pagination allows us to divide the posts into smaller chunks that can be returned via the API, as returning all posts at once may take a considerable amount of time.
 
-4. Additionally, include the [ImageSeeder.php](database/seeders/ImageSeeder.php) in our [DatabaseSeeder.php](database/seeders/DatabaseSeeder.php) file, placing it above all other seeders. This ensures that whenever someone seeds the data, they will also receive these default images.
+4. Next, we focus on the `store` method, which adds a new post to the database. First, create the [PostCreateRequest](app/Http/Requests/Api/v1/PostCreateRequest.php) request class to validate the data provided by the API. Take note of how we pass multiple files as an [array](https://laravel.com/docs/5.2/validation#validating-arrays) in the request. After validation, use the `create` method on the model to insert the record into the database. Additionally, we utilize the [FileManager.php](app/Traits/FileManager.php) to store images in the storage.
 
-5. You may be wondering why we can't simply copy the images directly to the `storage` folder, eliminating the need for the [ImageSeeder.php](database/seeders/ImageSeeder.php). This is true when using local storage; however, if you transition to a storage service such as `AWS` or `Google Cloud`, direct file copying will not be possible. Therefore, having this Seeder that can perform the copying process for us proves to be beneficial.
+5. Moving on to the `update` method, which is responsible for updating a post in the database. Here, we also create a request class to validate the input. Note that we haven't handled file updates in this version, but we will address that in future branches.
 
-Feel free to replicate the same process to create seeders for videos, PDFs, and any other file types you require.
+6. We also have the `show` method, which returns a specific post, and the `destroy` method, which deletes a post. Notice how we directly obtain an instance of the `Post` model from the method's parameter, utilizing [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding).
+
+That concludes the basic implementation of CRUD operations in your project. There are still many other concepts we can explore, such as `policies`
+
+ and `filters`. We will delve into those topics in future branches.

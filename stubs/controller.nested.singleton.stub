@@ -13,7 +13,7 @@ class {{ class }} extends Controller
      * Show the form for creating the new resource.
      *
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create({{ parentModel }} ${{ parentModelVariable }})
     {
@@ -25,7 +25,7 @@ class {{ class }} extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request, {{ parentModel }} ${{ parentModelVariable }})
     {
@@ -36,7 +36,7 @@ class {{ class }} extends Controller
      * Display the resource.
      *
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show({{ parentModel }} ${{ parentModelVariable }})
     {
@@ -47,7 +47,7 @@ class {{ class }} extends Controller
      * Show the form for editing the resource.
      *
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit({{ parentModel }} ${{ parentModelVariable }})
     {
@@ -59,7 +59,7 @@ class {{ class }} extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, {{ parentModel }} ${{ parentModelVariable }})
     {
@@ -70,7 +70,7 @@ class {{ class }} extends Controller
      * Remove the resource from storage.
      *
      * @param  \{{ namespacedParentModel }}  ${{ parentModelVariable }}
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy({{ parentModel }} ${{ parentModelVariable }})
     {
