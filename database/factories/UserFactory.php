@@ -17,12 +17,15 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $location = fake()->randomElement(config('default_locations'));
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => fake()->numerify('##########'),
             'password' => bcrypt('password'),
-            'profile_image'=>fake()->randomElement(config('default_images')),
+            'profile_image' => fake()->randomElement(config('default_images')),
+            'latitude' => $location['latitude'],
+            'longitude' => $location['longitude'],
         ];
     }
 

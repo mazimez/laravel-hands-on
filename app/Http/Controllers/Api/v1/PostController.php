@@ -11,6 +11,8 @@ use App\Models\PostFile;
 use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use PhpParser\Node\Expr\FuncCall;
 
 class PostController extends Controller
 {
@@ -24,6 +26,32 @@ class PostController extends Controller
     public function index(PostIndexRequest $request)
     {
         $data = Post::query();
+
+        if ($request->has('user_id')) {
+            $data = $data->where('user_id', $request->user_id);
+        }
+
+        if ($request->has('search')) {
+            $search = '%' . $request->search . '%';
+            $data = $data->where(function ($query) use ($search) {
+                $query = $query->where('title', 'like', $search)
+                    ->orWhere('description', 'like', $search);
+            });
+        }
+
+        if ($request->has('sort_field')) {
+            $sort_field = $request->sort_field;
+            $sort_order = $request->input('sort_order', 'asc'); //default ascending
+            if (!in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
+                return response()->json([
+                    'message' => __('messages.invalid_field_for_sorting'),
+                    'status' => '0'
+                ]);
+            }
+            $data = $data->orderBy($sort_field, $sort_order);
+        } else {
+            $data = $data->latest();
+        }
 
         if ($request->has('page')) {
             return response()->json(

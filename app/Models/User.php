@@ -23,6 +23,8 @@ class User extends Authenticatable
         'phone_number',
         'email',
         'password',
+        'latitude',
+        'longitude',
     ];
 
     /**
@@ -42,5 +44,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'distance' => "string",
     ];
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostIndexRequest extends FormRequest
+class UserIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,9 @@ class PostIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'page' => 'numeric|gt:0',
-            'per_page' => 'numeric|gt:0',
-            'search' => '',
-            'sort_field' => '',
-            'sort_order' => 'in:asc,desc,ASC,DESC',
-            'user_id' => 'exists:users,id'
+            'latitude' => '',
+            'longitude' => '',
+            'distance' => 'numeric'
         ];
     }
 }

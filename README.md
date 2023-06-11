@@ -1,44 +1,56 @@
-# Basic CRUD Operations
+# Sorting and Searching
 
-CRUD stands for Create, Read, Update, and Delete. In any project or system, CRUD operations are essential for managing resources such as posts, products, blogs, etc. These operations are typically handled through APIs.
+Sorting and searching are crucial aspects of any system or project. As data grows larger, it becomes essential to provide effective options for finding the desired information. Failing to do so may result in users abandoning the system or project.
 
 ## Description
 
-For each CRUD operation, we will have a separate API. Depending on the project's requirements, the number of APIs needed may vary. Additionally, we will explore the concept of pagination to efficiently handle large amounts of data.
+In Laravel, sorting and searching are primarily handled by Eloquent, although external services like [Meilisearch](https://www.meilisearch.com/) can also be utilized. This documentation will focus on Eloquent.
 
 ## Files
 
-- [PostController.php](app/Http/Controllers/Api/v1/PostController.php): This controller is responsible for handling the CRUD operations.
-- [v1.php](routes/api/v1.php): In this file, we define the routes that connect to the controller's methods.
-- [PostCreateRequest](app/Http/Requests/Api/v1/PostCreateRequest.php): This request class is used to validate the input data for creating a post.
-- [PostUpdateRequest.php](app/Http/Requests/Api/v1/PostUpdateRequest.php): This request class is used to validate the input data for updating a post.
+- [PostController.php](app/Http/Controllers/Api/v1/PostController.php): Updated the `index` method to support sorting and searching.
+- [PostIndexRequest.php](app/Http/Requests/Api/v1/PostIndexRequest.php): Added validation for sorting and searching.
+- [default_locations.php](config/default_locations.php): some default locations to use in factory.
+- [UserFactory.php](database/factories/UserFactory.php): updated factory to add lat-long data.
 
 ## Instructions
 
-We will be implementing CRUD operations for our Post resource (table).
+To enable sorting and searching options for our Post list API, follow these steps:
 
-1. Create the [PostController.php](app/Http/Controllers/Api/v1/PostController.php) using the `--api` flag. This controller already contains pre-built methods such as `index`, `store`, `show`, etc., corresponding to each CRUD operation.
+1. In the `index` method of [PostController.php](app/Http/Controllers/Api/v1/PostController.php), check if the `search` parameter is present in the request. If it is, utilize the `where` method with `LIKE` to search across different columns of the `posts` table. Adjust this code according to the database you are using (the example focuses on `MySQL`).
 
-2. Add five new routes to the `posts` group in the [v1.php](routes/api/v1.php) route file. Each route's endpoint should be connected to a specific method in the controller. Note the usage of [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding) by passing the `post` variable in the route.
+2. With the `search` option added, you can call the API and pass any word in the `search` parameter. This word will be searched within the `title` and `description` columns. This same process can be applied to any table with any columns.
 
-3. Let's start with the `index` method, which retrieves a list of all the posts in the database. Use the [Post.php](app/Models/Post.php) model and employ the [simplePaginate](https://laravel.com/docs/10.x/pagination#simple-pagination) function for pagination. Pagination allows us to divide the posts into smaller chunks that can be returned via the API, as returning all posts at once may take a considerable amount of time.
+3. The previous step covers the basic search functionality. For more advanced and efficient search features, you can utilize the [Laravel Scout](https://laravel.com/docs/10.x/scout) package, which integrates external services like [Algolia](https://www.algolia.com/) and [Meilisearch](https://www.meilisearch.com/). We will cover this topic in future branches.
 
-4. Next, we focus on the `store` method, which adds a new post to the database. First, create the [PostCreateRequest](app/Http/Requests/Api/v1/PostCreateRequest.php) request class to validate the data provided by the API. Take note of how we pass multiple files as an [array](https://laravel.com/docs/5.2/validation#validating-arrays) in the request. After validation, use the `create` method on the model to insert the record into the database. Additionally, we utilize the [FileManager.php](app/Traits/FileManager.php) to store images in the storage.
+4. Next, let's focus on sorting. To achieve this, take two parameters: `sort_field` and `sort_order`. These parameters allow sorting the data based on different columns. If no sorting parameters are provided, the default sorting will be the [latest](https://laravel.com/docs/10.x/queries#latest-oldest) option, displaying the newest posts first.
 
-5. Moving on to the `update` method, which is responsible for updating a post in the database. Here, we also create a request class to validate the input. Note that we haven't handled file updates in this version, but we will address that in future branches.
+5. The `sort_field` parameter represents the name of the field (column) from the table that the user wants to sort. First, check if the given `sort_field` exists in the `Post` model (table). If it doesn't exist, return an error. If the `sort_field` does exist, use the [orderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset) method to sort the data accordingly.
 
-6. We also have the `show` method, which returns a specific post, and the `destroy` method, which deletes a post. Notice how we directly obtain an instance of the `Post` model from the method's parameter, utilizing [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding).
+6. The `sort_order` parameter determines whether the result should be in ascending or descending order. By default, it is set to `Ascending`. Adjust this parameter according to your requirements.
+
+7. Additionally, a filter named `user_id` has been added, allowing retrieval of posts associated with a specific user.
+
+This documentation covers the basic implementation of Sorting & Searching. Future branches will introduce improvements, and you can also explore the [Laravel Scout](https://laravel.com/docs/10.x/scout) package for further information.
 
 
-That concludes the basic implementation of CRUD operations in your project. There are still many other concepts we can explore, such as `policies` and `filters`. We will delve into those topics in future branches.
+## Bonus
+- in addition to filtering and sorting. we will see how you can add some fields into response dynamically. we will take users location and distance as an Example.
+- for this, we need to update our `users` table. we will add 2 columns `latitude` and `longitude` into our `users` and we also update  [UserFactory.php](database/factories/UserFactory.php) to add some locations lat-long randomly and also update the `User` model.(you need to run `php artisan migrate:fresh --seed` command to update the table.)
+- now that our table is updated, look into [UserController.php](app/Http/Controllers/Api/v1/UserController.php), here we are taking 2 parameters from request `latitude` and `longitude`, if this parameters are provided in request then we use `selectRaw()` method to add 1 field `distance` dynamically into response.
+- this fields show the distance between each user's lat-long and the lat-long that's provided in request. we are using some trigonometric function here, but you don't need to fully understand it now. just remember that in will give us distance between 2 lat-longs.
+- then we can also put 1 more filter `distance` that will give us users within certain range.
+- try to understand this code and improve it(take it as a `HomeWork`)
 
 ## Note
-You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this APIs.
 
+You can utilize the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to make API calls.
 
 ## Resources
 
-- [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding).
-- [simplePaginate](https://laravel.com/docs/10.x/pagination#simple-pagination)
-- [simplePaginate](https://laravel.com/docs/10.x/pagination#simple-pagination)
-- [other CRUD example](https://larainfo.com/blogs/laravel-9-rest-api-crud-tutorial-example)
+
+
+- [Laravel Scout Documentation](https://laravel.com/docs/10.x/scout)
+- [Latest](https://laravel.com/docs/10.x/queries#latest-oldest)
+- [OrderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset)
+- [More detailed guide on searching](https://scalablescripts.medium.com/laravel-rest-api-tutorial-custom-pagination-search-sorting-using-mysql-bc6a70426aa5)

@@ -18,4 +18,6 @@ return [
     "post_created" => "Post created successfully",
     "post_updated" => "Post Updated successfully",
     "nothing_to_update" => "Nothing to update",
+    "invalid_field_for_sorting" => "Invalid field for sorting",
+    "user_list_returned" => "User list returned successfully",
 ];

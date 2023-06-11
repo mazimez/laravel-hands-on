@@ -15,6 +15,7 @@ Route::group(['middleware' => ['localization']], function () {
     Route::group(['middleware' => ['auth:sanctum']], function () {
         //USER
         Route::group(['prefix' => 'users'], function () {
+            Route::get('/', 'v1\UserController@index');
             Route::get('/detail', 'v1\UserController@show');
         });
 
