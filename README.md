@@ -37,4 +37,5 @@ you can directly go to any branch for the topic that you want to understand, and
 9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)
 10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)
+12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)
 
