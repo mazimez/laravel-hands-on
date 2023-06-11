@@ -41,6 +41,7 @@ This documentation covers the basic implementation of Sorting & Searching. Futur
 - this fields show the distance between each user's lat-long and the lat-long that's provided in request. we are using some trigonometric function here, but you don't need to fully understand it now. just remember that in will give us distance between 2 lat-longs.
 - then we can also put 1 more filter `distance` that will give us users within certain range.
 - try to understand this code and improve it(take it as a `HomeWork`)
+- using this approach to store lat-long as a `string` in DataBase is not that good. but for our example it doesn't matter much, we will see how we can handle this location data properly in future branches.
 
 ## Note
 
