@@ -28,9 +28,7 @@ We will use relationships to connect our `Post` model with `User` and other mode
 
 5. In the `index` method, notice that we use the `orWhereHas` function and pass the relationship `user` as a string when performing a search. This allows us to apply queries on the related `users` table, enabling us to search within the `users` table through the `posts` table. There are many other methods available, such as `whereDoesntHave`, `doesntHave`, etc.
 
-6. Moving on to the `show` method, we utilize the `loadMissing` function, which loads the specified relationships only for that particular instance of the `Post` model. There are also functions like `loadCount`, `load
-
-Sum`, etc.
+6. Moving on to the `show` method, we utilize the `loadMissing` function, which loads the specified relationships only for that particular instance of the `Post` model. There are also functions like `loadCount`, `loadSum`, etc.
 
 7. We've also added a new [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php) that uses similar functions.
 
