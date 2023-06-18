@@ -26,6 +26,12 @@ Route::group(['middleware' => ['localization']], function () {
             Route::post('/store', 'v1\PostController@store');
             Route::post('{post}/update', 'v1\PostController@update');
             Route::delete('{post}/delete', 'v1\PostController@destroy');
+
+            //POST-COMMENTS
+            Route::group(['prefix' => '{post}/comments'], function () {
+                Route::get('/', 'v1\PostCommentController@index');
+                Route::post('/create', 'v1\PostCommentController@store');
+            });
         });
     });
 });

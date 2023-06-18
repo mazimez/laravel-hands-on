@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PostComment;
+use App\Models\PostFile;
 use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
@@ -16,5 +17,9 @@ class PostSeeder extends Seeder
     public function run()
     {
         $posts = Post::factory(10)->create();
+        foreach ($posts as $post) {
+            PostFile::factory(2)->for($post)->create();
+            PostComment::factory(15)->for($post)->create();
+        }
     }
 }

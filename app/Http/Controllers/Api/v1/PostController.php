@@ -25,7 +25,7 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request)
     {
-        $data = Post::query();
+        $data = Post::with(['user', 'file']);
 
         if ($request->has('user_id')) {
             $data = $data->where('user_id', $request->user_id);
@@ -36,6 +36,9 @@ class PostController extends Controller
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('title', 'like', $search)
                     ->orWhere('description', 'like', $search);
+            })->orWhereHas('user', function ($query) use ($search) {
+                $query = $query->where('name', 'like', $search)
+                    ->orWhere('email', 'like', $search);
             });
         }
 
@@ -91,7 +94,7 @@ class PostController extends Controller
             }
         }
         return response()->json([
-            'data' => $post->refresh(),
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
             'message' => __('messages.post_created'),
             'status' => '1'
         ]);
@@ -106,7 +109,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         return response()->json([
-            'data' => $post,
+            'data' => $post->loadMissing(['user', 'files']),
             'message' => __('messages.post_detail_returned'),
             'status' => '1'
         ]);
@@ -135,7 +138,7 @@ class PostController extends Controller
         }
         $post->save();
         return response()->json([
-            'data' => $post,
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
             'message' => __('messages.post_updated'),
             'status' => '1'
         ]);

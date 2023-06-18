@@ -1,57 +1,45 @@
-# Sorting and Searching
+# Eloquent Relationships
 
-Sorting and searching are crucial aspects of any system or project. As data grows larger, it becomes essential to provide effective options for finding the desired information. Failing to do so may result in users abandoning the system or project.
+Eloquent Relationships are a crucial component of Laravel. They allow us to establish logical connections between resources in our code.
 
 ## Description
 
-In Laravel, sorting and searching are primarily handled by Eloquent, although external services like [Meilisearch](https://www.meilisearch.com/) can also be utilized. This documentation will focus on Eloquent.
+This section focuses on demonstrating how to use Eloquent Relationships rather than explaining their core concepts. If you're not familiar with these relationships, please refer to the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships) before proceeding with this section.
 
 ## Files
 
-- [PostController.php](app/Http/Controllers/Api/v1/PostController.php): Updated the `index` method to support sorting and searching.
-- [PostIndexRequest.php](app/Http/Requests/Api/v1/PostIndexRequest.php): Added validation for sorting and searching.
-- [default_locations.php](config/default_locations.php): some default locations to use in factory.
-- [UserFactory.php](database/factories/UserFactory.php): updated factory to add lat-long data.
+- [Post.php](app/Models/Post.php): Contains the defined relationships for use in other files.
+- [PostSeeder](database/seeders/PostSeeder.php): Updated code that utilizes relationships.
+- [PostCommentFactory](database/factories/PostCommentFactory.php), [PostFileFactory](database/factories/PostFileFactory.php): Added factories to generate dummy data.
+- [PostController](app/Http/Controllers/Api/v1/PostController.php): Updated the controller to incorporate relationships.
+- [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php): New controller that also utilizes relationships.
 
 ## Instructions
 
-To enable sorting and searching options for our Post list API, follow these steps:
+We will use relationships to connect our `Post` model with `User` and other models, enhancing our seeders and APIs.
 
-1. In the `index` method of [PostController.php](app/Http/Controllers/Api/v1/PostController.php), check if the `search` parameter is present in the request. If it is, utilize the `where` method with `LIKE` to search across different columns of the `posts` table. Adjust this code according to the database you are using (the example focuses on `MySQL`).
+1. Define relationships in the [Post](app/Models/Post.php) model, such as `user`, `files`, `file`, and `comments`. Create a new model, [PostComment](app/Models/PostComment.php), and define additional relationships in it, including `post` and `user`. Repeat this process for other models as well.
 
-2. With the `search` option added, you can call the API and pass any word in the `search` parameter. This word will be searched within the `title` and `description` columns. This same process can be applied to any table with any columns.
+2. Now that our relationships are defined, let's use them in the seeders. Review the [PostSeeder](database/seeders/PostSeeder.php) file, where we've updated the code to create default comments and files for each post using our defined relationships. By utilizing the `for` method on the factory, the foreign keys will be automatically populated in the database.
 
-3. The previous step covers the basic search functionality. For more advanced and efficient search features, you can utilize the [Laravel Scout](https://laravel.com/docs/10.x/scout) package, which integrates external services like [Algolia](https://www.algolia.com/) and [Meilisearch](https://www.meilisearch.com/). We will cover this topic in future branches.
+3. We've created [PostCommentFactory](database/factories/PostCommentFactory.php) and [PostFileFactory](database/factories/PostFileFactory.php) to generate dummy data for these resources. Now that we've used relationships in seeders and factories, let's incorporate them into our APIs (controllers).
 
-4. Next, let's focus on sorting. To achieve this, take two parameters: `sort_field` and `sort_order`. These parameters allow sorting the data based on different columns. If no sorting parameters are provided, the default sorting will be the [latest](https://laravel.com/docs/10.x/queries#latest-oldest) option, displaying the newest posts first.
+4. Open [PostController](app/Http/Controllers/Api/v1/PostController.php) and examine the `index` method. We've used the `with` method on the `Post` model and added the `user` and `file` relationships to it. This attaches (preloads) the `User` and `PostFile` models with each `Post` when returning JSON. This is how you can include data from other models (tables) with your main model. There are other methods like `withCount`, `withSum`, `withMin`, etc., that operate on the same concept. You can read about them in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships).
 
-5. The `sort_field` parameter represents the name of the field (column) from the table that the user wants to sort. First, check if the given `sort_field` exists in the `Post` model (table). If it doesn't exist, return an error. If the `sort_field` does exist, use the [orderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset) method to sort the data accordingly.
+5. In the `index` method, notice that we use the `orWhereHas` function and pass the relationship `user` as a string when performing a search. This allows us to apply queries on the related `users` table, enabling us to search within the `users` table through the `posts` table. There are many other methods available, such as `whereDoesntHave`, `doesntHave`, etc.
 
-6. The `sort_order` parameter determines whether the result should be in ascending or descending order. By default, it is set to `Ascending`. Adjust this parameter according to your requirements.
+6. Moving on to the `show` method, we utilize the `loadMissing` function, which loads the specified relationships only for that particular instance of the `Post` model. There are also functions like `loadCount`, `load
 
-7. Additionally, a filter named `user_id` has been added, allowing retrieval of posts associated with a specific user.
+Sum`, etc.
 
-This documentation covers the basic implementation of Sorting & Searching. Future branches will introduce improvements, and you can also explore the [Laravel Scout](https://laravel.com/docs/10.x/scout) package for further information.
+7. We've also added a new [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php) that uses similar functions.
 
-
-## Bonus
-- in addition to filtering and sorting. we will see how you can add some fields into response dynamically. we will take users location and distance as an Example.
-- for this, we need to update our `users` table. we will add 2 columns `latitude` and `longitude` into our `users` and we also update  [UserFactory.php](database/factories/UserFactory.php) to add some locations lat-long randomly and also update the `User` model.(you need to run `php artisan migrate:fresh --seed` command to update the table.)
-- now that our table is updated, look into [UserController.php](app/Http/Controllers/Api/v1/UserController.php), here we are taking 2 parameters from request `latitude` and `longitude`, if this parameters are provided in request then we use `selectRaw()` method to add 1 field `distance` dynamically into response.
-- this fields show the distance between each user's lat-long and the lat-long that's provided in request. we are using some trigonometric function here, but you don't need to fully understand it now. just remember that in will give us distance between 2 lat-longs.
-- then we can also put 1 more filter `distance` that will give us users within certain range.
-- try to understand this code and improve it(take it as a `HomeWork`)
-- using this approach to store lat-long as a `string` in DataBase is not that good. but for our example it doesn't matter much, we will see how we can handle this location data properly in future branches.
+These are the basics of Eloquent Relationships. Familiarize yourself with these functions as you'll need them frequently. In future branches, we'll cover additional concepts such as polymorphic relationships and pivot tables.
 
 ## Note
 
 You can utilize the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to make API calls.
 
 ## Resources
-
-
-
-- [Laravel Scout Documentation](https://laravel.com/docs/10.x/scout)
-- [Latest](https://laravel.com/docs/10.x/queries#latest-oldest)
-- [OrderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset)
-- [More detailed guide on searching](https://scalablescripts.medium.com/laravel-rest-api-tutorial-custom-pagination-search-sorting-using-mysql-bc6a70426aa5)
+- [Laravel Documentation](https://laravel.com/docs/10.x/eloquent-relationships)
+- [Eloquent Relationships](https://ralphjsmit.com/laravel-eloquent-relationships)

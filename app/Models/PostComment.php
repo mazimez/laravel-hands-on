@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class PostComment extends Model
 {
     use HasFactory;
 
     //public $timestamps = false;
 
     //TABLE
-    public $table = 'posts';
+    public $table = 'post_comments';
 
     //FILLABLE
     protected $fillable = [
         'user_id',
-        'title',
-        'description'
+        'post_id',
+        'comment',
     ];
 
     //HIDDEN
@@ -34,21 +34,13 @@ class Post extends Model
     protected $casts = [];
 
     //RELATIONSHIPS
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-    public function files()
-    {
-        return $this->hasMany(PostFile::class);
-    }
-    public function file()
-    {
-        return $this->hasOne(PostFile::class);
-    }
-    public function comments()
-    {
-        return $this->hasMany(PostComment::class);
+        return $this->belongsTo(User::class);
     }
 
     //ATTRIBUTES

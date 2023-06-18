@@ -33,9 +33,10 @@ class PostFile extends Model
     protected $casts = [];
 
     //RELATIONSHIPS
-    //public function example(){
-    //    return $this->hasMany();
-    //}
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 
     //ATTRIBUTES
     //public function getExampleAttribute()

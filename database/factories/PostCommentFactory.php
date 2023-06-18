@@ -7,9 +7,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostComment>
  */
-class PostFactory extends Factory
+class PostCommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +18,10 @@ class PostFactory extends Factory
      */
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
         return [
-            'user_id' => $user->id,
-            'title' => fake()->text(100),
-            'description' => fake()->text(500),
+            'user_id' => User::inRandomOrder()->first()->id,
+            'post_id' => Post::inRandomOrder()->first()->id,
+            'comment' => fake()->text(50),
         ];
     }
 }
