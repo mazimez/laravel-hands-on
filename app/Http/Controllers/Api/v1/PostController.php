@@ -9,10 +9,9 @@ use App\Http\Requests\Api\v1\PostUpdateRequest;
 use App\Models\Post;
 use App\Models\PostFile;
 use App\Traits\FileManager;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
-use PhpParser\Node\Expr\FuncCall;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -84,12 +83,27 @@ class PostController extends Controller
             'user_id' => $auth_user->id,
             'title' => $request->title,
             'description' => $request->description,
+            'meta_data' => json_decode($request->meta_data)
         ]);
         if ($post && $request->has('files')) {
             foreach ($request['files'] as $file) {
+                $file_type = null;
+                if (Str::of($file->getMimeType())->contains('image/')) {
+                    $file_type = PostFile::PHOTO;
+                }
+                if (Str::of($file->getMimeType())->contains('video/')) {
+                    $file_type = PostFile::VIDEO;
+                }
+                if (!in_array($file_type, [PostFile::PHOTO, PostFile::VIDEO])) {
+                    return response()->json([
+                        'message' => __('messages.file_type_not_supported'),
+                        'status' => '0'
+                    ]);
+                }
                 PostFile::create([
                     'post_id' => $post->id,
                     'file_path' => $this->saveFile($file, 'posts'),
+                    'type' => $file_type
                 ]);
             }
         }
@@ -129,6 +143,32 @@ class PostController extends Controller
         }
         if ($request->has('description')) {
             $post->description = $request->description;
+        }
+        if ($request->has('meta_data')) {
+            $post->meta_data = json_decode($request->meta_data);
+        }
+        if ($request->has('files')) {
+            $post->files()->delete();
+            foreach ($request['files'] as $file) {
+                $file_type = null;
+                if (Str::of($file->getMimeType())->contains('image/')) {
+                    $file_type = PostFile::PHOTO;
+                }
+                if (Str::of($file->getMimeType())->contains('video/')) {
+                    $file_type = PostFile::VIDEO;
+                }
+                if (!in_array($file_type, [PostFile::PHOTO, PostFile::VIDEO])) {
+                    return response()->json([
+                        'message' => __('messages.file_type_not_supported'),
+                        'status' => '0'
+                    ]);
+                }
+                PostFile::create([
+                    'post_id' => $post->id,
+                    'file_path' => $this->saveFile($file, 'posts'),
+                    'type' => $file_type
+                ]);
+            }
         }
         if (!$post->isDirty()) {
             return response()->json([

@@ -24,7 +24,8 @@ class PostCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'files.*' => 'file',
+            'meta_data' => 'json',
+            'files.*' => 'file|mimetypes:video/*,image/*',
             'files' => 'array',
             'description' => 'required',
             'title' => 'required',

@@ -1,43 +1,45 @@
-# Eloquent Relationships
+# Enhanced CRUD
 
-Eloquent Relationships are a crucial component of Laravel. They allow us to establish logical connections between resources in our code.
+In this section we see some Enhanced CRUD, highlighting new features and improvements. It also offers instructions on how to implement the changes and utilize the associated resources effectively.
 
 ## Description
 
-This section focuses on demonstrating how to use Eloquent Relationships rather than explaining their core concepts. If you're not familiar with these relationships, please refer to the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships) before proceeding with this section.
+The Enhanced CRUD project aims to enhance the basic CRUD (Create, Read, Update, Delete) functions by introducing additional functionalities and logic that can be utilized across different projects. The key additions include the ability for users to like posts and update post images (including handling videos), as well as managing data in JSON format.
 
 ## Files
 
-- [Post.php](app/Models/Post.php): Contains the defined relationships for use in other files.
-- [PostSeeder](database/seeders/PostSeeder.php): Updated code that utilizes relationships.
-- [PostCommentFactory](database/factories/PostCommentFactory.php), [PostFileFactory](database/factories/PostFileFactory.php): Added factories to generate dummy data.
-- [PostController](app/Http/Controllers/Api/v1/PostController.php): Updated the controller to incorporate relationships.
-- [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php): New controller that also utilizes relationships.
+The following files are included in this project:
+
+- [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php): This migration file adds a new `JSON` type field to the `posts` table.
+- [Post](app/Models/Post.php): The `Post` model is updated to include the necessary casting for the new `JSON` field.
+- [PostFactory](database/factories/PostFactory.php) and [PostFileFactory](database/factories/PostFileFactory.php): These factory files are updated to populate sample data in the new fields.
+- [PostController](app/Http/Controllers/Api/v1/PostController.php): The controller methods are updated to handle files and JSON data.
+- [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php): This new controller handles the logic for toggling post likes.
 
 ## Instructions
 
-We will use relationships to connect our `Post` model with `User` and other models, enhancing our seeders and APIs.
+Follow these instructions to implement the changes and utilize the resources in the Enhanced CRUD project:
 
-1. Define relationships in the [Post](app/Models/Post.php) model, such as `user`, `files`, `file`, and `comments`. Create a new model, [PostComment](app/Models/PostComment.php), and define additional relationships in it, including `post` and `user`. Repeat this process for other models as well.
+1. Update the relevant migrations to include additional columns in the `posts` table and the `type` field in the `post_files` table, indicating whether a file is a video or a photo.
 
-2. Now that our relationships are defined, let's use them in the seeders. Review the [PostSeeder](database/seeders/PostSeeder.php) file, where we've updated the code to create default comments and files for each post using our defined relationships. By utilizing the `for` method on the factory, the foreign keys will be automatically populated in the database.
+2. Modify the [PostFactory](database/factories/PostFactory.php) to include default data in the `meta_data` field. Ensure that the field is cast as an array in the [Post](app/Models/Post.php) model, indicating that it is in JSON format.
 
-3. We've created [PostCommentFactory](database/factories/PostCommentFactory.php) and [PostFileFactory](database/factories/PostFileFactory.php) to generate dummy data for these resources. Now that we've used relationships in seeders and factories, let's incorporate them into our APIs (controllers).
+3. Include a [VideoSeeder](database/seeders/VideoSeeder.php) to seed sample videos into the database. Update the [PostFileFactory](database/factories/PostFileFactory.php) to handle the `type` field, distinguishing between photos and videos. Additionally, define constants for "PHOTO" and "VIDEO" in the model.
 
-4. Open [PostController](app/Http/Controllers/Api/v1/PostController.php) and examine the `index` method. We've used the `with` method on the `Post` model and added the `user` and `file` relationships to it. This attaches (preloads) the `User` and `PostFile` models with each `Post` when returning JSON. This is how you can include data from other models (tables) with your main model. There are other methods like `withCount`, `withSum`, `withMin`, etc., that operate on the same concept. You can read about them in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships).
+4. In the [PostController](app/Http/Controllers/Api/v1/PostController.php), modify the `store` method. Instead of directly storing files and adding their paths to the database, first check the file type using the `getMimeType` method. This allows you to keep a record of the file type. You can add more types like PDF or DOC as needed.
 
-5. In the `index` method, notice that we use the `orWhereHas` function and pass the relationship `user` as a string when performing a search. This allows us to apply queries on the related `users` table, enabling us to search within the `users` table through the `posts` table. There are many other methods available, such as `whereDoesntHave`, `doesntHave`, etc.
+5. Continuing with the `store` method, since the `posts` table now includes the `meta_data` field, users should have the option to include it in the API request. Update the [PostCreateRequest](app/Http/Requests/Api/v1/PostCreateRequest.php) to include validation for the JSON format of the provided data. In the controller, Laravel automatically converts the `meta_data` into JSON format. To store it, use the `json_decode` method to convert it back to a normal string.
 
-6. Moving on to the `show` method, we utilize the `loadMissing` function, which loads the specified relationships only for that particular instance of the `Post` model. There are also functions like `loadCount`, `loadSum`, etc.
+6. The `update` method follows a similar process as `store`. However, when files are provided in the request, delete all existing files associated with the post. This approach replaces the existing files with the new ones. Keep in mind that this may not always be the desired behaviour; it depends on the project's requirements. Alternatively, you can keep the existing files and add new ones.
 
-7. We've also added a new [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php) that uses similar functions.
+7. A new API endpoint is added in the [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php) to delete a single file from a post using the `delete` method. With the file and JSON handling now addressed, the focus shifts to implementing the like/unlike feature for posts.
 
-These are the basics of Eloquent Relationships. Familiarize yourself with these functions as you'll need them frequently. In future branches, we'll cover additional concepts such as polymorphic relationships and pivot tables.
+8. To enable the like/unlike feature, an `API` named `toggle` is created, connected to the [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php). In the controller, the logic first checks if the authenticated user has already liked the post. If a record exists, it is deleted. If there is no record, a new entry is created, associating the authenticated user's ID with the post's ID. Such toggle-like APIs are commonly used for actions like liking/unliking or upvoting/downvoting.
+
+9. When calling the `toggle` API for the first time, it adds an entry for the authenticated user. Subsequent calls remove that entry. You can apply this concept to other resources as well.
+
+Please note that some additional implementation steps are required for the like feature, such as adding a Boolean indicator in the `Post` list to determine whether the post is liked by the authenticated user. Additionally, files are currently deleted from the database but not from storage. These aspects will be covered in future branches. The current branch focuses on handling various data types (files, JSON) and implementing simple logic (toggle).
 
 ## Note
 
-You can utilize the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to make API calls.
-
-## Resources
-- [Laravel Documentation](https://laravel.com/docs/10.x/eloquent-relationships)
-- [Eloquent Relationships](https://ralphjsmit.com/laravel-eloquent-relationships)
+To simplify API calls, you can utilize the provided [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).

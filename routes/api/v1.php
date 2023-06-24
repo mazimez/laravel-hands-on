@@ -6,8 +6,6 @@ Route::group(['middleware' => ['localization']], function () {
     Route::get('test', function () {
         return __('messages.test');
     });
-
-
     Route::post('upload-file', 'v1\TestController@fileUpload');
     Route::post('delete-file', 'v1\TestController@fileDestroy');
 
@@ -31,6 +29,16 @@ Route::group(['middleware' => ['localization']], function () {
             Route::group(['prefix' => '{post}/comments'], function () {
                 Route::get('/', 'v1\PostCommentController@index');
                 Route::post('/create', 'v1\PostCommentController@store');
+            });
+
+            //POST-FILES
+            Route::group(['prefix' => '{post}/files'], function () {
+                Route::delete('/{file}/delete', 'v1\PostFileController@destroy');
+            });
+
+            //POST-LIKE
+            Route::group(['prefix' => '{post}/likes'], function () {
+                Route::post('/toggle', 'v1\PostLikeController@toggle');
             });
         });
     });

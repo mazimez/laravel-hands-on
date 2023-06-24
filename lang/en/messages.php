@@ -20,5 +20,9 @@ return [
     "nothing_to_update" => "Nothing to update",
     "invalid_field_for_sorting" => "Invalid field for sorting",
     "user_list_returned" => "User list returned successfully",
-    "post_comment_list_returned" => "Post Comments list returned successfully"
+    "post_comment_list_returned" => "Post Comments list returned successfully",
+    "post_like_removed" => "Post Like Removed successfully",
+    "post_liked" => "Post Liked successfully",
+    "file_type_not_supported" => "This file type is not supported",
+    "post_file_deleted" => "Post File Deleted successfully",
 ];

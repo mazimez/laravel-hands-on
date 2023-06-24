@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Provider\en_US\Person;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
@@ -23,6 +24,9 @@ class PostFactory extends Factory
             'user_id' => $user->id,
             'title' => fake()->text(100),
             'description' => fake()->text(500),
+            'meta_data' => [
+                'mentioned_people' => [fake()->name, fake()->name, fake()->name],
+            ]
         ];
     }
 }

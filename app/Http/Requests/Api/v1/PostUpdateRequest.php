@@ -24,6 +24,8 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
+            'files.*' => 'file',
+            'files' => 'array',
             'title' => '',
             'description' => '',
         ];

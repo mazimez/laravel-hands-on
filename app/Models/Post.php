@@ -18,7 +18,8 @@ class Post extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'description'
+        'description',
+        'meta_data',
     ];
 
     //HIDDEN
@@ -31,7 +32,9 @@ class Post extends Model
     protected $with = [];
 
     //CASTS
-    protected $casts = [];
+    protected $casts = [
+        'meta_data' => 'array'
+    ];
 
     //RELATIONSHIPS
     public function user()
@@ -44,7 +47,7 @@ class Post extends Model
     }
     public function file()
     {
-        return $this->hasOne(PostFile::class);
+        return $this->hasOne(PostFile::class)->where('type', PostFile::PHOTO);
     }
     public function comments()
     {

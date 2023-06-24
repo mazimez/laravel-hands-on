@@ -14,10 +14,13 @@ class PostFile extends Model
     //TABLE
     public $table = 'post_files';
 
+    const PHOTO = "PHOTO", VIDEO = "VIDEO";
+
     //FILLABLE
     protected $fillable = [
         'post_id',
-        'file_path'
+        'file_path',
+        'type'
     ];
 
     //HIDDEN
