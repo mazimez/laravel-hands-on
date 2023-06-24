@@ -39,4 +39,5 @@ you can directly go to any branch for the topic that you want to understand, and
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)
 12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)
 13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)
+14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)
 
