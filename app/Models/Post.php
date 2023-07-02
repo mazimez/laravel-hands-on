@@ -53,6 +53,10 @@ class Post extends Model
     {
         return $this->hasMany(PostComment::class);
     }
+    public function likers()
+    {
+        return $this->belongsToMany(User::class, PostLike::class, 'post_id', 'user_id', 'id', 'id');
+    }
 
     //ATTRIBUTES
     //public function getExampleAttribute()

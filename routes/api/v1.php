@@ -15,6 +15,11 @@ Route::group(['middleware' => ['localization']], function () {
         Route::group(['prefix' => 'users'], function () {
             Route::get('/', 'v1\UserController@index');
             Route::get('/detail', 'v1\UserController@show');
+
+            //USER FOLLOW
+            Route::get('/{user}/followers', 'v1\UserFollowController@followers');
+            Route::get('/{user}/following', 'v1\UserFollowController@following');
+            Route::post('/{user}/follow-toggle', 'v1\UserFollowController@toggle');
         });
 
         //POST
@@ -38,6 +43,7 @@ Route::group(['middleware' => ['localization']], function () {
 
             //POST-LIKE
             Route::group(['prefix' => '{post}/likes'], function () {
+                Route::get('/', 'v1\PostLikeController@index');
                 Route::post('/toggle', 'v1\PostLikeController@toggle');
             });
         });

@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request)
     {
-        $data = Post::with(['user', 'file']);
+        $data = Post::with(['user', 'file'])->withCount(['likers']);
 
         if ($request->has('user_id')) {
             $data = $data->where('user_id', $request->user_id);

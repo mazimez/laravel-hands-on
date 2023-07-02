@@ -25,4 +25,10 @@ return [
     "post_liked" => "Post Liked successfully",
     "file_type_not_supported" => "This file type is not supported",
     "post_file_deleted" => "Post File Deleted successfully",
+    "post_likers_returned" => "Post likers returned successfully",
+    "post_like_toggle" => "Post like toggle",
+    "user_followers_returned" => "User followers returned",
+    "user_following_returned" => "User following returned",
+    "follow_toggle" => "Follow toggled",
+    "can_not_follow_self" => "You can not follow yourself",
 ];
