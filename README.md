@@ -22,15 +22,17 @@ Follow these steps to manage your files effectively:
 
 2. Once the `.env` file is configured, open [filesystems.php](config/filesystems.php). This file contains the configuration related to file management in your project. Familiarize yourself with its contents (for more information, refer to the Laravel documentation). Pay particular attention to the `links` section at the end of the file. This section is used to create a symbolic link from the `storage` folder to the `public` folder. Since the `public` folder serves as the entry point of your project, all files should be accessible from there. To create the symbolic link, run the following command: `php artisan storage:link`. This will create a symbolic link in the `public` folder, making it appear as though all the files are located there. You can find more information about symbolic links on the internet.
 
-3. With the project now set up to handle files, create a trait called [FileManager.php](app/Traits/FileManager.php). This trait contains two methods: `saveFile` for storing files and `deleteFile` for removing files.
+3. more on [filesystems.php](config/filesystems.php) config, if you look into `disk`(above the `links`) these are different options where we can store our files. we have selected `public` for our disk, make sure that `visibility` is set to `public` so the files will be visible to for public view. also make sure that `storage` folder has proper permission else it will create some problems (specially in `Ubuntu` system)
 
-4. To test the file management functionality, create a new API route called `upload-file`. This route should accept a file and save it in storage. Connect this route to [TestController.php](app/Http/Controllers/Api/v1/TestController.php) and utilize the [FileManager.php](app/Traits/FileManager.php) trait to handle the file upload.
+4. With the project now set up to handle files, create a trait called [FileManager.php](app/Traits/FileManager.php). This trait contains two methods: `saveFile` for storing files and `deleteFile` for removing files.
 
-5. You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this API. After invoking the API, the file should be stored in your `Storage` folder. The API will return a URL for the uploaded file. Open this URL in a browser, and if everything is set up correctly, you should be able to view the uploaded file.
+5. To test the file management functionality, create a new API route called `upload-file`. This route should accept a file and save it in storage. Connect this route to [TestController.php](app/Http/Controllers/Api/v1/TestController.php) and utilize the [FileManager.php](app/Traits/FileManager.php) trait to handle the file upload.
 
-6. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127.0.0.1:8000/storage/` represents the file path.
+6. You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this API. After invoking the API, the file should be stored in your `Storage` folder. The API will return a URL for the uploaded file. Open this URL in a browser, and if everything is set up correctly, you should be able to view the uploaded file.
 
-7. After invoking the API to remove a file, attempting to access the file's URL will result in it not being displayed since it has been deleted.
+7. We have also included an API for removing uploaded files. To use this API, provide the file path as a parameter. The file path corresponds to the location of the file within your project. You can obtain this path from the URL of the uploaded file. In the URL, the portion following `http://127.0.0.1:8000/storage/` represents the file path.
+
+8. After invoking the API to remove a file, attempting to access the file's URL will result in it not being displayed since it has been deleted.
 
 This is one approach to uploading and deleting files in your Laravel project. There are many other methods available, some of which are explained in the provided resources.
 
