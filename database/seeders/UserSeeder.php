@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
         $verified_users = User::factory(10)->verified()->create();
 
         foreach ($verified_users as $user) {
-            $user_ids = User::inRandomOrder()->where('id', '!=', $user->id)->limit(4)->get()->pluck('id');
+            $user_ids = User::inRandomOrder()->where('id', '!=', $user->id)->limit(rand(0, 5))->get()->pluck('id');
             $user->followers()->sync($user_ids);
         }
     }

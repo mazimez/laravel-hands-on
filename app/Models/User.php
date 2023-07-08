@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -28,6 +30,29 @@ class User extends Authenticatable
     ];
 
     /**
+     * The "boot" method of the model.
+     */
+    //discussion going-on in this StackOverflow question: https://stackoverflow.com/questions/76598897/laravel-global-scope-using-global-scope-on-user-model-with-auth-in-it
+    // protected static function boot(): void
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('is_following', function ($query) {
+    //         $user = Auth::user();
+    //         if (!$user) {
+    //             return $query;
+    //         }
+    //         return $query->withExists(['followers as is_following' => function ($query) use ($user) {
+    //             return $query->where('user_follows.follower_id', $user->id);
+    //         }]);
+    //     });
+    // }
+
+    //APPENDS
+    protected $appends = [
+        'is_following'
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
@@ -46,6 +71,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'distance' => "string",
+        'is_following' => 'boolean'
     ];
 
     public function posts()
@@ -61,5 +87,27 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, UserFollows::class, 'follower_id', 'followed_id', 'id', 'id');
+    }
+
+    //SCOPES
+    // public function scopeAddIsFollowingBool($query)
+    // {
+    //     $user = Auth::user();
+    //     if (!$user) {
+    //         return $query;
+    //     }
+    //     return $query->withExists(['followers as is_following' => function ($query) use ($user) {
+    //         return $query->where('user_follows.follower_id', $user->id);
+    //     }]);
+    // }
+
+    //ATTRIBUTES
+    public function getIsFollowingAttribute()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+        return UserFollows::where('followed_id', $user->id)->where('follower_id', $this->id)->exists();
     }
 }

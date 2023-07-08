@@ -31,4 +31,6 @@ return [
     "user_following_returned" => "User following returned",
     "follow_toggle" => "Follow toggled",
     "can_not_follow_self" => "You can not follow yourself",
+    "post_blocked" => "This post is blocked",
+    "post_not_verified" => "This post is not verified",
 ];

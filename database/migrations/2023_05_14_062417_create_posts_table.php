@@ -20,6 +20,8 @@ return new class extends Migration
             $table->longText('title')->nullable();
             $table->longText('description')->nullable();
             $table->json('meta_data')->nullable();
+            $table->boolean('is_verified')->default(false)->nullable();
+            $table->boolean('is_blocked')->default(false)->nullable();
 
             $table->timestamps();
         });

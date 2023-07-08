@@ -34,10 +34,16 @@ class {{ class }} extends Model
     //    return $this->hasMany();
     //}
 
+    //SCOPES
+    public function scopeExample($query)
+    {
+        $query->where('columns_name', 'some_condition');
+    }
+
     //ATTRIBUTES
     //public function getExampleAttribute()
     //{
     //    return $data;
     //}
-    
+
 }
