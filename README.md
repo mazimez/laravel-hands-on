@@ -1,5 +1,3 @@
-Apologies for the misunderstanding. I'll make the necessary updates to the text while keeping the format intact. Here's the revised version:
-
 # Scope and Attributes
 
 In Laravel, scopes are a powerful feature that allows you to define reusable query constraints for your Eloquent models. An attribute refers to a specific property or field of an Eloquent model.
