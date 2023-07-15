@@ -1,60 +1,60 @@
-# Scope and Attributes
+# Policies
 
-In Laravel, scopes are a powerful feature that allows you to define reusable query constraints for your Eloquent models. An attribute refers to a specific property or field of an Eloquent model.
+In Laravel, policies serve as a mechanism to define user access rules, determining which data/resources they can view or modify. They also allow for the inclusion of logical components within the policies themselves.
 
 ## Description
 
-- In this section, we will utilize scopes and attributes to add Booleans and default filters for our posts and users.
-- We are also introducing a feature to verify posts, ensuring that all user-added posts undergo verification before becoming available to other users.
-- Additionally, we will implement a post blocking feature to prevent blocked posts from appearing anywhere, regardless of verification status.
+While it may seem feasible to handle all user access rules directly within controllers, the intended purpose of controllers is to manage the logical aspects of an application, not user access control. This is where policies come into play.
+
+In our example, each post must undergo verification before users can view it. Additionally, posts can be blocked, and once blocked, they should no longer be visible to any user. We will implement these rules using policies.
+
+Policies will be created for each resource, such as posts, post comments, and post likes. However, it's important to note that the post owner can still view their own post, regardless of whether it is verified or blocked.
+
+It is worth mentioning that these rules can be adjusted based on your specific requirements. This flexibility distinguishes rules from logic—rules are defined by us and do not adhere to a strict right or wrong, whereas logic can introduce errors and varying levels of correctness.
 
 ## Files
 
-The following files are updated/added in this branch:
+The following files have been updated/added in this branch:
 
-- [2023_05_14_062417_create_posts_table.php](database/migrations/2023_05_14_062417_create_posts_table.php): Update the migration file to include new columns like `is_verified` and `is_blocked`.
-- [PostFactory](database/factories/PostFactory.php): Update the factory file to generate posts with variations of verified/unverified and blocked/unblocked statuses.
-- [AppServiceProvider](app/Providers/AppServiceProvider.php): Update the service provider file to add route-model binding without applying the global scope.
-- [Post](app/Models/Post.php): Add global and local scopes to the post model.
-- [User](app/Models/UserFollows.php): Add an attribute to indicate whether the user is being followed (`is_following` field).
-- [PostController](app/Http/Controllers/Api/v1/PostController.php): Update the controller and utilize the scopes created in the model.
+- [PostPolicy.php](app/Policies/PostPolicy.php) and [UserFollowsPolicy](app/Policies/UserFollowsPolicy.php) along with other policies: These files contain the policy definitions for the corresponding rules.
+- [PostController](app/Http/Controllers/Api/v1/PostController.php) and [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php) and other controllers: The controllers have been updated to utilize the policies.
 
 ## Instructions
 
 Please follow these instructions to implement the changes and make use of the available resources:
 
-1. Start by adding two new fields, `is_verified` and `is_blocked`, to the `posts` table. These fields will indicate whether a post is verified and whether it is blocked. Make sure to update the seeders to include a mixture of verified/unverified and blocked/unblocked posts.
+1. Policies are generally created based on the corresponding resource (MODEL). To create a policy for the `Post` model, use the command `php artisan make:policy PostPolicy --model=Post`. Here, the `model=Post` parameter indicates that this policy is for the `Post` model. This command generates the [PostPolicy](app/Policies/PostPolicy.php) file, which contains boilerplate code specific to the `Post` model.
 
-2. Next, update the [Post](app/Models/Post.php) model by adding a global scope. In the `boot` method of the model, create a [global scope](https://laravel.com/docs/5.7/eloquent#global-scopes) directly. Alternatively, you can create a separate `Scope` and apply it here. The global scope, named `active`, should apply two WHERE conditions to fetch only the posts that are verified and not blocked.
+2. Each policy file contains various methods such as `viewAny`, `view`, `create`, `update`, etc. Each method corresponds to a different action/task performed on the model. For example, the `view` method is used when a user wants to see a particular post. Within this method, we define the rules that determine whether a user is allowed to view the specified post. More information about policy methods can be found in the [Laravel documentation](https://laravel.com/docs/10.x/authorization#policy-methods).
 
-3. After adding the global scope, retrieving the list of posts will only return the posts that are verified and not blocked. However, there may be cases where a user wants to see their own posts, regardless of verification or block status. To handle this, in the [PostController](app/Http/Controllers/Api/v1/PostController.php), check if the user is viewing their own posts in the `index` method. If so, apply the `withoutGlobalScope()` method to remove the 'active' global scope and display all posts belonging to that user.
+3. Each method in the policy file takes a `user` parameter, representing the logged-in user obtained from `AUTH`. Additionally, the `view` method takes another parameter, `post`, which represents the post the user wants to view. Within the method, we first check if the post is verified. If it is not, we then verify if the post belongs to the logged-in user. If it doesn't, we utilize the `deny` function, accompanied by an error message stating that the post is not verified and cannot be viewed. The same principle applies to the `blocked` rule. Finally, we return `true` to indicate that the user is allowed to view the post.
 
-4. To handle the display of a specific post's details in the `show` method, update the route model binding. Currently, when retrieving the `$post` variable in the `show()` method, the global scope is already applied. However, to exclude it, modify the [AppServiceProvider](app/Providers/AppServiceProvider.php) file. In the `boot` method, bind the `post` variable to the route and utilize `withoutGlobalScope`. This way, whenever the `post` variable is used in routes, the global scope will not be applied. In the `show` method, check if the user is viewing their own post. If it is their own post, allow them to view it even if it is not verified or blocked. Otherwise, display an error message with an explanation.
+4. To utilize this policy within a controller, in the [PostController](app/Http/Controllers/Api/v1/PostController.php), within the `show` method, we employ the `authorize` function. We specify the name of the policy method we wish to call, in this case, `view`. The second parameter is an array containing the model associated with the policy, in our case, [Post](app/Models/Post.php), along with the post that the user wants to view as the second element. This allows the policy to be invoked with the corresponding post.
 
-5. Another way to use scopes is by adding boolean attributes. In our case, we want to add a boolean attribute called `is_liked` to indicate if a post is liked by the logged-in user. To achieve this, add another global scope in the [Post](app/Models/Post.php) model. Use the [withExists](https://laravel.com/docs/10.x/eloquent-relationships#other-aggregate-functions) method to dynamically add an `is_liked` field, fetched via the `likers` relationship created in a previous branch. This global scope will add the `is_like` field to the post model for all the APIs that have been developed. This approach allows for the addition of such boolean attributes without the need to update every API separately.
+5. After calling the `authorize` function, if the policy denies the user, an exception will be thrown, and our [Handler](app/Exceptions/Handler.php) class will display the associated message defined within the policy. This approach enables the separation of rules from logic. We will also use the `update` method to enforce the rule that a post can only be edited by the user who created it.
 
-6. Let's revisit local scopes in the [Post](app/Models/Post.php) model. Here, we will add the `scopeMostLikedFirst` scope, which sorts the posts in descending order based on the number of likes. Since it's a local scope, it won't be applied automatically. To use it, apply the `mostLikedFirst()` method in the [PostController](app/Http/Controllers/Api/v1/PostController.php). This will return the most liked posts first. You can create additional scopes such as sorting posts based on the number of comments or retrieving all unverified or blocked posts. Feel free to customize the scopes as needed to suit your project's requirements.
+6. Now, we will create another policy, [PostFilePolicy](app/Policies/PostFilePolicy.php). This policy is intended for the [PostFile](app/Models/PostFile.php) model and focuses on the `delete` method. Within the `delete` method, we receive the `user` as the first parameter and the `postFile` to be deleted as the second parameter. An additional parameter, `post`, representing the post to which the `postFile` belongs, is also included. In this method, we first check if the `user` is the owner of the post. If so, we then verify if the `postFile` belongs to the specified `post`. Finally, we return `true`, or alternatively, use `deny` to display a message when the conditions are not met.
 
-7. It's important to understand when to use global scopes versus local scopes. While the rules may vary based on requirements, as a general guideline, global scopes should be used when the scope is required extensively throughout the project. However, keep in mind that excessive global scopes can result in increased query complexity and slower data retrieval. Hence, for scopes that are only needed in specific contexts, local scopes are more suitable as they can be selectively applied.
+7. To utilize the new policy, in the [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php), within the `destroy` method, we utilize the `authorize` method. This time, we pass both the `postFile` and `post` in the array so that they can be used in the policy. This allows for passing additional data to the policy, if required.
 
-8. Moving on to attributes, they can be used to enhance the [User](app/Models/User.php) model. We've added a boolean attribute named `is_following`, which indicates whether the logged-in user is being followed by other users. To implement this attribute, add the `getIsFollowingAttribute()` method to the model. Inside this method, check the [UserFollows](app/Models/UserFollows.php) model to determine if the logged-in user is being followed by the specified user. To include this attribute in the user model, add it to the `$appends` variable. Once added, all APIs that expose the `User` model will include a new field called `is_following`, which returns `true` if the logged-in user is following the user and `false` otherwise.
+8. Within a policy, it is also possible to create custom methods in addition to the default ones. For example, a new policy, [UserFollowsPolicy](app/Policies/UserFollowsPolicy.php), can be created. In this policy, a `toggle` method is defined, which takes the `user` (obtained from AUTH) as the first parameter and the `user_to_follow` (the user that the logged-in user wants to follow) as the second parameter. In this method, we check whether the IDs of both users are the same, thereby prohibiting a user from following themselves.
 
-9. You may be wondering why global scopes weren't used for attributes. Attempting to use global scopes for this purpose resulted in an infinite loop. As a workaround, we used attributes. A [Stack Overflow question](https://stackoverflow.com/questions/76598897/laravel-global-scope-using-global-scope-on-user-model-with-auth-in-it) has been created to address this issue. If a resolution is found, it will be updated in future branches.
+9. To use the `toggle` method, navigate to the [UserFollowController](app/Http/Controllers/Api/v1/UserFollowController.php), specifically within the `toggle` method. We use the `authorize` method, specifying the custom method we created in the policy (`toggle`) as the first parameter. In the array, we pass the user to be followed. It's important to note that we only pass a single `user` variable, even though the `toggle` method in the policy expects two users. This is because the first user is fetched from `AUTH` and does not need to be explicitly passed. This illustrates how custom methods can be created within policies and used according to your needs.
 
-10. Attributes can also be used to format data within your models. For example, you can format dates to a specific format or combine fields like `first_name` and `last_name`. Additionally, attributes support data casting, allowing you to transform values such as `1/0` into `true/false` or cast numeric strings into actual numbers. For more examples and details, refer to the [Reference](Reference) section.
+10. Additional examples of policies can be found in the [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php). You can explore these examples and consider applying more policies to other controllers within your project as a "Do-It-Yourself" task.
 
-so that how you can use `Scopes` and `Attributes` to manipulate the data in you project, you can get creative with it and can implement many intreating features too. but keep in mind that each new `Scope` or `Attribute` is like 1 extra task Laravel needs to do while fetching your data, and having lots of `Scopes` and `Attributes` can really slow down the system, so use it wisely.
+By employing policies, we can apply our user rules to the project. Separating rules from logic allows for easier rule updates without interfering with the overall logic. In our case, if any other rules for posts are added,
 
-you may have noticed that we added some codes just for access-control or checking is user has access to that post or not, and this can be handled more affectively with the help of `policy` and `middleware`. we will discuss about it in our next branch.
+ we only need to update the policies while keeping the controllers intact.
 
-Feel free to explore more about `Scope` and `Attributes` and other topics related to it
+There are various other ways to apply rules, such as using the `authorize` method provided in requests for each API. However, utilizing policies provides a clearer overview of all rules and their management. You have the freedom to choose among the available options.
 
 ## Note
 
-To simplify API calls, you can utilize the provided [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
+Other approaches to applying rules include utilizing middleware or directly using the `Gate` functionality. You can find more details in the [Laravel documentation](https://laravel.com/docs/10.x/authorization#intercepting-gate-checks).
 
 ## Reference
-1. [Laravel doc for scopes](https://laravel.com/docs/5.7/eloquent#query-scopes)
-2. [Laravel doc for serialization](https://laravel.com/docs/5.7/eloquent-serialization#introduction)
-3. [Local vs Global scopes](https://elishaukpongson.medium.com/laravel-scope-an-introduction-87ec5acc39e#:~:text=Difference%20between%20local%20and%20global,all%20queries%20on%20that%20model.)
-4. [What Is Eloquent Serialization?](https://www.youtube.com/watch?v=kJL-kq-LCAA)
+
+1. [Laravel Documentation for Policies](https://laravel.com/docs/10.x/authorization#creating-policies)
+2. [Policy and Gates](https://code.tutsplus.com/gates-and-policies-in-laravel--cms-29780t)
+3. [Laravel Roles and Permissions](https://laravel-news.com/laravel-gates-policies-guards-explained)

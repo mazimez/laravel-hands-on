@@ -125,23 +125,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $auth_user = Auth::user();
-        if ($post->is_blocked) {
-            if (!($auth_user && $post->user_id == $auth_user->id)) {
-                return response()->json([
-                    'message' => __('messages.post_blocked'),
-                    'status' => '0'
-                ]);
-            }
-        }
-        if (!$post->is_verified) {
-            if (!($auth_user && $post->user_id == $auth_user->id)) {
-                return response()->json([
-                    'message' => __('messages.post_not_verified'),
-                    'status' => '0'
-                ]);
-            }
-        }
+        $this->authorize('view', [Post::class, $post]);
         return response()->json([
             'data' => $post->loadMissing(['user', 'files']),
             'message' => __('messages.post_detail_returned'),
@@ -158,6 +142,7 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
+        $this->authorize('update', [Post::class, $post]);
         if ($request->has('title')) {
             $post->title = $request->title;
         }
@@ -212,6 +197,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', [Post::class, $post]);
         $post->delete();
         return response()->json([
             'message' => __('messages.post_deleted'),

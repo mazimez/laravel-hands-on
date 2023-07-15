@@ -65,12 +65,7 @@ class UserFollowController extends Controller
     public function toggle(User $user)
     {
         $auth_user = Auth::user();
-        if ($auth_user->id == $user->id) {
-            return response()->json([
-                'message' => __('messages.can_not_follow_self'),
-                'status' => '0'
-            ]);
-        }
+        $this->authorize('toggle', [UserFollows::class, $user]);
         $user->followers()->toggle([$auth_user->id]);
         return response()->json([
             'message' => __('messages.follow_toggle'),

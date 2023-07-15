@@ -1,6 +1,16 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are custom lines used for specific messages
+    | in the application. You are free to modify them according to your needs.
+    |
+    */
+
     'test' => 'this is in english',
     'can_not_remove_this' => 'Cannot remove this resource permanently',
     "model_not_exists" => "No item exists with the specified identification",
@@ -33,4 +43,14 @@ return [
     "can_not_follow_self" => "You can not follow yourself",
     "post_blocked" => "This post is blocked",
     "post_not_verified" => "This post is not verified",
+    "not_your_post" => "This post does not belongs to you",
+    "file_does_not_belong_to_post" => "This file does not belongs to this post",
+    "comment_does_not_belong_to_post" => "This comment doesn't belong to this post",
+    "not_your_comment" => "This comment doesn't belong to you",
+    "post_comment_updated" => "Post Comment updated successfully",
+    "comment_deleted" => "Post Comment deleted successfully",
+    "post_blocked_can_not_see_comments" => "This post is blocked, you can not see the comments of it",
+    "post_not_verified_can_not_see_comments" => "This post is not verified, you can not see the comments of it",
+    "post_blocked_can_not_add_comments" => "This post is blocked, you can not add the comments on it",
+    "post_not_verified_can_not_add_comments" => "This post is not verified, you can not add the comments on it",
 ];

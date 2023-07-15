@@ -62,6 +62,7 @@ class PostFileController extends Controller
      */
     public function destroy(Post $post, PostFile $file)
     {
+        $this->authorize('delete', [PostFile::class, $file, $post]);
         $file->delete();
         return response()->json([
             'message' => __('messages.post_file_deleted'),
