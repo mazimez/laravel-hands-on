@@ -16,8 +16,15 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
+            'type' => User::USER,
             'name' => 'Default User',
-            'email' => 'test@gamil.com',
+            'email' => 'test@gmail.com',
+            'password' => bcrypt('password')
+        ]);
+        User::create([
+            'type' => User::ADMIN,
+            'name' => 'Admin User',
+            'email' => 'admin@gmail.com',
             'password' => bcrypt('password')
         ]);
         $unverified_users = User::factory(10)->unverified()->create();

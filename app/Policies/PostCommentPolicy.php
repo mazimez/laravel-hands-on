@@ -20,6 +20,9 @@ class PostCommentPolicy
      */
     public function viewAny(User $user, Post $post)
     {
+        if ($user->type == User::ADMIN) {
+            return true;
+        }
         if ($post->is_blocked) {
             return $this->deny(__('messages.post_blocked_can_not_see_comments'));
         }
@@ -94,6 +97,9 @@ class PostCommentPolicy
      */
     public function delete(User $user, PostComment $postComment, Post $post)
     {
+        if ($user->type == User::ADMIN) {
+            return true;
+        }
         if ($post->is_blocked) {
             return $this->deny(__('messages.post_blocked_can_not_add_comments'));
         }

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\v1\PostIndexRequest;
 use App\Http\Requests\Api\v1\PostUpdateRequest;
 use App\Models\Post;
 use App\Models\PostFile;
+use App\Models\User;
 use App\Traits\FileManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -24,7 +25,19 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request)
     {
-        $data = Post::with(['user', 'file'])->withCount(['likers', 'comments']);
+        $user = Auth::user();
+        if ($user && $user->type == User::ADMIN) {
+            $data = Post::withoutGlobalScope('active')->with(['user', 'file'])->withCount(['likers', 'comments']);
+        } else {
+            $data = Post::with(['user', 'file'])->withCount(['likers', 'comments']);
+        }
+
+        if ($request->has('is_blocked')) {
+            $data = $data->where('is_blocked', $request->is_blocked);
+        }
+        if ($request->has('is_verified')) {
+            $data = $data->where('is_verified', $request->is_verified);
+        }
 
         if ($request->has('user_id')) {
             if (Auth::id() == $request->user_id) {
@@ -128,6 +141,40 @@ class PostController extends Controller
         $this->authorize('view', [Post::class, $post]);
         return response()->json([
             'data' => $post->loadMissing(['user', 'files']),
+            'message' => __('messages.post_detail_returned'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * block-toggle the given post
+     *
+     * @param  Post $post
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function blockToggle(Post $post)
+    {
+        $post->is_blocked = !$post->is_blocked;
+        $post->save();
+        return response()->json([
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
+            'message' => __('messages.post_detail_returned'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * verify-toggle the given post
+     *
+     * @param  Post $post
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyToggle(Post $post)
+    {
+        $post->is_verified = !$post->is_verified;
+        $post->save();
+        return response()->json([
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
             'message' => __('messages.post_detail_returned'),
             'status' => '1'
         ]);

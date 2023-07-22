@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,6 +20,7 @@ class UserFactory extends Factory
     {
         $location = fake()->randomElement(config('default_locations'));
         return [
+            'type' => User::USER,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => fake()->numerify('##########'),

@@ -35,10 +35,10 @@ class {{ class }} extends Model
     //}
 
     //SCOPES
-    public function scopeExample($query)
-    {
-        $query->where('columns_name', 'some_condition');
-    }
+    //public function scopeExample($query)
+    //{
+    //    $query->where('columns_name', 'some_condition');
+    //}
 
     //ATTRIBUTES
     //public function getExampleAttribute()

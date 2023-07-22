@@ -1,60 +1,54 @@
-# Policies
+# Middleware
 
-In Laravel, policies serve as a mechanism to define user access rules, determining which data/resources they can view or modify. They also allow for the inclusion of logical components within the policies themselves.
+Middleware in Laravel allows you to add common rules and logic to groups of routes (APIs). Laravel provides basic useful middleware for authentication, and you can also use it for localization, as discussed in our [localization](https://github.com/mazimez/laravel-hands-on/tree/localization) branch.
 
 ## Description
 
-While it may seem feasible to handle all user access rules directly within controllers, the intended purpose of controllers is to manage the logical aspects of an application, not user access control. This is where policies come into play.
+In this example, we will use middleware to apply generic rules to all of our APIs.
 
-In our example, each post must undergo verification before users can view it. Additionally, posts can be blocked, and once blocked, they should no longer be visible to any user. We will implement these rules using policies.
+Each user will be assigned a `type`, which can be either `user` or `admin`. The `user` type represents end users who utilize the system, while the `admin` type supervises user-added posts, verifying or blocking them.
 
-Policies will be created for each resource, such as posts, post comments, and post likes. However, it's important to note that the post owner can still view their own post, regardless of whether it is verified or blocked.
+An `admin` user is restricted from adding, updating, liking, or commenting on any posts. However, `admin` users can view all posts, comments, followers, and followings of any user. Additionally, they have the ability to verify, block, and delete any post.
 
-It is worth mentioning that these rules can be adjusted based on your specific requirements. This flexibility distinguishes rules from logic—rules are defined by us and do not adhere to a strict right or wrong, whereas logic can introduce errors and varying levels of correctness.
+We will use middleware to enforce most of these rules, and in some cases, we'll utilize `policy` as well.
 
 ## Files
 
 The following files have been updated/added in this branch:
 
-- [PostPolicy.php](app/Policies/PostPolicy.php) and [UserFollowsPolicy](app/Policies/UserFollowsPolicy.php) along with other policies: These files contain the policy definitions for the corresponding rules.
-- [PostController](app/Http/Controllers/Api/v1/PostController.php) and [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php) and other controllers: The controllers have been updated to utilize the policies.
+- [OnlyAdminAllowed.php](app/Http/Middleware/OnlyAdminAllowed.php) and [OnlyUserAllowed](app/Http/Middleware/OnlyUserAllowed.php): New middleware to restrict users based on their type.
+- [2014_10_12_000000_create_users_table](database/migrations/2014_10_12_000000_create_users_table.php): Added a new column `type` to the `users` table.
+- [UserFactory](database/factories/UserFactory.php) and [UserSeeder](database/seeders/UserSeeder.php): Updated factory and seeder to include dummy data for the new `type` column.
+- [PostController](app/Http/Controllers/Api/v1/PostController.php) and [PostIndexRequest](app/Http/Requests/Api/v1/PostIndexRequest.php): Added filters to allow only `ADMIN` users to see all posts.
+- [PostPolicy](app/Policies/PostPolicy.php), [PostFilePolicy](app/Policies/PostFilePolicy.php), [PostCommentPolicy](app/Policies/PostCommentPolicy.php): Updated policies to enable admin users to delete any resource.
 
 ## Instructions
 
 Please follow these instructions to implement the changes and make use of the available resources:
 
-1. Policies are generally created based on the corresponding resource (MODEL). To create a policy for the `Post` model, use the command `php artisan make:policy PostPolicy --model=Post`. Here, the `model=Post` parameter indicates that this policy is for the `Post` model. This command generates the [PostPolicy](app/Policies/PostPolicy.php) file, which contains boilerplate code specific to the `Post` model.
+1. Update the migration to add a new field `type` in the `users` table with two possible values: `ADMIN` and `USER`. Define these values as constants in the [User](app/Models/User.php) model. This way, if you decide to change this value in the future, you won't need to modify it everywhere. Also, update the seeders and factories to include the new `type` value, and add one user with the `admin` type by default.
 
-2. Each policy file contains various methods such as `viewAny`, `view`, `create`, `update`, etc. Each method corresponds to a different action/task performed on the model. For example, the `view` method is used when a user wants to see a particular post. Within this method, we define the rules that determine whether a user is allowed to view the specified post. More information about policy methods can be found in the [Laravel documentation](https://laravel.com/docs/10.x/authorization#policy-methods).
+2. Create a new middleware using the command `php artisan make:middleware OnlyAdminAllowed`. This will create the [OnlyAdminAllowed](app/Http/Middleware/OnlyAdminAllowed.php) class, where you can add your rule/logic. Here, first check if the user is logged in with `AUTH`. If not, return an error with a `401` status. If the user is logged in, verify if their type is `ADMIN`. If not, return an error indicating that only admins can access this route. If the user is an admin, proceed with `$next($request)` to grant access.
 
-3. Each method in the policy file takes a `user` parameter, representing the logged-in user obtained from `AUTH`. Additionally, the `view` method takes another parameter, `post`, which represents the post the user wants to view. Within the method, we first check if the post is verified. If it is not, we then verify if the post belongs to the logged-in user. If it doesn't, we utilize the `deny` function, accompanied by an error message stating that the post is not verified and cannot be viewed. The same principle applies to the `blocked` rule. Finally, we return `true` to indicate that the user is allowed to view the post.
+3. Register this middleware in [Kernel](app/Http/Kernel.php) under `$routeMiddleware`. Use the key `only_admin_allowed` to reference it in your routes.
 
-4. To utilize this policy within a controller, in the [PostController](app/Http/Controllers/Api/v1/PostController.php), within the `show` method, we employ the `authorize` function. We specify the name of the policy method we wish to call, in this case, `view`. The second parameter is an array containing the model associated with the policy, in our case, [Post](app/Models/Post.php), along with the post that the user wants to view as the second element. This allows the policy to be invoked with the corresponding post.
+4. In the [v1](routes/api/v1.php) route file, use this middleware with `Route::group` to encompass all routes intended for admin use. For example, place the `user's list` route within this middleware since we don't want regular users to see all the users. Additionally, create two more routes for admin to verify and block posts, and include these routes in the same middleware. Now, if you attempt to call these APIs while logged in as a regular user, it will result in an error. Only admins will have access.
 
-5. After calling the `authorize` function, if the policy denies the user, an exception will be thrown, and our [Handler](app/Exceptions/Handler.php) class will display the associated message defined within the policy. This approach enables the separation of rules from logic. We will also use the `update` method to enforce the rule that a post can only be edited by the user who created it.
+5. Create another middleware, `OnlyUserAllowed`, with similar functionality, but this time for `USER` type. Include routes like `post-create-update`, `comment-create-update`, and `follow-user` under this middleware. Now, when logged in as an admin, you won't be able to create posts or comments, but you can still view all posts and comments since they are outside the middleware's scope.
 
-6. Now, we will create another policy, [PostFilePolicy](app/Policies/PostFilePolicy.php). This policy is intended for the [PostFile](app/Models/PostFile.php) model and focuses on the `delete` method. Within the `delete` method, we receive the `user` as the first parameter and the `postFile` to be deleted as the second parameter. An additional parameter, `post`, representing the post to which the `postFile` belongs, is also included. In this method, we first check if the `user` is the owner of the post. If so, we then verify if the `postFile` belongs to the specified `post`. Finally, we return `true`, or alternatively, use `deny` to display a message when the conditions are not met.
+6. When admin users view the list of posts, they should be able to see all posts, including those that are `verified` or `blocked`. To achieve this, modify the [PostController](app/Http/Controllers/Api/v1/PostController.php) by removing the scope that filters out `verified` and `non-blocked` posts when the user is of type `ADMIN`. This way, admins can see all posts and decide which ones to block or verify.
 
-7. To utilize the new policy, in the [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php), within the `destroy` method, we utilize the `authorize` method. This time, we pass both the `postFile` and `post` in the array so that they can be used in the policy. This allows for passing additional data to the policy, if required.
+7. Implement filters on the `posts` list to allow admins to view only `blocked` or `non-blocked` posts, as well as verified or non-verified posts. To ensure that these filters are available only to `ADMIN` users, use the `authorize` method in the [PostIndexRequest](app/Http/Requests/Api/v1/PostIndexRequest.php). Check if the parameters `is_blocked` or `is_verified` are present in the request, and if they are, ensure that the user is an `ADMIN`. If not, throw an exception with a message indicating that only `ADMIN` users can use these filters. The exception will be handled by the [Handler](app/Exceptions/Handler.php) we created in the [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling) branch. This approach restricts specific parameters to certain types of users in any `Request`.
 
-8. Within a policy, it is also possible to create custom methods in addition to the default ones. For example, a new policy, [UserFollowsPolicy](app/Policies/UserFollowsPolicy.php), can be created. In this policy, a `toggle` method is defined, which takes the `user` (obtained from AUTH) as the first parameter and the `user_to_follow` (the user that the logged-in user wants to follow) as the second parameter. In this method, we check whether the IDs of both users are the same, thereby prohibiting a user from following themselves.
+8. Now, the new filter will only be available for `ADMIN` users and not for regular `USER` types. Additionally, update the `Policies` files to allow `ADMIN` users to delete any resources, such as `posts`, `comments`, etc.
 
-9. To use the `toggle` method, navigate to the [UserFollowController](app/Http/Controllers/Api/v1/UserFollowController.php), specifically within the `toggle` method. We use the `authorize` method, specifying the custom method we created in the policy (`toggle`) as the first parameter. In the array, we pass the user to be followed. It's important to note that we only pass a single `user` variable, even though the `toggle` method in the policy expects two users. This is because the first user is fetched from `AUTH` and does not need to be explicitly passed. This illustrates how custom methods can be created within policies and used according to your needs.
+so that's how you can use middleware to add your common `rules/logic`. you can see that we don't need to update our controllers much, all of this `access-control` is handled by `middleware`, `policy` and `request`. this is a good way to separate our `LOGIC` from `RULE`.
 
-10. Additional examples of policies can be found in the [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php). You can explore these examples and consider applying more policies to other controllers within your project as a "Do-It-Yourself" task.
+try to follow this approach in all of you projects, this will make it easy to update your `rules` without effecting your `logics`.
 
-By employing policies, we can apply our user rules to the project. Separating rules from logic allows for easier rule updates without interfering with the overall logic. In our case, if any other rules for posts are added,
-
- we only need to update the policies while keeping the controllers intact.
-
-There are various other ways to apply rules, such as using the `authorize` method provided in requests for each API. However, utilizing policies provides a clearer overview of all rules and their management. You have the freedom to choose among the available options.
-
-## Note
-
-Other approaches to applying rules include utilizing middleware or directly using the `Gate` functionality. You can find more details in the [Laravel documentation](https://laravel.com/docs/10.x/authorization#intercepting-gate-checks).
 
 ## Reference
 
-1. [Laravel Documentation for Policies](https://laravel.com/docs/10.x/authorization#creating-policies)
-2. [Policy and Gates](https://code.tutsplus.com/gates-and-policies-in-laravel--cms-29780t)
-3. [Laravel Roles and Permissions](https://laravel-news.com/laravel-gates-policies-guards-explained)
+1. [Laravel Documentation for Middleware](https://laravel.com/docs/10.x/middleware)
+2. [Some Examples of Middleware](https://www.tutorialspoint.com/laravel/laravel_middleware.htm)
+3. [W3Schools Documentation](https://www.w3schools.in/laravel/middleware)

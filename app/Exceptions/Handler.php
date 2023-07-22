@@ -98,7 +98,7 @@ class Handler extends ExceptionHandler
 
 
             if (config('app.debug')) {
-                return parent::render($request, $exception);
+                return $this->errorResponse($exception->getMessage(), 500);
             }
 
             return $this->errorResponse($exception->getMessage(), 500);
@@ -122,7 +122,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticatedResponse($request, AuthenticationException $exception)
     {
         return response()->json([
-            'message' => 'Unauthenticated.',
+            'message' => __('messages.unauthenticated'),
             'status' => '401',
         ], 401);
     }

@@ -30,6 +30,9 @@ class PostPolicy
      */
     public function view(User $user, Post $post)
     {
+        if ($user->type == User::ADMIN) {
+            return true;
+        }
         if ($post->is_blocked) {
             if (!($user && $post->user_id == $user->id)) {
                 return $this->deny(__('messages.post_blocked'));
@@ -78,6 +81,9 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
+        if ($user->type == User::ADMIN) {
+            return true;
+        }
         if ($post->user_id != $user->id) {
             return $this->deny(__('messages.not_your_post'));
         }

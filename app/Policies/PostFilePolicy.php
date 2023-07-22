@@ -66,6 +66,9 @@ class PostFilePolicy
      */
     public function delete(User $user, PostFile $postFile, Post $post)
     {
+        if ($user->type == User::ADMIN) {
+            return true;
+        }
         if ($user->id != $post->user_id) {
             return $this->deny(__('messages.not_your_post'));
         }
