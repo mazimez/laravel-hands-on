@@ -27,6 +27,8 @@ To implement Localization in your project, follow these steps:
 
 To test the implementation, you can use tools like Postman to make API calls, where you have the option to provide custom headers. Pass a header key-value pair (e.g., `X-App-Locale`) to specify the desired language, and the project will dynamically change the language based on its value.
 
+more detailed info about middleware is given in [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) branch. you can also look into it.
+
 ## Resources
 
 -   [Laravel Documentation](https://laravel.com/docs/10.x/localization)
