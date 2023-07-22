@@ -43,4 +43,5 @@ you can directly go to any branch for the topic that you want to understand, and
 15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)
 16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)
 17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)
+18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
 
