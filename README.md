@@ -44,4 +44,5 @@ you can directly go to any branch for the topic that you want to understand, and
 16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)
 17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)
 18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
+19. [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1)
 
