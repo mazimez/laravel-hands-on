@@ -1,4 +1,4 @@
-# Polymorphic Relationship Implementation Guide (Part 1)
+# Polymorphic Relationship(Part 1)
 
 The concept of a polymorphic relationship allows for a single association between two entities to be connected to multiple other entities, regardless of their types. In simpler terms, it provides an elegant way to establish connections between one primary table (resource) and multiple secondary tables (resources) while utilizing only one additional table to maintain this relationship.
 
