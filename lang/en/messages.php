@@ -57,4 +57,6 @@ return [
     "only_admin_allowed" => "Only admins are allowed",
     "only_user_allowed" => "Only users are allowed",
     "only_admin_can_use_this_filter" => "Only admin can use these filters",
+    "post_comments_likers_returned" => "Post Comment likers returned successfully",
+    "post_comment_like_toggle" => "Post comment like toggle",
 ];

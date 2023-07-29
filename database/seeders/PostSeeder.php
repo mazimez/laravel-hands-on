@@ -20,9 +20,12 @@ class PostSeeder extends Seeder
         $posts = Post::factory(30)->create();
         foreach ($posts as $post) {
             PostFile::factory(2)->for($post)->create();
-            PostComment::factory(15)->for($post)->create();
+            $comments = PostComment::factory(15)->for($post)->create();
             $user_ids = User::inRandomOrder()->limit(rand(0, 5))->get()->pluck('id');
             $post->likers()->sync($user_ids);
+            foreach ($comments as $comment) {
+                $comment->likers()->sync($user_ids);
+            }
         }
     }
 }

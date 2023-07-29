@@ -1,54 +1,51 @@
-# Middleware
+# Polymorphic Relationship Implementation Guide (Part 1)
 
-Middleware in Laravel allows you to add common rules and logic to groups of routes (APIs). Laravel provides basic useful middleware for authentication, and you can also use it for localization, as discussed in our [localization](https://github.com/mazimez/laravel-hands-on/tree/localization) branch.
+The concept of a polymorphic relationship allows for a single association between two entities to be connected to multiple other entities, regardless of their types. In simpler terms, it provides an elegant way to establish connections between one primary table (resource) and multiple secondary tables (resources) while utilizing only one additional table to maintain this relationship.
 
 ## Description
+This guide aims to demonstrate the implementation of a polymorphic relationship in the context of adding a new feature for "post comments." Currently, "posts" can be "LIKED/UNLIKED" by "users," and the goal is to extend this functionality to the comments on these "posts" as well. Traditionally, one might consider creating a separate table, such as `comment_likes`, to handle the likes for comments, but this approach can lead to an excessive number of tables.
 
-In this example, we will use middleware to apply generic rules to all of our APIs.
+To maintain a streamlined database structure and optimize efficiency, we will leverage Laravel's polymorphic relationships. By doing so, we can store the "like" information for different tables, such as `posts` and `post_comments`, without the need to create dedicated tables for each of them.
 
-Each user will be assigned a `type`, which can be either `user` or `admin`. The `user` type represents end users who utilize the system, while the `admin` type supervises user-added posts, verifying or blocking them.
-
-An `admin` user is restricted from adding, updating, liking, or commenting on any posts. However, `admin` users can view all posts, comments, followers, and followings of any user. Additionally, they have the ability to verify, block, and delete any post.
-
-We will use middleware to enforce most of these rules, and in some cases, we'll utilize `policy` as well.
+In this guide, we will address the implementation in two parts. Part 1 will cover the initial setup and configuration of the polymorphic relationship.
 
 ## Files
 
 The following files have been updated/added in this branch:
 
-- [OnlyAdminAllowed.php](app/Http/Middleware/OnlyAdminAllowed.php) and [OnlyUserAllowed](app/Http/Middleware/OnlyUserAllowed.php): New middleware to restrict users based on their type.
-- [2014_10_12_000000_create_users_table](database/migrations/2014_10_12_000000_create_users_table.php): Added a new column `type` to the `users` table.
-- [UserFactory](database/factories/UserFactory.php) and [UserSeeder](database/seeders/UserSeeder.php): Updated factory and seeder to include dummy data for the new `type` column.
-- [PostController](app/Http/Controllers/Api/v1/PostController.php) and [PostIndexRequest](app/Http/Requests/Api/v1/PostIndexRequest.php): Added filters to allow only `ADMIN` users to see all posts.
-- [PostPolicy](app/Policies/PostPolicy.php), [PostFilePolicy](app/Policies/PostFilePolicy.php), [PostCommentPolicy](app/Policies/PostCommentPolicy.php): Updated policies to enable admin users to delete any resource.
+- [2023_07_27_190943_create_likables_table](database/migrations/2023_07_27_190943_create_likables_table.php): This migration adds the new table `likables` to facilitate the polymorphic relationship.
+- [Post](app/Models/Post.php) and [PostComment](app/Models/PostComment.php): These models have been updated to utilize the polymorphic relationships.
+- [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php): The controller has been modified, and new methods have been added to handle likes on comments.
+- [v1](routes/api/v1.php): New routes have been added to support likes on comments.
+- [PostSeeder](database/seeders/PostSeeder.php): The seeder has been updated to add sample likes to each comment.
 
 ## Instructions
 
-Please follow these instructions to implement the changes and make use of the available resources:
+Please follow these step-by-step instructions to implement the changes and make use of the available resources:
 
-1. Update the migration to add a new field `type` in the `users` table with two possible values: `ADMIN` and `USER`. Define these values as constants in the [User](app/Models/User.php) model. This way, if you decide to change this value in the future, you won't need to modify it everywhere. Also, update the seeders and factories to include the new `type` value, and add one user with the `admin` type by default.
+1. **Migration Setup**: Begin by creating a migration for the table `likables`, which will serve as the central storage for the like information. In this migration, include a `user_id` column for the user table, and utilize the `morphs` method with the `likable` parameter. This method automatically adds two columns, `likable_type` and `likable_id`, with `likable` as the prefix. These columns will be used to store the IDs and types of different tables.
 
-2. Create a new middleware using the command `php artisan make:middleware OnlyAdminAllowed`. This will create the [OnlyAdminAllowed](app/Http/Middleware/OnlyAdminAllowed.php) class, where you can add your rule/logic. Here, first check if the user is logged in with `AUTH`. If not, return an error with a `401` status. If the user is logged in, verify if their type is `ADMIN`. If not, return an error indicating that only admins can access this route. If the user is an admin, proceed with `$next($request)` to grant access.
+2. **Models Configuration**: Update the [Post](app/Models/Post.php) model by commenting out the existing `likers` relationship and creating a new `likers` relationship. This new relationship should be of type `morphToMany` and should use the `likables` table. While column names for the `likables` table can be explicitly provided, Laravel can handle this automatically. For more details, refer to the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many-polymorphic-relations).
 
-3. Register this middleware in [Kernel](app/Http/Kernel.php) under `$routeMiddleware`. Use the key `only_admin_allowed` to reference it in your routes.
+3. **Testing Like Functionality**: After updating the `likers` relationship, test the `post-like-toggle` API. Upon calling this API, check the `likers` table to verify that a new entry has been added with `App\Models\Post` in the `likable_type` column and the respective post's ID in the `likable_id` column. Laravel utilizes the namespace and model name as the type identifier.
 
-4. In the [v1](routes/api/v1.php) route file, use this middleware with `Route::group` to encompass all routes intended for admin use. For example, place the `user's list` route within this middleware since we don't want regular users to see all the users. Additionally, create two more routes for admin to verify and block posts, and include these routes in the same middleware. Now, if you attempt to call these APIs while logged in as a regular user, it will result in an error. Only admins will have access.
+4. **Implementing Like for PostComment**: Extend the implementation to include `PostComment` by updating the [PostComment](app/Models/PostComment.php) model. Add the same `likers` relationship used for the `Post` model. Additionally, include a global scope in the `PostComment` model to display the `is_liked` field, indicating whether a comment is liked. This setup now enables the `PostComment` model to support the like feature.
 
-5. Create another middleware, `OnlyUserAllowed`, with similar functionality, but this time for `USER` type. Include routes like `post-create-update`, `comment-create-update`, and `follow-user` under this middleware. Now, when logged in as an admin, you won't be able to create posts or comments, but you can still view all posts and comments since they are outside the middleware's scope.
+5. **Creating APIs**: Introduce two new routes in [v1](routes/api/v1.php) to handle the `PostComment-like-toggle` API and to list the users who liked a specific `PostComment`. Ensure that the `only_user_allowed` middleware is utilized for the toggle API to restrict access to administrators.
 
-6. When admin users view the list of posts, they should be able to see all posts, including those that are `verified` or `blocked`. To achieve this, modify the [PostController](app/Http/Controllers/Api/v1/PostController.php) by removing the scope that filters out `verified` and `non-blocked` posts when the user is of type `ADMIN`. This way, admins can see all posts and decide which ones to block or verify.
+6. **Controller Methods**: Implement the two new API methods in [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php). These methods will closely resemble those used in [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php). Utilize the `likers` relationship and the `toggle` method to achieve the desired functionality. Additionally, use the `likers` relationship to display the count of likes for each comment in the `index` method.
 
-7. Implement filters on the `posts` list to allow admins to view only `blocked` or `non-blocked` posts, as well as verified or non-verified posts. To ensure that these filters are available only to `ADMIN` users, use the `authorize` method in the [PostIndexRequest](app/Http/Requests/Api/v1/PostIndexRequest.php). Check if the parameters `is_blocked` or `is_verified` are present in the request, and if they are, ensure that the user is an `ADMIN`. If not, throw an exception with a message indicating that only `ADMIN` users can use these filters. The exception will be handled by the [Handler](app/Exceptions/Handler.php) we created in the [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling) branch. This approach restricts specific parameters to certain types of users in any `Request`.
+7. **Validation of Polymorphic Relationship**: Once the new APIs are ready, call the `postComment-like-toggle` API. Upon examination of the `likables` table, you will notice a new entry with `App\Models\PostComment` in the `likable_type` column and the corresponding comment's ID in the `likable_id` column. Consequently, the `likables` table becomes the sole repository for storing information about likes for both `posts` and `post_comments`. If the need arises to add the like feature to other models, the `likables` table can be effectively utilized, minimizing the need for additional tables.
 
-8. Now, the new filter will only be available for `ADMIN` users and not for regular `USER` types. Additionally, update the `Policies` files to allow `ADMIN` users to delete any resources, such as `posts`, `comments`, etc.
+8. **Updating PostSeeder**: Finally, update [PostSeeder](database/seeders/PostSeeder.php) to include sample likes for each `PostComment`. This step ensures that the database is seeded with relevant data for testing and demonstration purposes.
 
-so that's how you can use middleware to add your common `rules/logic`. you can see that we don't need to update our controllers much, all of this `access-control` is handled by `middleware`, `policy` and `request`. this is a good way to separate our `LOGIC` from `RULE`.
-
-try to follow this approach in all of you projects, this will make it easy to update your `rules` without effecting your `logics`.
-
+## Note
+- Please be aware that in Part 2 of this guide, we will proceed to remove [2023_05_14_063015_create_post_likes_table](database/migrations/2023_05_14_063015_create_post_likes_table.php) migration and [PostLike](app/Models/PostLike.php) model since they will no longer be needed due to the successful implementation of the polymorphic relationship.
+- also if you have any doubts on `polymorphism` topic or any other topic in this guide, feel free to open a new [discussion](https://github.com/mazimez/laravel-hands-on/discussions) where you can discuss that topic in detail with other developers.
 
 ## Reference
 
-1. [Laravel Documentation for Middleware](https://laravel.com/docs/10.x/middleware)
-2. [Some Examples of Middleware](https://www.tutorialspoint.com/laravel/laravel_middleware.htm)
-3. [W3Schools Documentation](https://www.w3schools.in/laravel/middleware)
+For additional information, you may refer to the following resources:
+
+1. [Laravel Documentation for Many To Many (Polymorphic)](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many-polymorphic-relations)
+2. [Use Cases for Polymorphic Relationships](https://blog.logrocket.com/polymorphic-relationships-laravel/)

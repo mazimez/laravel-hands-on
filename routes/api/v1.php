@@ -47,6 +47,14 @@ Route::group(['middleware' => ['localization']], function () {
                     Route::post('/{comment}/edit', 'v1\PostCommentController@update');
                 });
                 Route::delete('/{comment}/delete', 'v1\PostCommentController@destroy');
+
+                //POST-COMMENT-LIKE
+                Route::group(['prefix' => '{comment}/likes'], function () {
+                    Route::get('/', 'v1\PostCommentController@likeIndex');
+                    Route::group(['middleware' => ['only_user_allowed']], function () {
+                        Route::post('/toggle', 'v1\PostCommentController@likeToggle');
+                    });
+                });
             });
 
             //POST-FILES

@@ -22,7 +22,7 @@ class PostCommentController extends Controller
     public function index(Post $post, CommonPaginationRequest $request)
     {
         $this->authorize('viewAny', [PostComment::class, $post]);
-        $data = $post->comments()->with(['user']);
+        $data = $post->comments()->with(['user'])->withCount(['likers']);
 
         $data = $data->latest();
         if ($request->has('page')) {
@@ -103,6 +103,50 @@ class PostCommentController extends Controller
         $comment->delete();
         return response()->json([
             'message' => __('messages.comment_deleted'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * Display a listing of users who liked this comment.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Post  $post
+     * @param  PostComment  $comment
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function likeIndex(Post $post, PostComment $comment, CommonPaginationRequest $request)
+    {
+        $data = $comment->likers();
+        if ($request->has('page')) {
+            return response()->json(
+                collect([
+                    'message' => __('messages.post_comments_likers_returned'),
+                    'status' => '1',
+                ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
+            );
+        }
+        return response()->json([
+            'data' => $data->get(),
+            'message' => __('messages.post_comments_likers_returned'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * Toggle the post comment like
+     *
+     * @param  Post  $post
+     * @param  PostComment  $comment
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function likeToggle(Post $post, PostComment $comment)
+    {
+        $auth_user = Auth::user();
+        $comment->likers()->toggle([$auth_user->id]);
+
+        return response()->json([
+            'message' => __('messages.post_comment_like_toggle'),
             'status' => '1'
         ]);
     }
