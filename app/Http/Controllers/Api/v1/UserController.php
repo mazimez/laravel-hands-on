@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\GetUserDetailRequest;
 use App\Http\Requests\Api\v1\LoginRequest;
 use App\Http\Requests\Api\v1\UserIndexRequest;
 use App\Models\User;
@@ -103,9 +104,12 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show()
+    public function show(GetUserDetailRequest $request)
     {
         $user = Auth::user();
+        if ($request->has('user_id')) {
+            $user = User::findOrFail($request->user_id);
+        }
         return response()->json([
             'data' => $user,
             'message' => __('messages.user_detail_returned'),

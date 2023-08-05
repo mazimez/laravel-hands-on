@@ -1,51 +1,60 @@
-# Polymorphic Relationship(Part 1)
+# Polymorphic Relationship (Part 2)
 
-The concept of a polymorphic relationship allows for a single association between two entities to be connected to multiple other entities, regardless of their types. In simpler terms, it provides an elegant way to establish connections between one primary table (resource) and multiple secondary tables (resources) while utilizing only one additional table to maintain this relationship.
+In this section, we will explore the versatile concept of polymorphic relationships and their application in different scenarios. As demonstrated in Part 1, polymorphic relationships allow us to associate a single resource (table) with multiple resources (tables) through the use of a single extra table. However, we can take this approach a step further and not only store IDs but also additional data in the extra table.
 
 ## Description
-This guide aims to demonstrate the implementation of a polymorphic relationship in the context of adding a new feature for "post comments." Currently, "posts" can be "LIKED/UNLIKED" by "users," and the goal is to extend this functionality to the comments on these "posts" as well. Traditionally, one might consider creating a separate table, such as `comment_likes`, to handle the likes for comments, but this approach can lead to an excessive number of tables.
 
-To maintain a streamlined database structure and optimize efficiency, we will leverage Laravel's polymorphic relationships. By doing so, we can store the "like" information for different tables, such as `posts` and `post_comments`, without the need to create dedicated tables for each of them.
+In our current example, we have a table named `post_files` that stores all the files related to a post. Now, we want to introduce a new feature allowing users to create albums to store images and videos privately. These albums should be specific to each user, and only the user and the admin should have access to view and delete them.
 
-In this guide, we will address the implementation in two parts. Part 1 will cover the initial setup and configuration of the polymorphic relationship.
+To implement this feature, one might consider creating another table, such as `user_file`, to store information about the user's files or albums. However, this approach would increase the number of tables, and it would lead to a similar situation every time we want to add files to any resource.
+
+Instead, we will leverage polymorphic relationships to store all files in a single table (`files`), connecting it to different tables like `posts`, `users`, etc.
 
 ## Files
 
-The following files have been updated/added in this branch:
+The changes and additions in this branch are reflected in the following files:
 
-- [2023_07_27_190943_create_likables_table](database/migrations/2023_07_27_190943_create_likables_table.php): This migration adds the new table `likables` to facilitate the polymorphic relationship.
-- [Post](app/Models/Post.php) and [PostComment](app/Models/PostComment.php): These models have been updated to utilize the polymorphic relationships.
-- [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php): The controller has been modified, and new methods have been added to handle likes on comments.
-- [v1](routes/api/v1.php): New routes have been added to support likes on comments.
-- [PostSeeder](database/seeders/PostSeeder.php): The seeder has been updated to add sample likes to each comment.
+1. [2023_07_29_183155_create_files_table](database/migrations/2023_07_29_183155_create_files_table.php): This migration creates the new `files` table to store all files in the system.
+2. [Post](app/Models/Post.php) and [File](app/Models/File.php): Models have been updated to utilize polymorphic relationships for files.
+3. [PostSeeder](database/seeders/PostSeeder.php) and [UserSeeder](database/seeders/UserSeeder.php): Seeders are updated to use the new `files` table and add some sample data.
+4. [FileFactory](database/factories/FileFactory.php): A new factory for the new file model/table has been added.
+5. [FilePolicy](app/Policies/FilePolicy.php): A policy for the new File model/table has been created.
+6. [UserFileController](app/Http/Controllers/Api/v1/UserFileController.php) and [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php) and other controllers: Controllers are updated to utilize the new `File` model with polymorphic relationships.
+7. [v1](routes/api/v1.php): New routes have been added for the album feature.
+8. `REMOVED`: The migration and model for `post_likes` are removed.
 
 ## Instructions
 
-Please follow these step-by-step instructions to implement the changes and make use of the available resources:
+Please follow the step-by-step instructions below to implement the changes and leverage the available resources effectively:
 
-1. **Migration Setup**: Begin by creating a migration for the table `likables`, which will serve as the central storage for the like information. In this migration, include a `user_id` column for the user table, and utilize the `morphs` method with the `likable` parameter. This method automatically adds two columns, `likable_type` and `likable_id`, with `likable` as the prefix. These columns will be used to store the IDs and types of different tables.
+1. **Migration Setup**: Begin by creating a new migration for the `files` table. This migration should contain a `morphs` method to connect the `files` table to any other table. Additionally, add columns like `user_id`, `file_path`, and `type` to store information about the file itself and the user who added it. Notably, we are storing actual data in the polymorphic table, which differentiates it from the `likables` table, where we only store the IDs (connections) between tables.
 
-2. **Models Configuration**: Update the [Post](app/Models/Post.php) model by commenting out the existing `likers` relationship and creating a new `likers` relationship. This new relationship should be of type `morphToMany` and should use the `likables` table. While column names for the `likables` table can be explicitly provided, Laravel can handle this automatically. For more details, refer to the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many-polymorphic-relations).
+2. **File Model**: Next, create the [File](app/Models/File.php) model. In this model, establish three relationships: `owner`, `user`, and `post`. The `owner` relationship represents a `belongsTo` connection with the `User` model, signifying that the user owns the file. The `user` and `post` relationships are `morphTo` connections, associating the file with the model it belongs to. For instance, if the file is added to a post, the `post` relationship returns the `Post` model; if it's added to a user's album, it returns the `User` model. Additionally, remember to use the `withoutGlobalScope` method to remove the global scope applied to the `Post` model, ensuring that the `post` relationship always returns the post model, regardless of its status (active or not).
 
-3. **Testing Like Functionality**: After updating the `likers` relationship, test the `post-like-toggle` API. Upon calling this API, check the `likers` table to verify that a new entry has been added with `App\Models\Post` in the `likable_type` column and the respective post's ID in the `likable_id` column. Laravel utilizes the namespace and model name as the type identifier.
+3. **Update Post Model**: Modify the [Post](app/Models/Post.php) model to use the new [File](app/Models/File.php) model instead of the old [PostFile](app/Models/PostFile.php) model. Replace the `hasMany` relationship `files` with the `morphMany` relationship, utilizing the [File](app/Models/File.php) model to store all file-related information. Follow the same process for the `file` relationship. Repeat this step for the [User](app/Models/User.php) model as well to add the `files` relationship and enable the `User` model to store files on itself.
 
-4. **Implementing Like for PostComment**: Extend the implementation to include `PostComment` by updating the [PostComment](app/Models/PostComment.php) model. Add the same `likers` relationship used for the `Post` model. Additionally, include a global scope in the `PostComment` model to display the `is_liked` field, indicating whether a comment is liked. This setup now enables the `PostComment` model to support the like feature.
+4. **Update PostController**: Adjust the [PostController](app/Http/Controllers/Api/v1/PostController.php) as it currently handles file storage directly using the [PostFile](app/Models/PostFile.php) model in the `store` and `update` methods. Update this part to use the `create()` method on the `files` relationship, allowing direct storage of the file path into the new `files` table. This way, when you call the post-create API and add files, they will be added to the new `files` table instead of the `post_files` table. Note that other methods like `index` and `show` in the controller are already adapted to use the new table since they utilize the `files` relationship.
 
-5. **Creating APIs**: Introduce two new routes in [v1](routes/api/v1.php) to handle the `PostComment-like-toggle` API and to list the users who liked a specific `PostComment`. Ensure that the `only_user_allowed` middleware is utilized for the toggle API to restrict access to administrators.
+5. **Update PostFileController and FilePolicy**: Further update the [PostFileController](app/Http/Controllers/Api/v1/PostFileController.php) since it still attempts to delete from the `PostFile` model. replace the `PostFile` model with the `File` model in the parameter of the `destroy` method. Additionally, create a new [FilePolicy](app/Policies/FilePolicy.php) specifically for the new `File` model, as the old policy was designed for the `PostFile` model. Note that in this new policy, we create a new method, `deletePostFile`, specifically for handling files related to posts. Moreover, when we get `$file` in this method, we use the `post` relationship on it to ensure that this `$file` is connected to a post. We also check for other conditions as required. By doing so, the `Post` resource is now entirely connected to the `File` model rather than the `PostFile` model. Apply a similar approach to the `User` model to enable the addition of the `Album` feature.
 
-6. **Controller Methods**: Implement the two new API methods in [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php). These methods will closely resemble those used in [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php). Utilize the `likers` relationship and the `toggle` method to achieve the desired functionality. Additionally, use the `likers` relationship to display the count of likes for each comment in the `index` method.
+6. **Update Routes**: In the [v1](routes/api/v1.php) file, add routes for user-albums (`user/files`). Create three APIs: `index`, `store`, and `delete`. Create the [UserFileController](app/Http/Controllers/Api/v1/UserFileController.php) and implement the three methods mentioned above. Use the [FilePolicy](app/Policies/FilePolicy.php) created earlier to verify whether the user is allowed to perform these actions. Utilize the `files` relationship on the [User](app/Models/User.php) model to retrieve the list of files (album) from any user and enable the addition and deletion of those files. With these changes, you can now call these APIs to add files as albums for users, and these files will be stored in the same `files` table as the `Post` files. Therefore, there is no need to create another table for this feature.
 
-7. **Validation of Polymorphic Relationship**: Once the new APIs are ready, call the `postComment-like-toggle` API. Upon examination of the `likables` table, you will notice a new entry with `App\Models\PostComment` in the `likable_type` column and the corresponding comment's ID in the `likable_id` column. Consequently, the `likables` table becomes the sole repository for storing information about likes for both `posts` and `post_comments`. If the need arises to add the like feature to other models, the `likables` table can be effectively utilized, minimizing the need for additional tables.
+7. **Update Seeders**: Update the seeders to incorporate the changes related to polymorphic relationships. In the [UserSeeder](database/seeders/UserSeeder.php), when looping through each user to add followers, use the [File](app/Models/File.php) model to first create some sample files for each user. Utilize the `for()` method to connect the `File` model with each user and provide the relationship name `owner` as a second parameter. This step ensures that the seeder does not attempt to call the `user` relationship on the `File` model, which is intended for another purpose (policy). After creating the files and storing them in the `$files` variable, use the `file()` relationship on the [User](app/Models/User.php) model and call the [`saveMany`](https://laravel.com/docs/10.x/eloquent-relationships#the-save-method) method to save multiple files simultaneously. Similar adjustments can be made to the [PostSeeder](database/seeders/PostSeeder.php) to add data for the polymorphic relationship. Note that adding data for polymorphic relationships in seeders and factories requires a slightly different approach than usual. For more details, refer to the [Laravel documentation on morph-to relationships](https://laravel.com/docs/10.x/eloquent-factories#morph-to-relationships).
 
-8. **Updating PostSeeder**: Finally, update [PostSeeder](database/seeders/PostSeeder.php) to include sample likes for each `PostComment`. This step ensures that the database is seeded with relevant data for testing and demonstration purposes.
+8. **Final Step**: Now that the seeders are ready, execute `php artisan migrate:fresh --seed` to add all file data into a single `files` table. By following this approach, you can reduce the number of tables in your database while relying on Laravel's powerful relationships and methods for data manipulation instead of custom queries.
+
+Polymorphic relationships are powerful and can be highly beneficial for implementing unique features. However, they can also be complex and challenging to understand fully. I recommend focusing on this topic and practicing with your own examples to deepen your understanding.
 
 ## Note
-- Please be aware that in Part 2 of this guide, we will proceed to remove [2023_05_14_063015_create_post_likes_table](database/migrations/2023_05_14_063015_create_post_likes_table.php) migration and [PostLike](app/Models/PostLike.php) model since they will no longer be needed due to the successful implementation of the polymorphic relationship.
-- also if you have any doubts on `polymorphism` topic or any other topic in this guide, feel free to open a new [discussion](https://github.com/mazimez/laravel-hands-on/discussions) where you can discuss that topic in detail with other developers.
+
+- After this branch, we will proceed to remove the [2023_05_14_062725_create_post_files_table](database/migrations/2023_05_14_062725_create_post_files_table.php) migration and [PostFile](app/Models/PostFile.php) model, as they are no longer required due to the successful implementation of the polymorphic relationship.
+- If you have any doubts regarding polymorphism or any other topic in this guide, feel free to open a new [discussion](https://github.com/mazimez/laravel-hands-on/discussions) to engage in detailed discussions with other developers.
+- For your convenience, you can use our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to interact with the APIs created in this section.
 
 ## Reference
 
-For additional information, you may refer to the following resources:
+For additional information and further insights, you may refer to the following resources:
 
 1. [Laravel Documentation for Many To Many (Polymorphic)](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many-polymorphic-relations)
 2. [Use Cases for Polymorphic Relationships](https://blog.logrocket.com/polymorphic-relationships-laravel/)
+

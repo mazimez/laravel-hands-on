@@ -17,6 +17,16 @@ Route::group(['middleware' => ['localization']], function () {
                 Route::get('/', 'v1\UserController@index');
             });
             Route::get('/detail', 'v1\UserController@show');
+
+            //USER FILES
+            Route::group(['prefix' => '{user}/files'], function () {
+                Route::get('/', 'v1\UserFileController@index');
+                Route::delete('/{file}/delete', 'v1\UserFileController@destroy');
+                Route::group(['middleware' => ['only_user_allowed']], function () {
+                    Route::post('/add', 'v1\UserFileController@store');
+                });
+            });
+
             //USER FOLLOW
             Route::get('/{user}/followers', 'v1\UserFollowController@followers');
             Route::get('/{user}/following', 'v1\UserFollowController@following');

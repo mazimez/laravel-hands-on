@@ -93,6 +93,17 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, UserFollows::class, 'follower_id', 'followed_id', 'id', 'id');
     }
 
+    public function files()
+    {
+        return $this->morphMany(
+            File::class, //model that stores data about polymorphic relationship
+            'fileable', //prefix for the polymorphic relationship
+            'fileable_type', //type column in that polymorphic table
+            'fileable_id', //id column in that polymorphic table
+            'id', //primary key on this table(model)
+        );
+    }
+
     //SCOPES
     // public function scopeAddIsFollowingBool($query)
     // {

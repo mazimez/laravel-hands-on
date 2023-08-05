@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use App\Models\Post;
-use App\Models\PostFile;
 use Illuminate\Http\Request;
 
 class PostFileController extends Controller
@@ -57,12 +57,12 @@ class PostFileController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Post  $post
-     * @param  PostFile  $postFile
+     * @param  File  $file
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Post $post, PostFile $file)
+    public function destroy(Post $post, File $file)
     {
-        $this->authorize('delete', [PostFile::class, $file, $post]);
+        $this->authorize('deletePostFile', [File::class, $file, $post]);
         $file->delete();
         return response()->json([
             'message' => __('messages.post_file_deleted'),
