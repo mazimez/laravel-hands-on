@@ -46,4 +46,5 @@ you can directly go to any branch for the topic that you want to understand, and
 18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
 19. [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1)
 20. [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2)
+21. [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails)
 
