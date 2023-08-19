@@ -45,4 +45,5 @@ return [
     'post_not_verified' => 'Detta inlägg är inte verifierat',
     'not_your_post' => 'Detta inlägg tillhör inte dig',
     'file_does_not_belong_to_post' => 'Denna fil tillhör inte detta inlägg',
+    "mail_language_text" => "Mail language Text(sv)",
 ];
