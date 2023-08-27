@@ -200,7 +200,11 @@ class PostController extends Controller
             $post->meta_data = json_decode($request->meta_data);
         }
         if ($request->has('files')) {
-            $post->files()->delete();
+            //without observer-trigger
+            // $post->files()->delete();
+
+            //with observer-trigger
+            File::destroy($post->files()->get()->pluck('id'));
             foreach ($request['files'] as $file) {
                 $file_type = null;
                 if (Str::of($file->getMimeType())->contains('image/')) {

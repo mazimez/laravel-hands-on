@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\GetUserDetailRequest;
 use App\Http\Requests\Api\v1\LoginRequest;
+use App\Http\Requests\Api\v1\UserCreateRequest;
 use App\Http\Requests\Api\v1\UserIndexRequest;
+use App\Http\Requests\Api\v1\UserUpdateRequest;
 use App\Models\User;
+use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    use FileManager;
     /**
      * Login the user and return the bearer token
      *
@@ -91,12 +95,23 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Api\v1\UserCreateRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserCreateRequest $request)
     {
-        //
+        User::create([
+            'name' => $request->name,
+            'profile_image' => $request->hasFile('profile_image') ? $this->saveFile($request->profile_image, 'users') : null,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'type' => User::USER
+        ]);
+        return response()->json([
+            'message' => __('messages.user_registered'),
+            'status' => '1'
+        ]);
     }
 
     /**
@@ -120,13 +135,31 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\Api\v1\UserUpdateRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request)
     {
-        //
+        $auth_user = Auth::user();
+        if ($request->has('name')) {
+            $auth_user->name = $request->name;
+        }
+        if ($request->has('phone_number')) {
+            $auth_user->phone_number = $request->phone_number;
+        }
+        if ($request->hasFile('profile_image')) {
+            if ($auth_user->profile_image) {
+                $this->deleteFile($auth_user->profile_image);
+            }
+            $auth_user->profile_image = $this->saveFile($request->profile_image, 'users');
+        }
+
+        $auth_user->save();
+        return response()->json([
+            'data' => $auth_user->refresh(),
+            'message' => __('messages.user_updated'),
+            'status' => '1'
+        ]);
     }
 
     /**

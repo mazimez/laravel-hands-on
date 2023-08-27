@@ -11,6 +11,7 @@ Route::group(['middleware' => ['localization']], function () {
     Route::post('send-mail', 'v1\TestController@sendMail');
 
     Route::post('users/login', 'v1\UserController@login');
+    Route::post('users/register', 'v1\UserController@store');
     Route::group(['middleware' => ['auth:sanctum']], function () {
         //USER
         Route::group(['prefix' => 'users'], function () {
@@ -18,6 +19,7 @@ Route::group(['middleware' => ['localization']], function () {
                 Route::get('/', 'v1\UserController@index');
             });
             Route::get('/detail', 'v1\UserController@show');
+            Route::post('/update', 'v1\UserController@update');
 
             //USER FILES
             Route::group(['prefix' => '{user}/files'], function () {

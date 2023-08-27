@@ -67,7 +67,7 @@ class UserFileController extends Controller
                 }
                 $auth_user->files()->create([
                     'user_id' => $auth_user->id,
-                    'file_path' => $this->saveFile($file, 'posts'),
+                    'file_path' => $this->saveFile($file, 'users'),
                     'type' => $file_type
                 ]);
             }
