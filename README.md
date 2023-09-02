@@ -48,4 +48,5 @@ you can directly go to any branch for the topic that you want to understand, and
 20. [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2)
 21. [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails)
 22. [observers](https://github.com/mazimez/laravel-hands-on/tree/observers)
+23. [events-listners-queue](https://github.com/mazimez/laravel-hands-on/tree/events-listners-queue)
 
