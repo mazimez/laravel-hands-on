@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Events\PostCreatedEvent;
+use App\Events\PostDeletedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\PostCreateRequest;
+use App\Http\Requests\Api\v1\PostDeleteRequest;
 use App\Http\Requests\Api\v1\PostIndexRequest;
 use App\Http\Requests\Api\v1\PostUpdateRequest;
 use App\Models\File;
@@ -122,6 +125,10 @@ class PostController extends Controller
                     'type' => $file_type
                 ]);
             }
+        }
+
+        if ($auth_user->followers()->count() < 50) {
+            PostCreatedEvent::dispatch($post);
         }
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files']),
@@ -246,9 +253,13 @@ class PostController extends Controller
      * @param  Post  $post
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, PostDeleteRequest $request)
     {
         $this->authorize('delete', [Post::class, $post]);
+
+        if (Auth::user()->type == User::ADMIN && $request->has('reason')) {
+            PostDeletedEvent::dispatch($post->title, $request->reason, $post->user->email);
+        }
         $post->delete();
         return response()->json([
             'message' => __('messages.post_deleted'),

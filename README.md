@@ -1,49 +1,66 @@
-# Observers
+# Event Listeners and Queues
 
-Observer functionality in Laravel provides an event-driven approach for managing various actions performed on resources. These actions encompass creation, updating, and deletion events. By utilizing observers, developers can efficiently implement tasks like sending notifications, handling file removals, and maintaining activity logs.
+Event Listeners and Queues are two closely intertwined topics within Laravel development. While they serve distinct purposes, they are often used in conjunction to enhance the efficiency and responsiveness of applications. In this guide, we will explore both subjects comprehensively.
+
+## Introduction
+
+**Event Listeners** in Laravel provide a mechanism to respond to events triggered within the application. These events could be anything from "Post Created" to "User Followed." Listeners "listen" for these events and execute predefined actions in response. On the other hand, **Queues** are a general concept where tasks are placed in a queue and executed sequentially. Laravel leverages Queues to handle time-consuming operations such as sending emails, generating PDFs, or processing data in the background.
 
 ## Description
 
-In the context of this guide, we'll explore observers in two specific scenarios: removing associated files upon database entry deletion and sending welcome emails upon user registration.
+In this guide, we will introduce two new features to illustrate the power of Event Listeners and Queues in Laravel:
+
+1. **Post Deletion with Reason Notification**: When an admin deletes a post, they are now required to provide a reason. This action triggers an email notification to the post owner, explaining the deletion rationale.
+
+2. **Promoting New Posts**: Whenever a new post is created, and the post owner has fewer than 50 followers, the application sends an email notification to 10 randomly selected users. This encourages engagement and helps the post owner gain more followers.
+
+While these features could be implemented using observers, leveraging Event Listeners and Queues ensures that users don't experience delays during these processes.
+
+Certainly, I'll include the file paths for better clarity in the "Files" section. Here's the updated section:
 
 ## Files
-
-This section outlines the relevant files associated with the changes explained in this guide:
-
-1. [v1](routes/api/v1.php): Introduces new routes for user registration and updates.
-2. [PostController](app/Http/Controllers/Api/v1/PostController.php), [UserController](app/Http/Controllers/Api/v1/UserController.php), and other controllers: Updated to support new APIs and observers.
-3. [FileObserver](app/Observers/FileObserver.php), [UserObserver](app/Observers/UserObserver.php), and other observers: Added to listen to various events.
-4. [EventServiceProvider](app/Providers/EventServiceProvider.php): Updated to associate the observer with the model.
-5. [welcome_mail.blade](resources/views/welcome.blade.php): Includes a sample blade file for a welcome email template.
-
+1. [**PostCreatedEvent**](app/Events/PostCreatedEvent.php) and [**PostDeletedEvent**](app/Events/PostDeletedEvent.php): These events handle post-related actions.
+2. [**PostCreatedListener**](app/Listeners/PostCreatedListener.php) and [**PostDeletedListener**](app/Listeners/PostDeletedListener.php): Listeners that respond to the events.
+3. [**PostCreatedMail**](app/Mail/PostCreatedMail.php) and [**PostDeletedMail**](app/Mail/PostDeletedMail.php): Email notifications for post management.
+4. [**PostController**](app/Http/Controllers/Api/v1/PostController.php): Controllers updated to trigger the events.
+5. [**post_created.blade**](resources/views/post_created.blade.php) and [**post_deleted.blade**](resources/views/post_deleted.blade.php): Sample blade files for new email notifications.
+6. [**2023_09_02_071731_create_jobs_table**](database/migrations/2023_09_02_071731_create_jobs_table.php): Migration for setting up the queue.
+7. [**PostSeeder**](database/seeders/PostSeeder.php) and [**UserSeeder**](database/seeders/UserSeeder.php): Seeders updated to add data without triggering events.
+8. [**EventServiceProvider**](app/Providers/EventServiceProvider.php): Configuration for event auto-discovery.
+9. [**.env.example**](.env.example): Example .env file updated to configure the queue to run on the database.
+10. `Removed`: **PostFilePolicy** removed since it's not needed anymore.
 ## Instructions
 
 Follow these step-by-step instructions to effectively implement the changes and maximize the potential of the available resources:
 
-1. **Understanding Observers**: Observers are distinct classes containing methods (events) triggered upon changes to associated models. To create an observer, use the command `php artisan make:observer UserObserver --model=User`. This generates a `UserObserver` class with default methods like `created` and `updated`, serving as listeners for actions involving the [User](app/Models/User.php) model.
+1. **Optimizing Seeders**: Before proceeding with the new implementations, let's address an issue with seeders. After adding observers, seeders might take longer to execute due to the automatic sending of welcome emails to new users. To resolve this, Laravel provides methods like `createQuietly` and `withoutEvents` that prevent event triggering during data seeding.
+so we use this methods in our seeder to make sure no unnecessary observer are used while seeding. Learn more about these methods in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships#the-create-method).
 
-2. **Binding Observers to Models**: Simply creating an observer doesn't automatically trigger its listener methods. To link an observer to a model, navigate to the `boot` method in the [EventServiceProvider](app/Providers/EventServiceProvider.php). Utilize the `observe` method on the relevant model and pass the observer class (`UserObserver`) as an argument. This establishes the connection, enabling the listener methods upon model updates.
+2. **Creating Events**: With the seeders optimized, let's create a new event for post deletions by admins. Use the command `php artisan make:event PostDeletedEvent` to generate the [PostDeletedEvent](app/Events/PostDeletedEvent.php) class. This event's constructor accepts essential data such as post title, deletion reason, and the post owner's email. notice that we could have just take the whole post model but we didn't since the post may have already been deleted, so it's better to directly take the data that we need.
 
-3. **Sending Email Notifications**: To send a welcome email to newly registered users, create a dedicated API route (`user/register`). Add this route in the [v1](routes/api/v1.php) file and connect it to the `store` method of the [UserController](app/Http/Controllers/Api/v1/UserController.php). Within this method, use the [User](app/Models/User.php) model to create users while validating incoming request data.
+3. **Creating Listeners**: Every event should have at least one listener. Generate a listener for our event using the command `php artisan make:listener PostDeletedListener --event=PostDeletedEvent`. The [PostDeletedListener](app/Listeners/PostDeletedListener.php) class is created, and it will be triggered whenever the [PostDeletedEvent](app/Events/PostDeletedEvent.php) occurs. In the `handle` method of the listener, we send an email to the post owner with the deletion reason. Explore the [mails branch](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) for more information on handling emails.
 
-4. **Observer Usage**: When the `create` method is invoked on the [User](app/Models/User.php) model, adding a new user to the database, the `created` method within the [UserObserver](app/Observers/UserObserver.php) becomes active. This method triggers the sending of a welcome email to the registered user's email address. Centralizing email dispatch within the observer ensures a consistent approach across the application.
+4. **Events Auto Discovery**: Laravel 10 simplifies event and listener registration through auto-discovery. In [EventServiceProvider](app/Providers/EventServiceProvider.php), set `shouldDiscoverEvents` to `true`. This enables Laravel to automatically register all events in the event folder. Find more details in the [Laravel documentation](https://laravel.com/docs/10.x/events#event-discovery).
 
-5. **Observer's Flexibility**: The true power of observers is evident when considering scenarios beyond direct controller-based user creation. By employing observers, you establish a reliable mechanism for sending email notifications, even if users are created via different methods or multiple APIs.
+5. **Triggering Events**: Now that our event and listener are ready, let's call them from [PostController](app/Http/Controllers/Api/v1/PostController.php) in the `destroy` method. First, check if the logged-in user is an admin and if the request includes a "reason" parameter. If conditions are met, use the `dispatch` method with `PostDeletedEvent` to pass the required information to the event's constructor. This action triggers an email to the post owner. To test this, create a user with a valid email, delete one of their posts, and observe the email notification.
 
-6. **Managing File Deletion**: The [FileObserver](app/Observers/FileObserver.php) introduces enhanced functionality by addressing file deletion scenarios. The `deleted` method within this observer is triggered when a record is deleted from the database. It ensures associated files are also deleted from storage, maintaining synchronization between database entries and actual files.
+6. **Configuring and Using Queues**: To implement the feature of sending emails to 10 random users when a new post is created, we need to enable and configure the Queue. In the [.env](.env) file, update the `QUEUE_CONNECTION` variable to "database." This instructs Laravel to use the database for Queue management. Run `php artisan queue:table` to generate a migration, [2023_09_02_071731_create_jobs_table](database/migrations/2023_09_02_071731_create_jobs_table.php), for the queue. Execute the migration with `php artisan migrate` to create the "jobs" table.
 
-7. **Data Integrity Considerations**: Within the `FileManager` class, the `deleteFile` method is modified to prevent the accidental deletion of default files added by seeders. This ensures that only non-seeder-added files are deleted.
+7. **Using Events and Listeners with Queue**: Create a new event, [PostCreatedEvent](app/Events/PostCreatedEvent.php), and a listener, [PostCreatedListener](app/Listeners/PostCreatedListener.php), for sending emails to 10 random users when a new post is created. Notably, the listener implements the `ShouldQueue` interface, indicating that it should be stored in the queue for asynchronous execution. In [PostController](app/Http/Controllers/Api/v1/PostController.php), in the `store` method, check if the post owner has fewer than 50 followers. If true, dispatch the `PostCreatedEvent`.
 
-8. **Enhancing File Deletion**: Notably, file deletion events aren't automatically triggered when deleting files within the `update` method of the [PostController](app/Http/Controllers/Api/v1/PostController.php). To overcome this, utilize the `destroy` method on the `File` model. Provide the IDs of the files to be deleted. This approach initiates delete events, effectively removing the corresponding files from storage.
+8. **Running the Queue**: With everything set up, new tasks will be added to the "jobs" table when a post is created. To execute these tasks, run the command `php artisan queue:work`. This command processes tasks in the queue one by one, removing them from the "jobs" table upon completion. This ensures that email notifications are sent efficiently in the background without affecting the user experience.
 
-9. **Refining File Deletion for Posts**: To further enhance file management, a [PostObserver](app/Observers/PostObserver.php) is introduced. This observer ensures that associated files are deleted whenever a post is removed.
+9. **Benefits of Using Queue**: It's important to note that Queue offers significant benefits, particularly in scenarios where time-consuming operations can hinder the responsiveness of an applicationif you try removing that `ShouldQueue` interface from `listener` that will execute it without `queue`, but then you will see that after this will take significantly more time while using `create post` API, that's because all mails are being sent right when you call the API and that's making it slow.
+By using Queue, these operations are seamlessly executed in the background, enhancing overall performance.
 
 ## Note
 
+- `Queues` has a lot more use cases that we will cover in future branches. this was an Introduction to `Queue` and how we can use it with `Event` and `Listeners`. remember to not over use `Event-Listener` and also `Observer`, those features should only be used when it's really improving System's Speed and Stability.
 - Engage in comprehensive discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel Documentation for Observers](https://laravel.com/docs/10.x/eloquent#observers)
-2. [Observer Tutorial](https://www.itsolutionstuff.com/post/laravel-8-model-observers-tutorial-exampleexample.html)
+1. [Laravel Documentation for Events](https://laravel.com/docs/10.x/events#main-content)
+1. [Laravel Documentation for Queues](https://laravel.com/docs/10.x/queues#main-content)
+2. [Event Listener with Queue](https://ahmedshaltout.com/laravel/laravel-events-listeners-with-queue-tutorial/)

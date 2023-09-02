@@ -71,4 +71,5 @@ return [
     "mail_language_text" => "Mail language Text(en)",
     "user_registered" => "User Registered successfully",
     "user_updated" => "User Updated successfully",
+    "reason_required_to_delete_post" => "Reason field is required to delete post",
 ];

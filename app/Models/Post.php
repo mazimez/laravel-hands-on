@@ -96,7 +96,7 @@ class Post extends Model
             'fileable_type', //type column in that polymorphic table
             'fileable_id', //id column in that polymorphic table
             'id', //primary key on this table(model)
-        )->where('type', PostFile::PHOTO);
+        )->where('type', File::PHOTO);
     }
     public function comments()
     {

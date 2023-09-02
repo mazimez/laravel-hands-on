@@ -18,7 +18,7 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        $posts = Post::factory(30)->create();
+        $posts = Post::factory(30)->createQuietly();
         foreach ($posts as $post) {
             $files = File::factory(3)->for($post->user, 'owner')->make();
             $post->files()->saveMany($files);
