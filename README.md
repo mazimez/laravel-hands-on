@@ -16,8 +16,6 @@ In this guide, we will introduce two new features to illustrate the power of Eve
 
 While these features could be implemented using observers, leveraging Event Listeners and Queues ensures that users don't experience delays during these processes.
 
-Certainly, I'll include the file paths for better clarity in the "Files" section. Here's the updated section:
-
 ## Files
 1. [**PostCreatedEvent**](app/Events/PostCreatedEvent.php) and [**PostDeletedEvent**](app/Events/PostDeletedEvent.php): These events handle post-related actions.
 2. [**PostCreatedListener**](app/Listeners/PostCreatedListener.php) and [**PostDeletedListener**](app/Listeners/PostDeletedListener.php): Listeners that respond to the events.
