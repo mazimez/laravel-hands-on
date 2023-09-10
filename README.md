@@ -1,66 +1,46 @@
-# Event Listeners and Queues
+# Error Handling
 
-Event Listeners and Queues are two closely intertwined topics within Laravel development. While they serve distinct purposes, they are often used in conjunction to enhance the efficiency and responsiveness of applications. In this guide, we will explore both subjects comprehensively.
+Efficient error handling is a critical aspect of any project. Some errors are straightforward to catch as they can disrupt the core functionality of the project. However, there are subtler errors that can be elusive, impacting the system indirectly and proving difficult to reproduce.
 
-## Introduction
-
-**Event Listeners** in Laravel provide a mechanism to respond to events triggered within the application. These events could be anything from "Post Created" to "User Followed." Listeners "listen" for these events and execute predefined actions in response. On the other hand, **Queues** are a general concept where tasks are placed in a queue and executed sequentially. Laravel leverages Queues to handle time-consuming operations such as sending emails, generating PDFs, or processing data in the background.
+To effectively manage and document errors, Laravel provides a robust logging system that offers valuable insights into error occurrences.
 
 ## Description
 
-In this guide, we will introduce two new features to illustrate the power of Event Listeners and Queues in Laravel:
+In this section, we delve into potential errors that may arise within our system and explore the utilization of Laravel's logging system to meticulously record error details in a dedicated log file. It's important to note that not all errors can be immediately resolved. For instance, when sending emails, even if the email-sending code is technically correct, we cannot guarantee successful email delivery due to external factors such as proper configuration in the `.env` file and valid email details.
 
-1. **Post Deletion with Reason Notification**: When an admin deletes a post, they are now required to provide a reason. This action triggers an email notification to the post owner, explaining the deletion rationale.
-
-2. **Promoting New Posts**: Whenever a new post is created, and the post owner has fewer than 50 followers, the application sends an email notification to 10 randomly selected users. This encourages engagement and helps the post owner gain more followers.
-
-While these features could be implemented using observers, leveraging Event Listeners and Queues ensures that users don't experience delays during these processes.
-
-Certainly, I'll include the file paths for better clarity in the "Files" section. Here's the updated section:
+To address such production uncertainties, we rely on comprehensive error logging, with a particular focus on logging data into files.
 
 ## Files
-1. [**PostCreatedEvent**](app/Events/PostCreatedEvent.php) and [**PostDeletedEvent**](app/Events/PostDeletedEvent.php): These events handle post-related actions.
-2. [**PostCreatedListener**](app/Listeners/PostCreatedListener.php) and [**PostDeletedListener**](app/Listeners/PostDeletedListener.php): Listeners that respond to the events.
-3. [**PostCreatedMail**](app/Mail/PostCreatedMail.php) and [**PostDeletedMail**](app/Mail/PostDeletedMail.php): Email notifications for post management.
-4. [**PostController**](app/Http/Controllers/Api/v1/PostController.php): Controllers updated to trigger the events.
-5. [**post_created.blade**](resources/views/post_created.blade.php) and [**post_deleted.blade**](resources/views/post_deleted.blade.php): Sample blade files for new email notifications.
-6. [**2023_09_02_071731_create_jobs_table**](database/migrations/2023_09_02_071731_create_jobs_table.php): Migration for setting up the queue.
-7. [**PostSeeder**](database/seeders/PostSeeder.php) and [**UserSeeder**](database/seeders/UserSeeder.php): Seeders updated to add data without triggering events.
-8. [**EventServiceProvider**](app/Providers/EventServiceProvider.php): Configuration for event auto-discovery.
-9. [**.env.example**](.env.example): Example .env file updated to configure the queue to run on the database.
-10. `Removed`: **PostFilePolicy** removed since it's not needed anymore.
+1. [**logging**](config/logging.php): Revised configuration file to introduce the new 'errors' channel for error logging.
+2. [**ErrorManager**](app/Traits/ErrorManager.php): Added a new trait to facilitate error logging management.
+3. [**PostCreatedListener**](app/Listeners/PostCreatedListener.php) and [**PostDeletedListener**](app/Listeners/PostDeletedListener.php): Updated listeners to integrate the error logging system.
+4. [**UserObserver**](app/Observers/UserObserver.php): Enhanced observer to incorporate error logging functionality.
+
 ## Instructions
 
-Follow these step-by-step instructions to effectively implement the changes and maximize the potential of the available resources:
+Follow these steps to seamlessly implement the changes and maximize the utility of available resources:
 
-1. **Optimizing Seeders**: Before proceeding with the new implementations, let's address an issue with seeders. After adding observers, seeders might take longer to execute due to the automatic sending of welcome emails to new users. To resolve this, Laravel provides methods like `createQuietly` and `withoutEvents` that prevent event triggering during data seeding.
-so we use this methods in our seeder to make sure no unnecessary observer are used while seeding. Learn more about these methods in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships#the-create-method).
+1. Begin by examining the [**logging**](config/logging.php) configuration file to gain insights into Laravel's logging mechanism. Pay close attention to the `channels` array, which lists all available channels for data logging. These channels can be employed to log data into files or transmit it to external systems like Slack or Papertrail. Refer to the [Laravel documentation](https://laravel.com/docs/10.x/logging#available-channel-drivers) for further details.
 
-2. **Creating Events**: With the seeders optimized, let's create a new event for post deletions by admins. Use the command `php artisan make:event PostDeletedEvent` to generate the [PostDeletedEvent](app/Events/PostDeletedEvent.php) class. This event's constructor accepts essential data such as post title, deletion reason, and the post owner's email. notice that we could have just take the whole post model but we didn't since the post may have already been deleted, so it's better to directly take the data that we need.
+2. Introduce a new channel named 'errors' in the configuration file. Configure this channel with the 'single' driver, indicating that it will log data into a single log file over time. Specify the log file's path and the minimum log level (e.g., 'error') to determine which types of messages are logged. Refer to Laravel's [log levels](https://laravel.com/docs/10.x/logging#log-levels) for additional information.
 
-3. **Creating Listeners**: Every event should have at least one listener. Generate a listener for our event using the command `php artisan make:listener PostDeletedListener --event=PostDeletedEvent`. The [PostDeletedListener](app/Listeners/PostDeletedListener.php) class is created, and it will be triggered whenever the [PostDeletedEvent](app/Events/PostDeletedEvent.php) occurs. In the `handle` method of the listener, we send an email to the post owner with the deletion reason. Explore the [mails branch](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) for more information on handling emails.
+3. Create a new trait, [ErrorManager](app/Traits/ErrorManager.php), to facilitate error logging within the system. This trait should contain a method, 'registerError,' which accepts error-related information as parameters and logs it to the error log file. Customize the parameters to capture essential error details, such as the error message, invoking file path, error line number, and file path where the error occurs.
 
-4. **Events Auto Discovery**: Laravel 10 simplifies event and listener registration through auto-discovery. In [EventServiceProvider](app/Providers/EventServiceProvider.php), set `shouldDiscoverEvents` to `true`. This enables Laravel to automatically register all events in the event folder. Find more details in the [Laravel documentation](https://laravel.com/docs/10.x/events#event-discovery).
+4. When adding error logs to the log file, ensure that the log message is well-formatted with appropriate line breaks (using `PHP_EOL`). Utilize the `Log::channel` method, specifying the 'errors' channel to log data to the [error-logs](storage/logs/error-logs.log) file, and use the 'error' method to mark it as an error. Laravel offers other methods, such as 'emergency,' 'alert,' and 'critical,' for selecting log levels; consult the [Laravel documentation](https://laravel.com/docs/10.x/logging#writing-log-messages) for details.
 
-5. **Triggering Events**: Now that our event and listener are ready, let's call them from [PostController](app/Http/Controllers/Api/v1/PostController.php) in the `destroy` method. First, check if the logged-in user is an admin and if the request includes a "reason" parameter. If conditions are met, use the `dispatch` method with `PostDeletedEvent` to pass the required information to the event's constructor. This action triggers an email to the post owner. To test this, create a user with a valid email, delete one of their posts, and observe the email notification.
+5. Apply the ErrorManager trait to listeners, observers, or any relevant parts of your codebase where error logging is necessary. For example, refer to [PostCreatedListener](app/Listeners/PostCreatedListener.php). When sending emails, encapsulate the code within a 'try...catch' block and invoke the 'registerError' method to log error information. Utilize 'getLine' and 'getFile' methods on 'Throwable $th' to retrieve precise line numbers and file paths, along with '__FILE__' to obtain the current file's path. Repeat this process in other relevant files, such as [UserObserver](app/Observers/UserObserver.php) and [PostDeletedListener](app/Listeners/PostDeletedListener.php).
 
-6. **Configuring and Using Queues**: To implement the feature of sending emails to 10 random users when a new post is created, we need to enable and configure the Queue. In the [.env](.env) file, update the `QUEUE_CONNECTION` variable to "database." This instructs Laravel to use the database for Queue management. Run `php artisan queue:table` to generate a migration, [2023_09_02_071731_create_jobs_table](database/migrations/2023_09_02_071731_create_jobs_table.php), for the queue. Execute the migration with `php artisan migrate` to create the "jobs" table.
+6. To test the error logging functionality, intentionally modify the email credentials in the `.env` file. This alteration will trigger an error within Laravel, and the error details will be logged in the [error-logs](storage/logs/error-logs.log) file.
 
-7. **Using Events and Listeners with Queue**: Create a new event, [PostCreatedEvent](app/Events/PostCreatedEvent.php), and a listener, [PostCreatedListener](app/Listeners/PostCreatedListener.php), for sending emails to 10 random users when a new post is created. Notably, the listener implements the `ShouldQueue` interface, indicating that it should be stored in the queue for asynchronous execution. In [PostController](app/Http/Controllers/Api/v1/PostController.php), in the `store` method, check if the post owner has fewer than 50 followers. If true, dispatch the `PostCreatedEvent`.
-
-8. **Running the Queue**: With everything set up, new tasks will be added to the "jobs" table when a post is created. To execute these tasks, run the command `php artisan queue:work`. This command processes tasks in the queue one by one, removing them from the "jobs" table upon completion. This ensures that email notifications are sent efficiently in the background without affecting the user experience.
-
-9. **Benefits of Using Queue**: It's important to note that Queue offers significant benefits, particularly in scenarios where time-consuming operations can hinder the responsiveness of an applicationif you try removing that `ShouldQueue` interface from `listener` that will execute it without `queue`, but then you will see that after this will take significantly more time while using `create post` API, that's because all mails are being sent right when you call the API and that's making it slow.
-By using Queue, these operations are seamlessly executed in the background, enhancing overall performance.
+7. With proper configuration, your APIs, such as 'create user' or 'create post,' will continue to provide normal responses to end-users while discreetly logging any encountered errors. This error-handling approach can be extended beyond email errors to address various types of issues within your system.
 
 ## Note
 
-- `Queues` has a lot more use cases that we will cover in future branches. this was an Introduction to `Queue` and how we can use it with `Event` and `Listeners`. remember to not over use `Event-Listener` and also `Observer`, those features should only be used when it's really improving System's Speed and Stability.
-- Engage in comprehensive discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
+- In future branches, we will explore integrating logging with tools like Slack. This branch primarily focuses on acquainting you with Laravel's logging capabilities and their utilization for error storage.
+- Engage in in-depth discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel Documentation for Events](https://laravel.com/docs/10.x/events#main-content)
-1. [Laravel Documentation for Queues](https://laravel.com/docs/10.x/queues#main-content)
-2. [Event Listener with Queue](https://ahmedshaltout.com/laravel/laravel-events-listeners-with-queue-tutorial/)
+1. [Laravel Documentation for Logging](https://laravel.com/docs/10.x/logging#introduction)
+2. [How Logging Works in Laravel Applications](https://www.freecodecamp.org/news/laravel-logging/)

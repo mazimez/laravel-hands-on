@@ -5,12 +5,15 @@ namespace App\Listeners;
 use App\Events\PostCreatedEvent;
 use App\Mail\PostCreatedMail;
 use App\Models\User;
+
+use App\Traits\ErrorManager;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class PostCreatedListener
 {
+    use ErrorManager;
     /**
      * Create the event listener.
      *
@@ -37,8 +40,12 @@ class PostCreatedListener
             ->limit(10)
             ->get();
         foreach ($users as $user_to_send_mail) {
-            Mail::to($user_to_send_mail->email)
-                ->send(new PostCreatedMail($event->post->title, $post_owner->name));
+            try {
+                Mail::to($user_to_send_mail->email)
+                    ->send(new PostCreatedMail($event->post->title, $post_owner->name));
+            } catch (\Throwable $th) {
+                ErrorManager::registerError($th->getMessage(), __FILE__, $th->getLine(), $th->getFile());
+            }
         }
     }
 }

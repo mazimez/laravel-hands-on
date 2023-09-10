@@ -5,12 +5,13 @@ namespace App\Observers;
 use App\Mail\WelcomeMail;
 use App\Models\File;
 use App\Models\User;
+use App\Traits\ErrorManager;
 use App\Traits\FileManager;
 use Illuminate\Support\Facades\Mail;
 
 class UserObserver
 {
-    use FileManager;
+    use FileManager, ErrorManager;
     /**
      * Handle the User "created" event.
      *
@@ -19,8 +20,12 @@ class UserObserver
      */
     public function created(User $user)
     {
-        Mail::to($user->email)
-            ->send(new WelcomeMail($user));
+        try {
+            Mail::to($user->email)
+                ->send(new WelcomeMail($user));
+        } catch (\Throwable $th) {
+            ErrorManager::registerError($th->getMessage(), __FILE__, $th->getLine(), $th->getFile());
+        }
     }
 
     /**
