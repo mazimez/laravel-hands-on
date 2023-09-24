@@ -1,45 +1,55 @@
-# Scheduler-Cron jobs
+# Testing in Laravel
 
-Cron Jobs is feature provided in Unix-like operating systems. it provides a way to perform some task repeatedly open some period of time. that time period can be 1 day, 1 week, 1 month even 1 year. and this process happens in background on it's one, it doesn't need to be under any observation to get executed.
+Testing is an integral part of any robust software project. As your project grows in complexity, the importance of identifying and rectifying potential issues and edge cases cannot be overstated. Writing tests is not only a best practice but also a way to ensure the efficiency and reliability of your system.
 
-Laravel provides a Good way to manage this process easily called "Scheduler", and it even supports other OSs like Windows too.
+Laravel offers a powerful testing framework built on [PHPUnit](https://phpunit.de/) and seamlessly integrated with `Artisan`. It categorizes tests into two main types: `Unit tests` and `Feature tests`.
 
-## Description
+## Overview
 
-In this section, we will implement 1 background process that will run monthly and it will send mail to a User who added the most posts in system that month, thanking User and showing him/her our appreciation.(in future we will implement some `badges` system that user will earn for doing thing like this)
+In this section, we will focus on writing Feature tests for some of our APIs, including functionalities like user login, post likes toggle, and post details retrieval. The choice of whether to categorize a test as a Unit test or a Feature test is somewhat subjective. In this guide, I have chosen to place all API tests under Feature tests, while other aspects are covered by Unit tests. You are encouraged to adapt this approach to suit your project's specific requirements.
 
-## Files
-1. [**CalculateMonthlyRewards**](app/Console/Commands/CalculateMonthlyRewards.php): added a Command to calculate monthly rewards for users.
-2. [**Kernel**](app/Console/Kernel.php): updated the kernel file to use the command every month.
-3. [**MostPostedMail**](app/Mail/MostPostedMail.php): added new mail for most posted mail.
+## Key Files
+1. [**UserObserver**](app/Observers/UserObserver.php): Enhanced observer for improved error handling.
+2. [**ApiResponser**](app/Traits/ApiResponser.php): Refinements to handle response status codes more effectively.
+3. [**LoginFeatureTest**](tests/Feature/LoginFeatureTest.php) and [**PostDetailFeatureTest**](tests/Feature/PostDetailFeatureTest.php): Introduction of new feature tests for login and post detail APIs.
 
-## Instructions
+## Getting Started
 
-Follow these steps to seamlessly implement the changes and maximize the utility of available resources:
+Follow these steps to implement the outlined changes effectively and optimize the utilization of available resources:
 
-1. before setting up the Scheduler, we first prepare 1 `Mail` to send to user with most added post on the month. we create [**MostPostedMail**](app/Mail/MostPostedMail.php) that will take `User $user` and count of posts that the User has added at any particular month. we also make 1 new blade file [most_posted](resources/views/most_posted.blade.php) that will be used as template for mail.
+1. Before diving into writing tests, let's address some bugs that were identified during the test preparation phase. This demonstrates the importance of testing. One of the issues was discovered in [ApiResponser](app/Traits/ApiResponser.php), where the `status_code` argument was missing, causing incorrect response status codes. Another issue in [UserObserver](app/Observers/UserObserver.php) involved attempting to delete a file without verifying its existence. We have now updated this to check for file existence before deletion.
 
-2. now that `Mail` is ready, we can start with Scheduler. generally there are lots of ways to Schedule any Process, we will focus on doing it with `Artisan Command`. the `Artisan` is the command line interface used in Laravel that can help you to create your own `commands` that you can use repeatedly. you can learn more about it from [Laravel doc](https://laravel.com/docs/10.x/artisan#writing-commands).
+2. With the bug fixes in place, let's create a test file to evaluate our login feature. Execute the command `php artisan make:test LoginFeatureTest` to generate a new file, [LoginFeatureTest](tests/Feature/LoginFeatureTest.php), where you can define your tests. As the name suggests, this file is dedicated to testing our login feature.
 
-3. now to create an artisan command, use the command `php artisan make:command CalculateMonthlyRewards`, this will create a new file [CalculateMonthlyRewards](app/Console/Commands/CalculateMonthlyRewards.php). you can see that this file has 1 variable called `$signature` that we can use to define our command. this can then we used in command panel to call this file's `handle` method.
+3. By default, each test file contains a `test_example` method. You can create additional methods, such as `test_successful_login` and `test_unsuccessful_login`, to test specific scenarios. In our case, we want to verify that users can successfully log in via our API and that incorrect passwords are rejected. You can refer to the [Laravel documentation](https://laravel.com/docs/10.x/testing#creating-tests) for more details on this process.
 
-4. in the handle method, we will put all of our code that we want to run when the command is executed. so in `handle` method we put our logic to first get the user with most post added for current month and then send that user an Email to show our appreciation. to test this, you can just run this command like `php artisan calculate:rewards:monthly`, this should send the mail to the user who added most posts this month.(you probably need to find the user with most posts and then change it's mail to an Actual mail so you can receive the mail)
+4. To perform these tests effectively, we need a user account to log in with. While we could use a test user generated by seeders, this would introduce a dependency on the execution of seeders. Instead, we want our test cases to be self-contained. To achieve this, we create a new user during the test execution by overloading the `setUp` method. This method is executed before any other test methods and ensures that a user with the email `test@gmail.com` exists. If a user with this email already exists, it is used without creating a new one.
 
-5. now that our Command is working, we have to make it that this command runs every month on it's own so it sends mail every month. for that go to [Kernel](app/Console/Kernel.php) and go into `schedule` method, there we will use `$schedule` variable and call `command` method that will actually runs any `artisan` command give in parameter. we will pass `calculate:rewards:monthly` in it. after that `command` method we will decide the frequency of repetition by calling method `monthly`, this will run the command every month. you can learn more about it from [Laravel doc](https://laravel.com/docs/10.x/scheduling#schedule-frequency-options).
+5. To maintain database integrity, we should also ensure that our tests do not leave behind unnecessary data. Laravel provides a `tearDown` method that runs after all tests are completed. In this method, we delete the newly created user (if it was created during the test). This approach minimizes the impact of tests on the database. While it may not be feasible for every test case, strive to keep the database state as consistent as possible during testing.
 
-6. so after setting up the [Kernel](app/Console/Kernel.php), Laravel still wont run the command on it's own. we need to run 1 command `php artisan schedule:run` for Laravel to be able to run the command. there is also a command `php artisan schedule:work` for Laravel to keep active and run any command that comes next(almost like `php artisan serve` to serve the project). you can also run command like `php artisan schedule:list` to get the list of all the commands with info like when it's going to get run.
+6. Moving on to the `test_successful_login` method, we can make API calls using `$this->get()`, `$this->post()`, or other suitable methods. You can also pass headers and parameters as needed. Initially, we call the `users/detail` API without a `Bearer` token and store the response. In this scenario, the expected behavior is a 401 status code, indicating that the user is not logged in. We can validate this using `assertUnauthorized()` and similar assertion methods. Refer to the [Laravel documentation](https://laravel.com/docs/10.x/http-tests#available-assertions) for a comprehensive list of available assertions.
 
-7. you may be thinking that now you always need to keep that `php artisan schedule:work` active in order to scheduler to work, and that can not be possible when we put our project into Production on any Server. well that' where Cron-JOB comes in play. Cron-job will allow us to run this kind of commands in background without us having to keep the command running manually.
+7. With the understanding that the user is not logged in, we proceed to call the `users/login` API to obtain an authentication token. Using `$this->post()`, we send a POST request with parameters such as `email` and `password`. Subsequently, we perform assertions on the response, checking for a 200 status code and the presence of a `token` key, which contains the `Bearer` token. After conducting our assertions, we store the `Bearer` token in a variable for use in subsequent API calls. You can customize these assertions as needed for your specific API responses.
 
-8. Cron-jobs are specific to Ubuntu/Linux OS, so we can not use it if we are on Windows and process of Setting up the cron job is little completed and hard to explain in this branch since we already cover scheduler. so we will discuss this in another branch that will focus on Deploying your Laravel projects.
-## Note
+8. We then call the `users/detail` API again, this time including the `Bearer` token. The expected result is a 200 status code, indicating a successful login. Additional assertions can be added to validate user data and other aspects of the response. This is a basic example of how to write tests.
 
-- In future branches, we will see how we can use the scheduler even without `Artisan Command`.
+9. In the `test_unsuccessful_login` method, we simply attempt to call the login API with an incorrect password and verify that an error is returned. In this case, we are checking the `status` field, which is commonly used in API responses. Your assertions may vary depending on the structure of your API responses. We can also create a test for the `post-like-toggle` API by generating a new test file, [PostLikeFeatureTest](tests/Feature/PostLikeFeatureTest.php).
+
+10. In [PostLikeFeatureTest](tests/Feature/PostLikeFeatureTest.php), we follow a similar pattern by implementing `setUp` and `tearDown` methods to create a new user and a post to like. The `test_post_like_toggle` method retrieves post details via the `post-detail` API and checks that the `is_liked` attribute is initially set to false. It then calls the `likes/toggle` API, simulating a user's action. We use the `actingAs` method to act as if the user is logged in without needing to pass a `Bearer` token. This action should "like" the post. Afterward, we call the `post-detail` API again and verify that the `is_liked` attribute is now set to true.
+
+11. We have also included an additional test in [PostDetailFeatureTest](tests/Feature/PostDetailFeatureTest.php), which focuses on verifying the structure of the `post-detail` API response. You can create more tests and tailor your assertions to your specific project requirements. These three tests serve as foundational examples of testing. Consider them as a starting point for further exploration and expansion of your testing suite.
+
+12. To execute all our tests, you can use the `php artisan test` command. This command runs
+
+ all the tests and reports any errors that may occur.
+
+## Additional Notes
+
+- In future branches, we will delve into how testing can be extended beyond APIs to cover other aspects of our applications, such as database structures and background processes.
 - Engage in in-depth discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel Documentation for Artisan Command](https://laravel.com/docs/10.x/artisan#introduction)
-2. [Laravel Cron Jobs Scheduling To Make Automation Easier](https://www.cloudways.com/blog/laravel-cron-job-scheduling/)
-
+1. [Laravel Documentation for Testing](https://laravel.com/docs/10.x/testing#main-content)
+2. [Getting Started with PHPUnit in Laravel](https://semaphoreci.com/community/tutorials/getting-started-with-phpunit-in-laravel#h-introduction)

@@ -47,8 +47,13 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        File::destroy($user->files()->get()->pluck('id'));
-        $this->deleteFile($user->profile_image);
+        $ids_to_delete = $user->files()->get()->pluck('id');
+        if (count($ids_to_delete) > 0) {
+            File::destroy($ids_to_delete);
+        }
+        if ($user->profile_image) {
+            $this->deleteFile($user->profile_image);
+        }
     }
 
     /**
