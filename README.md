@@ -1,55 +1,50 @@
-# Testing in Laravel
+# DEPLOYMENT
 
-Testing is an integral part of any robust software project. As your project grows in complexity, the importance of identifying and rectifying potential issues and edge cases cannot be overstated. Writing tests is not only a best practice but also a way to ensure the efficiency and reliability of your system.
+Deploying any project to a server can be a complex endeavor, with potential unforeseen challenges. Aspects such as security, speed, and scalability demand careful consideration to avoid disrupting running projects. Therefore, thorough preparation and post-deployment checks are essential.
 
-Laravel offers a powerful testing framework built on [PHPUnit](https://phpunit.de/) and seamlessly integrated with `Artisan`. It categorizes tests into two main types: `Unit tests` and `Feature tests`.
+## Deployment Overview
 
-## Overview
+This section provides straightforward deployment methods for various operating systems using different services. While most services offer Ubuntu as the default operating system, you have the flexibility to choose. This guide primarily focuses on Ubuntu.
 
-In this section, we will focus on writing Feature tests for some of our APIs, including functionalities like user login, post likes toggle, and post details retrieval. The choice of whether to categorize a test as a Unit test or a Feature test is somewhat subjective. In this guide, I have chosen to place all API tests under Feature tests, while other aspects are covered by Unit tests. You are encouraged to adapt this approach to suit your project's specific requirements.
+We recommend utilizing [AWS (Amazon Web Services)](https://aws.amazon.com/) due to its rich feature set, user-friendliness, and responsive support staff. AWS even offers a one-year free trial. While this guide leans toward AWS, you can adapt it for other services as needed.
 
-## Key Files
-1. [**UserObserver**](app/Observers/UserObserver.php): Enhanced observer for improved error handling.
-2. [**ApiResponser**](app/Traits/ApiResponser.php): Refinements to handle response status codes more effectively.
-3. [**LoginFeatureTest**](tests/Feature/LoginFeatureTest.php) and [**PostDetailFeatureTest**](tests/Feature/PostDetailFeatureTest.php): Introduction of new feature tests for login and post detail APIs.
+Once you've chosen a service, you'll have a server (OS) to host your project. Begin by installing PHP on it. If you're familiar with [Docker](https://www.docker.com/), you can create a container containing PHP and all required dependencies. Future sections will explore Docker further. For now, let's focus on running your project directly on the server.
+
+Always ensure you use the latest versions of the OS and PHP. Refer to [Laravel's documentation on Deployment](https://laravel.com/docs/10.x/deployment) for Laravel-specific deployment details.
 
 ## Getting Started
 
-Follow these steps to implement the outlined changes effectively and optimize the utilization of available resources:
+1. **PHP Installation**: If you're using Ubuntu or a similar OS, you can easily install PHP using the commands provided in [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-php-8-1-and-set-up-a-local-development-environment-on-ubuntu-22-04), which also covers Composer installation. Depending on your project's requirements, you may need to install additional PHP extensions. For Windows-based servers, consult [this guide](https://linuxhint.com/install-php-ec2-windows-aws/#:~:text=Installing%20PHP%20on%20an%20EC2,%E2%80%9CPath%E2%80%9D%20of%20environment%20variables.) for PHP setup.
 
-1. Before diving into writing tests, let's address some bugs that were identified during the test preparation phase. This demonstrates the importance of testing. One of the issues was discovered in [ApiResponser](app/Traits/ApiResponser.php), where the `status_code` argument was missing, causing incorrect response status codes. Another issue in [UserObserver](app/Observers/UserObserver.php) involved attempting to delete a file without verifying its existence. We have now updated this to check for file existence before deletion.
+2. **Web Server Setup**: To serve your PHP code to the world, you'll need a web server capable of running PHP. Two commonly used options are `apache2` and `nginx`. Follow [this guide](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04) for Apache2 or [this guide](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04) for Nginx setup. Both guides lead you to a folder where you can place your PHP code, accessible via the server's IP address or linked domain.
 
-2. With the bug fixes in place, let's create a test file to evaluate our login feature. Execute the command `php artisan make:test LoginFeatureTest` to generate a new file, [LoginFeatureTest](tests/Feature/LoginFeatureTest.php), where you can define your tests. As the name suggests, this file is dedicated to testing our login feature.
+3. **Project Deployment**: Clone your Laravel project from GitHub into the publicly available folder on your server. Don't forget to install all dependencies with Composer and create an `.env` file on your server. If everything is configured correctly, you should access your API via the server's IP ADDRESS. However, it won't work until you establish a database connection.
 
-3. By default, each test file contains a `test_example` method. You can create additional methods, such as `test_successful_login` and `test_unsuccessful_login`, to test specific scenarios. In our case, we want to verify that users can successfully log in via our API and that incorrect passwords are rejected. You can refer to the [Laravel documentation](https://laravel.com/docs/10.x/testing#creating-tests) for more details on this process.
+4. **Database Configuration**: You can either install MySQL directly on your server or use an external database server. Services like AWS and GCP offer MySQL databases (e.g., [RDS](https://aws.amazon.com/rds/)) for seamless integration with your main server. Once your database server is set up, note down the host, username, and password to use in your project's `.env` file.
 
-4. To perform these tests effectively, we need a user account to log in with. While we could use a test user generated by seeders, this would introduce a dependency on the execution of seeders. Instead, we want our test cases to be self-contained. To achieve this, we create a new user during the test execution by overloading the `setUp` method. This method is executed before any other test methods and ensures that a user with the email `test@gmail.com` exists. If a user with this email already exists, it is used without creating a new one.
+5. **MySQL Installation**: If you opt to install MySQL on your server directly, consult [this guide](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04). Here, you can set up your MySQL username and password, with the host as "localhost." After configuring your `.env` file with the database details, run migrations and seeders to initialize your tables and populate them with dummy data. You can also run your tests.
 
-5. To maintain database integrity, we should also ensure that our tests do not leave behind unnecessary data. Laravel provides a `tearDown` method that runs after all tests are completed. In this method, we delete the newly created user (if it was created during the test). This approach minimizes the impact of tests on the database. While it may not be feasible for every test case, strive to keep the database state as consistent as possible during testing.
+6. **Scheduler and Queue Setup**: To handle background processes, set up the scheduler. For Windows, follow [this guide](https://blog.codehunger.in/cron-job-in-laravel-8-setting-up-cron-in-windows-pc/), and for Ubuntu, use [this guide](https://www.itsolutionstuff.com/post/laravel-8-cron-job-task-scheduling-tutorialexample.html). Typically, you need to add a scheduled task like this:
 
-6. Moving on to the `test_successful_login` method, we can make API calls using `$this->get()`, `$this->post()`, or other suitable methods. You can also pass headers and parameters as needed. Initially, we call the `users/detail` API without a `Bearer` token and store the response. In this scenario, the expected behavior is a 401 status code, indicating that the user is not logged in. We can validate this using `assertUnauthorized()` and similar assertion methods. Refer to the [Laravel documentation](https://laravel.com/docs/10.x/http-tests#available-assertions) for a comprehensive list of available assertions.
+   ```
+   * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+   ```
 
-7. With the understanding that the user is not logged in, we proceed to call the `users/login` API to obtain an authentication token. Using `$this->post()`, we send a POST request with parameters such as `email` and `password`. Subsequently, we perform assertions on the response, checking for a 200 status code and the presence of a `token` key, which contains the `Bearer` token. After conducting our assertions, we store the `Bearer` token in a variable for use in subsequent API calls. You can customize these assertions as needed for your specific API responses.
+7. **Queue Configuration**: Setting up the queue on Ubuntu is detailed in [this guide](https://dev.to/techparida/how-to-set-up-laravel-queues-on-production-4one). For Windows, you can refer to [this discussion](https://laracasts.com/discuss/channels/general-discussion/best-way-to-use-queues-on-a-windows-server).
 
-8. We then call the `users/detail` API again, this time including the `Bearer` token. The expected result is a 200 status code, indicating a successful login. Additional assertions can be added to validate user data and other aspects of the response. This is a basic example of how to write tests.
+8. **Completion**: At this point, your Laravel project is deployed with background processes. Additional steps may be necessary depending on your specific use case and choice of services.
 
-9. In the `test_unsuccessful_login` method, we simply attempt to call the login API with an incorrect password and verify that an error is returned. In this case, we are checking the `status` field, which is commonly used in API responses. Your assertions may vary depending on the structure of your API responses. We can also create a test for the `post-like-toggle` API by generating a new test file, [PostLikeFeatureTest](tests/Feature/PostLikeFeatureTest.php).
-
-10. In [PostLikeFeatureTest](tests/Feature/PostLikeFeatureTest.php), we follow a similar pattern by implementing `setUp` and `tearDown` methods to create a new user and a post to like. The `test_post_like_toggle` method retrieves post details via the `post-detail` API and checks that the `is_liked` attribute is initially set to false. It then calls the `likes/toggle` API, simulating a user's action. We use the `actingAs` method to act as if the user is logged in without needing to pass a `Bearer` token. This action should "like" the post. Afterward, we call the `post-detail` API again and verify that the `is_liked` attribute is now set to true.
-
-11. We have also included an additional test in [PostDetailFeatureTest](tests/Feature/PostDetailFeatureTest.php), which focuses on verifying the structure of the `post-detail` API response. You can create more tests and tailor your assertions to your specific project requirements. These three tests serve as foundational examples of testing. Consider them as a starting point for further exploration and expansion of your testing suite.
-
-12. To execute all our tests, you can use the `php artisan test` command. This command runs
-
- all the tests and reports any errors that may occur.
+9. **Continuous Improvement**: Keep in mind that the deployment process varies for each case and may encounter unexpected issues. Stay connected with the online community to find optimal solutions. Deployment practices evolve, becoming increasingly automated, so explore better options over time.
 
 ## Additional Notes
 
-- In future branches, we will delve into how testing can be extended beyond APIs to cover other aspects of our applications, such as database structures and background processes.
+- In future branches, we will delve deeper into deployment and automation, exploring topics such as [CI/CD](https://www.synopsys.com/glossary/what-is-cicd.html#:~:text=CI%20and%20CD%20stand%20for,are%20made%20frequently%20and%20reliably.) and [DevOps](https://aws.amazon.com/devops/what-is-devops/#:~:text=DevOps%20is%20the%20combination%20of,development%20and%20infrastructure%20management%20processes.). For now, this serves as a fundamental deployment guide.
 - Engage in in-depth discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel Documentation for Testing](https://laravel.com/docs/10.x/testing#main-content)
-2. [Getting Started with PHPUnit in Laravel](https://semaphoreci.com/community/tutorials/getting-started-with-phpunit-in-laravel#h-introduction)
+1. [Laravel Documentation on Deployment](https://laravel.com/docs/10.x/deployment)
+2. [How to Deploy Laravel Application on AWS EC2 the Right Way](https://www.clickittech.com/tutorial/deploy-laravel-on-aws-ec2/)
+3. [Deploying a Laravel Application to Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/php-laravel-tutorial.html)
+4. [Beginner’s Guide to Deploying PHP Laravel on the Google Cloud Platform](https://www.codemag.com/Article/2111071/Beginner%E2%80%99s-Guide-to-Deploying-PHP-Laravel-on-the-Google-Cloud-Platform
