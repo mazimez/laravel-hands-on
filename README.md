@@ -47,4 +47,4 @@ Always ensure you use the latest versions of the OS and PHP. Refer to [Laravel's
 1. [Laravel Documentation on Deployment](https://laravel.com/docs/10.x/deployment)
 2. [How to Deploy Laravel Application on AWS EC2 the Right Way](https://www.clickittech.com/tutorial/deploy-laravel-on-aws-ec2/)
 3. [Deploying a Laravel Application to Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/php-laravel-tutorial.html)
-4. [Beginner’s Guide to Deploying PHP Laravel on the Google Cloud Platform](https://www.codemag.com/Article/2111071/Beginner%E2%80%99s-Guide-to-Deploying-PHP-Laravel-on-the-Google-Cloud-Platform
+4. [Beginner’s Guide to Deploying PHP Laravel on the Google Cloud Platform](https://www.codemag.com/Article/2111071/Beginner%E2%80%99s-Guide-to-Deploying-PHP-Laravel-on-the-Google-Cloud-Platform)
