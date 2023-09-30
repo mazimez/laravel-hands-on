@@ -42,6 +42,10 @@ Always ensure you use the latest versions of the OS and PHP. Refer to [Laravel's
 - Engage in in-depth discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
+## Important
+- Till now, we were looking into the Topics that comes with Laravel by default without any external Package or Library. but in upcoming branches, we will look into external packages that you can use with Laravel to implement features like `Social-login` , `sending notifications`, `Exporting` or `Importing` data  etc. 
+- also we will see how we can maintain an Application in production while still developing new features in it. so from now on, any changes in Database will be done by new migration rather then just changing the old migration and running a `migrate:fresh`. we consider our project as it's in production, so we have maintain the database structure and it's data.
+
 ## Additional Resources
 
 1. [Laravel Documentation on Deployment](https://laravel.com/docs/10.x/deployment)
