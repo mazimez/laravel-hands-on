@@ -52,4 +52,5 @@ you can directly go to any branch for the topic that you want to understand, and
 24. [error-handling](https://github.com/mazimez/laravel-hands-on/tree/error-handling)
 25. [scheduler-cron](https://github.com/mazimez/laravel-hands-on/tree/scheduler-cron)
 26. [testing](https://github.com/mazimez/laravel-hands-on/tree/testing)
+27. [deployment](https://github.com/mazimez/laravel-hands-on/tree/deployment)
 
