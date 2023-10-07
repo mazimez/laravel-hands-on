@@ -29,6 +29,8 @@ class PostCreateRequest extends FormRequest
             'files' => 'array',
             'description' => 'required',
             'title' => 'required',
+            'tag_ids.*' => 'exists:tags,id',
+            'tag_ids' => 'array|max:5',
         ];
     }
 }

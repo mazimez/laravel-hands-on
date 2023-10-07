@@ -8,6 +8,7 @@ use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 
 class TestController extends Controller
 {
@@ -52,6 +53,29 @@ class TestController extends Controller
 
         return response()->json([
             'message' => __('messages.send_mail'),
+            'status' => '1',
+        ]);
+    }
+
+    public function googleLogin(Request $request)
+    {
+        try {
+            $social_user = Socialite::driver('google')->userFromToken($request->access_token);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'message' => __('messages.invalid_access_token'),
+                'status' => '0',
+            ]);
+        }
+
+        return response()->json([
+            'id' => $social_user->getId(),
+            'email' => $social_user->getEmail(),
+            'name' => $social_user->getName(),
+            'avatar' => $social_user->getAvatar(),
+            'data' => $social_user,
+            'message' => __('messages.social_user_returned'),
             'status' => '1',
         ]);
     }

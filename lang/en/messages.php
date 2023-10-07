@@ -72,4 +72,7 @@ return [
     "user_registered" => "User Registered successfully",
     "user_updated" => "User Updated successfully",
     "reason_required_to_delete_post" => "Reason field is required to delete post",
+    "tag_list_returned" => "Tag list returned successfully",
+    "social_user_returned" => "Social User returned successfully",
+    "invalid_access_token" => "Invalid Access token",
 ];

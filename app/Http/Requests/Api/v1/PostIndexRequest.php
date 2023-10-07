@@ -40,6 +40,8 @@ class PostIndexRequest extends FormRequest
             'user_id' => 'exists:users,id',
             'is_blocked' => 'in:1,0',
             'is_verified' => 'in:1,0',
+            'tag_ids.*' => 'exists:tags,id',
+            'tag_ids' => 'array',
         ];
     }
 }

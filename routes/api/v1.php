@@ -6,11 +6,13 @@ Route::group(['middleware' => ['localization']], function () {
     Route::get('test', function () {
         return __('messages.test');
     });
-    Route::post('upload-file', 'v1\TestController@fileUpload');
+    Route::post('upload-file', 'v1\TestController@fileUpload')->name('test');
     Route::post('delete-file', 'v1\TestController@fileDestroy');
     Route::post('send-mail', 'v1\TestController@sendMail');
+    Route::post('google-login', 'v1\TestController@googleLogin');
 
     Route::post('users/login', 'v1\UserController@login');
+    Route::post('users/social-login', 'v1\UserController@socialLogin');
     Route::post('users/register', 'v1\UserController@store');
     Route::group(['middleware' => ['auth:sanctum']], function () {
         //USER
@@ -82,6 +84,12 @@ Route::group(['middleware' => ['localization']], function () {
                     Route::post('/toggle', 'v1\PostLikeController@toggle');
                 });
             });
+        });
+
+
+        //TAG
+        Route::group(['prefix' => 'tags'], function () {
+            Route::get('/', 'v1\TagController@index');
         });
     });
 });

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\PostComment;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,6 +26,8 @@ class PostSeeder extends Seeder
             $comments = PostComment::factory(15)->for($post)->create();
             $user_ids = User::inRandomOrder()->limit(rand(0, 5))->get()->pluck('id');
             $post->likers()->sync($user_ids);
+            $tag_ids = Tag::inRandomOrder()->limit(rand(0, 4))->get()->pluck('id');
+            $post->tags()->sync($tag_ids);
             foreach ($comments as $comment) {
                 $comment->likers()->sync($user_ids);
             }

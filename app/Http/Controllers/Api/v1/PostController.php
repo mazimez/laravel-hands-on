@@ -30,9 +30,17 @@ class PostController extends Controller
     {
         $user = Auth::user();
         if ($user && $user->type == User::ADMIN) {
-            $data = Post::withoutGlobalScope('active')->with(['user', 'file'])->withCount(['likers', 'comments']);
+            $data = Post::withoutGlobalScope('active')->with([
+                'user', 'file', 'tags'
+            ])->withCount([
+                'likers', 'comments'
+            ]);
         } else {
-            $data = Post::with(['user', 'file'])->withCount(['likers', 'comments']);
+            $data = Post::with([
+                'user', 'file', 'tags'
+            ])->withCount([
+                'likers', 'comments'
+            ]);
         }
 
         if ($request->has('is_blocked')) {
@@ -49,6 +57,12 @@ class PostController extends Controller
             $data = $data->where('user_id', $request->user_id);
         }
 
+        if ($request->has('tag_ids')) {
+            $data = $data->whereHas('tags', function ($query) use ($request) {
+                $query = $query->whereIn('tags.id', $request->tag_ids);
+            });
+        }
+
         if ($request->has('search')) {
             $search = '%' . $request->search . '%';
             $data = $data->where(function ($query) use ($search) {
@@ -57,6 +71,8 @@ class PostController extends Controller
             })->orWhereHas('user', function ($query) use ($search) {
                 $query = $query->where('name', 'like', $search)
                     ->orWhere('email', 'like', $search);
+            })->orWhereHas('tags', function ($query) use ($search) {
+                $query = $query->where('name', 'like', $search);
             });
         }
 
@@ -104,6 +120,7 @@ class PostController extends Controller
             'description' => $request->description,
             'meta_data' => json_decode($request->meta_data)
         ]);
+
         if ($post && $request->has('files')) {
             foreach ($request['files'] as $file) {
                 $file_type = null;
@@ -130,8 +147,11 @@ class PostController extends Controller
         if ($auth_user->followers()->count() < 50) {
             PostCreatedEvent::dispatch($post);
         }
+        if ($request->has('tag_ids')) {
+            $post->tags()->sync($request->tag_ids);
+        }
         return response()->json([
-            'data' => $post->refresh()->loadMissing(['user', 'files']),
+            'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
             'message' => __('messages.post_created'),
             'status' => '1'
         ]);
@@ -147,7 +167,7 @@ class PostController extends Controller
     {
         $this->authorize('view', [Post::class, $post]);
         return response()->json([
-            'data' => $post->loadMissing(['user', 'files']),
+            'data' => $post->loadMissing(['user', 'files', 'tags']),
             'message' => __('messages.post_detail_returned'),
             'status' => '1'
         ]);
@@ -233,6 +253,9 @@ class PostController extends Controller
                 ]);
             }
         }
+        if ($request->has('tag_ids')) {
+            $post->tags()->sync($request->tag_ids);
+        }
         // if (!$post->isDirty()) {
         //     return response()->json([
         //         'message' => __('messages.nothing_to_update'),
@@ -241,7 +264,7 @@ class PostController extends Controller
         // }
         $post->save();
         return response()->json([
-            'data' => $post->refresh()->loadMissing(['user', 'files']),
+            'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
             'message' => __('messages.post_updated'),
             'status' => '1'
         ]);

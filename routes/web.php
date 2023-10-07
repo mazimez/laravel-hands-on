@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+Route::get('auth/google', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+Route::get('callback/google', function () {
+    $social_user = Socialite::driver('google')->user();
+    dd($social_user);
 });

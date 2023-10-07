@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostUpdateRequest extends FormRequest
+class SocialLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,8 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'files.*' => 'file',
-            'files' => 'array',
-            'title' => '',
-            'description' => '',
-            'tag_ids.*' => 'exists:tags,id',
-            'tag_ids' => 'array|max:5',
+            'provider' => 'required|in:google,facebook',
+            'access_token' => 'required',
         ];
     }
 }

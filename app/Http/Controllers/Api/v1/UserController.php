@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\GetUserDetailRequest;
 use App\Http\Requests\Api\v1\LoginRequest;
+use App\Http\Requests\Api\v1\SocialLoginRequest;
 use App\Http\Requests\Api\v1\UserCreateRequest;
 use App\Http\Requests\Api\v1\UserIndexRequest;
 use App\Http\Requests\Api\v1\UserUpdateRequest;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {
@@ -45,6 +47,45 @@ class UserController extends Controller
             'status' => '1'
         ]);
     }
+
+    /**
+     * Login the user with social account(via access token)
+     *
+     * @param  \App\Http\Requests\Api\v1\SocialLoginRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function socialLogin(SocialLoginRequest $request)
+    {
+        try {
+            $social_user = Socialite::driver($request->provider)->userFromToken($request->access_token);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'message' => __('messages.invalid_access_token'),
+                'status' => '0',
+            ]);
+        }
+
+        $user = User::where('type', User::USER)->where('email', $social_user->getEmail())->first();
+        if (!$user) {
+            //TODO::handle the image we get from social account.
+            $user = User::create([
+                'name' => $social_user->getName(),
+                'profile_image' => null,
+                'email' => $social_user->getEmail(),
+                'password' => null,
+                'type' => User::USER
+            ]);
+        }
+
+        return response()->json([
+            'data' => $user->refresh(),
+            'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
+            'message' => __('messages.user_login'),
+            'status' => '1'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

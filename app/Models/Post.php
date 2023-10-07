@@ -116,6 +116,18 @@ class Post extends Model
         );
     }
 
+    public function tags()
+    {
+        return $this->morphToMany(
+            Tag::class,
+            'taggable',
+            'taggables',
+            'taggable_id',
+            'tag_id',
+            'id',
+        );
+    }
+
     //SCOPES
     public function scopeMostLikedFirst($query)
     {
