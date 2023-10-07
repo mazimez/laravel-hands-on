@@ -1,7 +1,7 @@
 # SOCIAL-LOGIN
 
 Social login is very common feature in modern application, it uses customer(User) data from some other social media app to login or create an Account into some other system. this makes registration process easy and fast thus attracting more customers.
-## Deployment Overview
+## Description
 
 In This section we will implement Social login feature for our application. generally we can use accounts from many popular applications like `Google`, `Facebook` and even `Github`. the process of integrating any or all of these service is pretty much same. for our case, we will focus only on `Google` since it's very simple and mostly used.
 
