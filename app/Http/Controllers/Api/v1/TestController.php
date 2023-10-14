@@ -79,4 +79,13 @@ class TestController extends Controller
             'status' => '1',
         ]);
     }
+
+    public function fileUploadFromUrl(Request $request)
+    {
+        return response()->json([
+            'data' => $this->saveFileFromUrl($request->url, "test"),
+            'message' => __('messages.file_uploaded'),
+            'status' => '1',
+        ]);
+    }
 }

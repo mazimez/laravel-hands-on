@@ -77,6 +77,17 @@ class Post extends Model
         );
     }
 
+    public function badges()
+    {
+        return $this->morphMany(
+            UserBadge::class,
+            'badgeable',
+            'badgeable_type',
+            'badgeable_id',
+            'id',
+        );
+    }
+
     // public function files()
     // {
     //     return $this->hasMany(PostFile::class);

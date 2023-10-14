@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Badge;
 use App\Models\File;
 use App\Models\Post;
 
@@ -15,7 +16,18 @@ class PostObserver
      */
     public function created(Post $post)
     {
-        //
+        if ($post->user) {
+            $user = $post->user;
+            if ($user->posts()->count() <= 0) {
+                $first_post_badge = Badge::where('slug', Badge::FIRST_POST)->first();
+                if ($first_post_badge) {
+                    $post->badges()->create([
+                        'user_id' => $post->user->id,
+                        'badge_id' => $first_post_badge->id,
+                    ]);
+                }
+            }
+        }
     }
 
     /**

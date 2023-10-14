@@ -7,6 +7,7 @@ Route::group(['middleware' => ['localization']], function () {
         return __('messages.test');
     });
     Route::post('upload-file', 'v1\TestController@fileUpload')->name('test');
+    Route::post('upload-file-from-url', 'v1\TestController@fileUploadFromUrl')->name('test');
     Route::post('delete-file', 'v1\TestController@fileDestroy');
     Route::post('send-mail', 'v1\TestController@sendMail');
     Route::post('google-login', 'v1\TestController@googleLogin');
@@ -37,6 +38,11 @@ Route::group(['middleware' => ['localization']], function () {
             Route::get('/{user}/following', 'v1\UserFollowController@following');
             Route::group(['middleware' => ['only_user_allowed']], function () {
                 Route::post('/{user}/follow-toggle', 'v1\UserFollowController@toggle');
+            });
+
+            //USER BADGES
+            Route::group(['prefix' => '{user}/badges'], function () {
+                Route::get('/', 'v1\UserBadgeController@index');
             });
         });
 

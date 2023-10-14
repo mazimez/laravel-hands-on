@@ -10,7 +10,6 @@ return [
     | in the application. You are free to modify them according to your needs.
     |
     */
-
     'test' => 'this is in english',
     'can_not_remove_this' => 'Cannot remove this resource permanently',
     "model_not_exists" => "No item exists with the specified identification",
@@ -75,4 +74,6 @@ return [
     "tag_list_returned" => "Tag list returned successfully",
     "social_user_returned" => "Social User returned successfully",
     "invalid_access_token" => "Invalid Access token",
+    "user_badges_returned" => "User badges returned successfully",
+    "extension_not_found" => "Extension not found",
 ];

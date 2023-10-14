@@ -68,10 +68,9 @@ class UserController extends Controller
 
         $user = User::where('type', User::USER)->where('email', $social_user->getEmail())->first();
         if (!$user) {
-            //TODO::handle the image we get from social account.
             $user = User::create([
                 'name' => $social_user->getName(),
-                'profile_image' => null,
+                'profile_image' => $this->saveFileFromUrl($social_user->getAvatar(), 'users'),
                 'email' => $social_user->getEmail(),
                 'password' => null,
                 'type' => User::USER

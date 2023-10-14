@@ -104,6 +104,18 @@ class User extends Authenticatable
         );
     }
 
+    public function badges()
+    {
+        return $this->belongsToMany(
+            Badge::class,
+            UserBadge::class,
+            'user_id',
+            'badge_id',
+            'id',
+            'id'
+        );
+    }
+
     //SCOPES
     // public function scopeAddIsFollowingBool($query)
     // {
