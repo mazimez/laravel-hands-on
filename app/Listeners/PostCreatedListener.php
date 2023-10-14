@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-//TODO::update this change into other branches as well
 class PostCreatedListener implements ShouldQueue
 {
     use ErrorManager;
