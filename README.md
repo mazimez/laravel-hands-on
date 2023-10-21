@@ -55,4 +55,5 @@ you can directly go to any branch for the topic that you want to understand, and
 27. [deployment](https://github.com/mazimez/laravel-hands-on/tree/deployment)
 28. [social-login](https://github.com/mazimez/laravel-hands-on/tree/social-login)
 29. [enhanced-storage-management](https://github.com/mazimez/laravel-hands-on/tree/enhanced-storage-management)
+30. [user-verification](https://github.com/mazimez/laravel-hands-on/tree/user-verification)
 
