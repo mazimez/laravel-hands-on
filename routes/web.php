@@ -17,6 +17,10 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/email/verify/{hash}', 'Api\v1\UserController@verifyEmail')->name('email.verify');
+
+
 Route::get('auth/google', function () {
     return Socialite::driver('google')->redirect();
 });

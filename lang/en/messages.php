@@ -76,4 +76,11 @@ return [
     "invalid_access_token" => "Invalid Access token",
     "user_badges_returned" => "User badges returned successfully",
     "extension_not_found" => "Extension not found",
+    "otp_sent" => "OTP sent successfully",
+    "need_phone_number_to_send_otp" => "Phone number is required to send OTP",
+    "otp_sent_to_user" => "OTP is sent to user's phone number",
+    "wrong_otp" => "Wrong OTP, please try again",
+    "otp_verified" => "OTP verified successfully",
+    "phone_number_already_verified" => "Phone number is already verified",
+    "phone_number_already_used" => "This Phone number is already taken",
 ];

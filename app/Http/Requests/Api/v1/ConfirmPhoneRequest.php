@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserCreateRequest extends FormRequest
+class ConfirmPhoneRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,7 @@ class UserCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'profile_image' => 'file',
-            'phone_number' => 'required|numeric|unique:users,phone_number',
-            'password' => 'required',
-            'email' => 'required|unique:users,email',
-            'name' => 'required',
+            'otp' => 'required|numeric|exists:users,otp'
         ];
     }
 }

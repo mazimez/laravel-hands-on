@@ -15,6 +15,11 @@
                 <p>If you have any questions or need assistance, feel free to reach out to us.</p>
                 <p>Best regards,</p>
                 <p>The {{ config('app.name') }} Team</p>
+
+
+                <a href="{{ $link }}" style="text-decoration: none; background-color: #007BFF; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                    please Click here to verify your email
+                </a>
             </td>
         </tr>
     </table>

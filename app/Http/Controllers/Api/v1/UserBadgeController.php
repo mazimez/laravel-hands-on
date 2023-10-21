@@ -20,6 +20,8 @@ class UserBadgeController extends Controller
     {
         $data = $user->badges();
 
+        $data = $data->orderBy('user_badges.created_at', 'desc');
+
         if ($request->has('search')) {
             $search = '%' . $request->search . '%';
             $data = $data->where(function ($query) use ($search) {

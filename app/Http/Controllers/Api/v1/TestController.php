@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Mail\SampleMail;
 use App\Traits\FileManager;
+use App\Traits\SmsManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
@@ -12,7 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class TestController extends Controller
 {
-    use FileManager;
+    use FileManager, SmsManager;
     public function fileUpload(Request $request)
     {
         $file_path = null;
@@ -85,6 +86,17 @@ class TestController extends Controller
         return response()->json([
             'data' => $this->saveFileFromUrl($request->url, "test"),
             'message' => __('messages.file_uploaded'),
+            'status' => '1',
+        ]);
+    }
+
+    public function sendOtp(Request $request)
+    {
+        if ($request->has('phone_number') && $request->has('otp')) {
+            SmsManager::sendTwoFactorMessage($request->phone_number, $request->otp);
+        }
+        return response()->json([
+            'message' => __('messages.otp_sent'),
             'status' => '1',
         ]);
     }

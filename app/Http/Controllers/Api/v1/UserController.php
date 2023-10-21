@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\ConfirmPhoneRequest;
 use App\Http\Requests\Api\v1\GetUserDetailRequest;
 use App\Http\Requests\Api\v1\LoginRequest;
 use App\Http\Requests\Api\v1\SocialLoginRequest;
 use App\Http\Requests\Api\v1\UserCreateRequest;
 use App\Http\Requests\Api\v1\UserIndexRequest;
 use App\Http\Requests\Api\v1\UserUpdateRequest;
+use App\Models\Badge;
 use App\Models\User;
+use App\Models\UserBadge;
 use App\Traits\FileManager;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
@@ -140,7 +145,7 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'profile_image' => $request->hasFile('profile_image') ? $this->saveFile($request->profile_image, 'users') : null,
             'phone_number' => $request->phone_number,
@@ -185,6 +190,12 @@ class UserController extends Controller
             $auth_user->name = $request->name;
         }
         if ($request->has('phone_number')) {
+            if (User::where('phone_number', $request->phone_number)->where('id', '!=', $auth_user->id)->exists()) {
+                return response()->json([
+                    'message' => __('messages.phone_number_already_used'),
+                    'status' => '1'
+                ]);
+            }
             $auth_user->phone_number = $request->phone_number;
         }
         if ($request->hasFile('profile_image')) {
@@ -201,6 +212,94 @@ class UserController extends Controller
             'status' => '1'
         ]);
     }
+
+    /**
+     * send verification code to user's phone number.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyPhone()
+    {
+        $user = Auth::user();
+        if ($user->is_phone_verified) {
+            return response()->json([
+                'message' => __('messages.phone_number_already_verified'),
+                'status' => '0'
+            ]);
+        }
+        $phone_verified_badge = Badge::where('slug', Badge::PHONE_VERIFIED)->first();
+        if ($phone_verified_badge) {
+            UserBadge::updateOrCreate([
+                'user_id' => $user->id,
+            ], [
+                'badge_id' => $phone_verified_badge->id,
+            ]);
+        }
+        User::sendOtp($user);
+        return response()->json([
+            'message' => __('messages.otp_sent_to_user'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * confirm user's phone number with given verification code
+     *
+     * @param  \App\Http\Requests\Api\v1\ConfirmPhoneRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmPhone(ConfirmPhoneRequest $request)
+    {
+        $user = Auth::user();
+        if ($user->otp != $request->otp) {
+            return response()->json([
+                'message' => __('messages.wrong_otp'),
+                'status' => '1'
+            ]);
+        }
+        $user->otp = null;
+        $user->is_phone_verified = 1;
+        $user->save();
+        $phone_verified_badge = Badge::where('slug', Badge::PHONE_VERIFIED)->first();
+        if ($phone_verified_badge) {
+            UserBadge::updateOrCreate([
+                'user_id' => $user->id,
+            ], [
+                'badge_id' => $phone_verified_badge->id,
+            ]);
+        }
+        return response()->json([
+            'message' => __('messages.otp_verified'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * verify user's email
+     *
+     * @param  Illuminate\Http\Request $request
+     * @param  Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyEmail(Request $request, $hash)
+    {
+        $user_id = Crypt::decrypt($hash);
+        $user = User::findOrFail($user_id);
+        $user->is_email_verified = 1;
+        $user->save();
+        $email_verified_badge = Badge::where('slug', Badge::EMAIL_VERIFIED)->first();
+        if ($email_verified_badge) {
+            UserBadge::updateOrCreate([
+                'user_id' => $user->id,
+            ], [
+                'badge_id' => $email_verified_badge->id,
+            ]);
+        }
+
+        return view('email_verified');
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

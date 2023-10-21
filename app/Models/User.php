@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Traits\SmsManager;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,7 +33,10 @@ class User extends Authenticatable
         'password',
         'latitude',
         'longitude',
-        'type'
+        'type',
+        'otp',
+        'is_phone_verified',
+        'is_email_verified'
     ];
 
     /**
@@ -65,6 +71,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'email_verified_at',
+        'otp',
     ];
 
     /**
@@ -113,7 +120,29 @@ class User extends Authenticatable
             'badge_id',
             'id',
             'id'
-        );
+        )->withPivot(['created_at', 'updated_at']);
+    }
+
+    static function sendOtp(User $user)
+    {
+        if (config('services.two_factor.is_otp_live')) {
+            if (!$user->phone_number) {
+                throw new Exception(__('messages.need_phone_number_to_send_otp'));
+            }
+
+            $generatedOtp = null;
+            do {
+                $generatedOtp = mt_rand(1000, 9999);
+            } while (User::where('otp', $generatedOtp)->first());
+
+            SmsManager::sendTwoFactorMessage($user->phone_number, $generatedOtp);
+
+            $user->otp = $generatedOtp;
+            $user->save();
+        } else {
+            $user->otp = '1234';
+            $user->save();
+        }
     }
 
     //SCOPES
@@ -131,6 +160,7 @@ class User extends Authenticatable
     //ATTRIBUTES
     public function getIsFollowingAttribute()
     {
+        //FIXME::dont use attribute, try to do it with scope instead
         $user = Auth::user();
         if (!$user) {
             return false;

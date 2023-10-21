@@ -30,10 +30,17 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('APP_ENV'),
     ],
 
+    'two_factor' => [
+        'api_url' => 'https://2factor.in/API/V1/',
+        'api_key' => env('TWO_FACTOR_API_KEY'),
+        'template_name' => env('TWO_FACTOR_TEMPLATE_NAME'),
+        'is_otp_live' => env('IS_OTP_LIVE', 0)
+    ],
 ];

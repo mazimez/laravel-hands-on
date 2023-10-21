@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'type' => User::USER,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'phone_number' => fake()->numerify('##########'),
+            'phone_number' => fake()->unique()->numerify('##########'),
             'password' => bcrypt('password'),
             'profile_image' => fake()->randomElement(config('default_images')),
             'latitude' => $location['latitude'],

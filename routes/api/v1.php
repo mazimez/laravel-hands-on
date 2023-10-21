@@ -11,6 +11,7 @@ Route::group(['middleware' => ['localization']], function () {
     Route::post('delete-file', 'v1\TestController@fileDestroy');
     Route::post('send-mail', 'v1\TestController@sendMail');
     Route::post('google-login', 'v1\TestController@googleLogin');
+    Route::post('send-otp', 'v1\TestController@sendOtp');
 
     Route::post('users/login', 'v1\UserController@login');
     Route::post('users/social-login', 'v1\UserController@socialLogin');
@@ -23,6 +24,10 @@ Route::group(['middleware' => ['localization']], function () {
             });
             Route::get('/detail', 'v1\UserController@show');
             Route::post('/update', 'v1\UserController@update');
+            Route::group(['middleware' => ['only_user_allowed']], function () {
+                Route::post('/verify-phone', 'v1\UserController@verifyPhone');
+                Route::post('/confirm-phone', 'v1\UserController@confirmPhone');
+            });
 
             //USER FILES
             Route::group(['prefix' => '{user}/files'], function () {

@@ -22,5 +22,17 @@ class BadgeSeeder extends Seeder
             'name' => "First Spark",
             'description' => "Given when user post something for the first time.",
         ]);
+        $email_verified_badge = Badge::updateOrCreate([
+            'slug' => Badge::EMAIL_VERIFIED,
+        ], [
+            'name' => "Email Verifier",
+            'description' => "Given when user Verify it's email",
+        ]);
+        $phone_verified_badge = Badge::updateOrCreate([
+            'slug' => Badge::PHONE_VERIFIED,
+        ], [
+            'name' => "Phone Verifier",
+            'description' => "Given when user Verify it's phone number",
+        ]);
     }
 }
