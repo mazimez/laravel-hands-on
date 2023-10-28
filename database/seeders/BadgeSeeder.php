@@ -34,5 +34,11 @@ class BadgeSeeder extends Seeder
             'name' => "Phone Verifier",
             'description' => "Given when user Verify it's phone number",
         ]);
+        $first_follower_badge = Badge::updateOrCreate([
+            'slug' => Badge::FIRST_FOLLOWER,
+        ], [
+            'name' => "First Follower",
+            'description' => "Given when user gets his first follower",
+        ]);
     }
 }

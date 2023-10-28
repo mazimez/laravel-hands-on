@@ -10,6 +10,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.9",
+        "laravel/telescope": "^4.16",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.16"
     },

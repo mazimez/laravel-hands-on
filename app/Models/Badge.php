@@ -14,6 +14,7 @@ class Badge extends Model
     const FIRST_POST = "FIRST_POST";
     const PHONE_VERIFIED = "PHONE_VERIFIED";
     const EMAIL_VERIFIED = "EMAIL_VERIFIED";
+    const FIRST_FOLLOWER = "FIRST_FOLLOWER";
 
     //TABLE
     public $table = 'badges';

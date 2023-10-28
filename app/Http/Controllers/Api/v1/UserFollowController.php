@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommonPaginationRequest;
+use App\Models\Badge;
 use App\Models\User;
+use App\Models\UserBadge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -67,6 +69,16 @@ class UserFollowController extends Controller
         $auth_user = Auth::user();
         $this->authorize('toggle', [UserFollows::class, $user]);
         $user->followers()->toggle([$auth_user->id]);
+
+        if ($user->followers()->count() >= 1) {
+            $first_follower_badge = Badge::where('slug', Badge::FIRST_FOLLOWER)->first();
+            UserBadge::updateOrCreate([
+                'user_id' => $user->id,
+            ], [
+                'badge_id' => $first_follower_badge->id,
+            ]);
+        }
+
         return response()->json([
             'message' => __('messages.follow_toggle'),
             'status' => '1'
