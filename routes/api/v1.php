@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['localization']], function () {
+    //TEST
     Route::get('test', function () {
         return __('messages.test');
     });
@@ -13,9 +14,11 @@ Route::group(['middleware' => ['localization']], function () {
     Route::post('google-login', 'v1\TestController@googleLogin');
     Route::post('send-otp', 'v1\TestController@sendOtp');
 
+    //NO-AUTH
     Route::post('users/login', 'v1\UserController@login');
     Route::post('users/social-login', 'v1\UserController@socialLogin');
     Route::post('users/register', 'v1\UserController@store');
+
     Route::group(['middleware' => ['auth:sanctum']], function () {
         //USER
         Route::group(['prefix' => 'users'], function () {

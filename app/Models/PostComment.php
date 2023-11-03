@@ -54,11 +54,21 @@ class PostComment extends Model
     //RELATIONSHIPS
     public function post()
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsTo(Post::class)->withoutGlobalScope('active');
     }
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function badges()
+    {
+        return $this->morphMany(
+            UserBadge::class,
+            'badgeable',
+            'badgeable_type',
+            'badgeable_id',
+            'id',
+        );
     }
 
     //with polymorphism

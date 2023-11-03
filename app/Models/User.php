@@ -111,6 +111,11 @@ class User extends Authenticatable
         );
     }
 
+    public function comments()
+    {
+        return $this->hasMany(PostComment::class);
+    }
+
     public function badges()
     {
         return $this->belongsToMany(

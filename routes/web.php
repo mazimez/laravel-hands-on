@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -28,4 +30,19 @@ Route::get('auth/google', function () {
 Route::get('callback/google', function () {
     $social_user = Socialite::driver('google')->user();
     dd($social_user);
+});
+
+//AUTH MANAGEMENT
+Route::get('/login', function () {
+    if (Auth::user()) {
+        return redirect('/home');
+    }
+    return view('auth.login');
+});
+Route::post('/login', 'Web\UserController@login')->name('login');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', function () {
+        return view('auth.home', ['user' => Auth::user()]);
+    });
+    Route::post('logout', 'Web\UserController@logout')->name('logout');
 });

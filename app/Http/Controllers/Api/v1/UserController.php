@@ -122,6 +122,15 @@ class UserController extends Controller
             }
         }
 
+        if ($request->has('search')) {
+            $search = '%' . $request->search . '%';
+            $data = $data->where(function ($query) use ($search) {
+                $query = $query->where('name', 'like', $search)
+                    ->orWhere('phone_number', 'like', $search)
+                    ->orWhere('email', 'like', $search);
+            });
+        }
+
         if ($request->has('page')) {
             return response()->json(
                 collect([
