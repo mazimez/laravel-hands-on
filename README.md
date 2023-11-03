@@ -57,4 +57,5 @@ you can directly go to any branch for the topic that you want to understand, and
 29. [enhanced-storage-management](https://github.com/mazimez/laravel-hands-on/tree/enhanced-storage-management)
 30. [user-verification](https://github.com/mazimez/laravel-hands-on/tree/user-verification)
 31. [debugging-telescope](https://github.com/mazimez/laravel-hands-on/tree/debugging-telescope)
+32. [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing)
 
