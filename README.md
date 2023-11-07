@@ -21,6 +21,13 @@ To create a trait in Laravel, follow these steps:
 
 You can then use these traits by including them in your classes using the `use` keyword.
 
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to make 1 trait that can generate random color HEX values. like #76a5af,#0b5394 etc.
+
 ## Note
 
 The usage of the [ApiResponser.php](app/Traits/ApiResponser.php) trait is demonstrated in the `exception-handling` branch. You can refer to that branch for more information on how to utilize the trait effectively.
