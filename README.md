@@ -22,6 +22,13 @@ To implement API versioning in your project, follow these steps:
 
 This approach allows you to differentiate API endpoints based on their version, ensuring backward compatibility and enabling different versions to coexist. When using controllers for each route, you can organize them into separate folders like 'v1' and 'v2', accommodating future versions as needed.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- just as we make files with names like `v1` and `v2`, you can create route files with any kind of name. In some system, you may not want to focus on versioning but want a solution where different routes for particular section stays in different file. this can be a grate help when many people are working on same project since it allows them to keep there routes separate from each other so they wont face merge when combining all code.
+- try to implement the routing system where you create different files for each resource like `post`, `user` etc. and connect those files with routes like `posts`, `users` accordingly.
+
 ## Resources
 
 -   [Laravel 8 API Versioning](https://dev.to/dalelantowork/laravel-8-api-versioning-4e8)
