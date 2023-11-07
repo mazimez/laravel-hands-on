@@ -22,6 +22,12 @@ To understand and work with exception handling in Laravel:
 
 Feel free to modify and expand the exception handling logic in [Handler.php](app/Exceptions/Handler.php) based on your application's specific needs.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- in [Handler.php](app/Exceptions/Handler.php), there is a `$dontReport` option that doesn't report the error in handler. try to put some classes in it like `AuthenticationException` or `MethodNotAllowedHttpException` and ignore the errors just so you get the idea of how that works.
+
 ## Resources
 
 -   [Laravel Documentation on Exception Handling](https://laravel.com/docs/10.x/errors#introduction)
