@@ -43,4 +43,13 @@ return [
         'template_name' => env('TWO_FACTOR_TEMPLATE_NAME'),
         'is_otp_live' => env('IS_OTP_LIVE', 0)
     ],
+    'firebase' => [
+        'api_key' => env('API_KEY'),
+        'auth_domain' => env('AUTH_DOMAIN'),
+        'project_id' => env('PROJECT_ID'),
+        'storage_bucket' => env('STORAGE_BUCKET'),
+        'sender_id' => env('FCM_SENDER_ID'),
+        'app_id' => env('APP_ID'),
+        'measurement_id' => env('MEASUREMENT_ID'),
+    ],
 ];

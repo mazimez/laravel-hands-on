@@ -83,4 +83,6 @@ return [
     "otp_verified" => "OTP verified successfully",
     "phone_number_already_verified" => "Phone number is already verified",
     "phone_number_already_used" => "This Phone number is already taken",
+    "notification_failed_to_send" => "Fail to sent :failure_number notifications",
+    "notification_sent" => "Notification sent",
 ];

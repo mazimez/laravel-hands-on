@@ -13,6 +13,7 @@ Route::group(['middleware' => ['localization']], function () {
     Route::post('send-mail', 'v1\TestController@sendMail');
     Route::post('google-login', 'v1\TestController@googleLogin');
     Route::post('send-otp', 'v1\TestController@sendOtp');
+    Route::post('send-notification', 'v1\TestController@sendFcmNotification');
 
     //NO-AUTH
     Route::post('users/login', 'v1\UserController@login');

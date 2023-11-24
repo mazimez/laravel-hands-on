@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Mail\SampleMail;
+use App\Traits\FcmNotificationManager;
 use App\Traits\FileManager;
 use App\Traits\SmsManager;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class TestController extends Controller
 {
-    use FileManager, SmsManager;
+    use FileManager, SmsManager, FcmNotificationManager;
     public function fileUpload(Request $request)
     {
         $file_path = null;
@@ -97,6 +98,15 @@ class TestController extends Controller
         }
         return response()->json([
             'message' => __('messages.otp_sent'),
+            'status' => '1',
+        ]);
+    }
+
+    public function sendFcmNotification(Request $request)
+    {
+        $this->sendNotification([$request->firebase_token], $request->title, $request->message);
+        return response()->json([
+            'message' => __('messages.notification_sent'),
             'status' => '1',
         ]);
     }
