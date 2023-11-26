@@ -25,6 +25,14 @@ To access the stub files and customize them, follow these steps:
 
 By customizing the stubs, you can align the generated files with your preferred structure and code conventions, making your work more efficient.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to add more stubs for things like controller, `observer` and `listeners`
+- stubs can also be dynamic based on the parameters you passed while executing the command. try to learn more about it and implement some dynamic stubs into project.
+
+
 ## Resources
 
 - [Laravel Documentation on Stub Customization](https://laravel.com/docs/10.x/artisan#stub-customization)
