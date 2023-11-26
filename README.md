@@ -27,4 +27,10 @@ Follow these steps to create a Seeder for Images:
 
 5. You may be wondering why we can't simply copy the images directly to the `storage` folder, eliminating the need for the [ImageSeeder.php](database/seeders/ImageSeeder.php). This is true when using local storage; however, if you transition to a storage service such as `AWS` or `Google Cloud`, direct file copying will not be possible. Therefore, having this Seeder that can perform the copying process for us proves to be beneficial.
 
-Feel free to replicate the same process to create seeders for videos, PDFs, and any other file types you require.
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to do the same things for different type of files like `Videos`, `PDFs`, `Docs`.
+- the file seeder we generated uses the existing files in our project. but with [Faker](https://github.com/fzaninotto/Faker) Library and Laravel `factory`, you can also generate images and use it as well. try to implement this into project.
