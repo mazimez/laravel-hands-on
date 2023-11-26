@@ -36,6 +36,14 @@ Follow these steps to manage your files effectively:
 
 This is one approach to uploading and deleting files in your Laravel project. There are many other methods available, some of which are explained in the provided resources.
 
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to customize the [FileManager.php](app/Traits/FileManager.php) trait based on your needs. make it so that you can use it into your other projects too.
+- try to use services like `AWS` , `GCP` to store this files. we will look into it in our future branches but you can start right now.
+
 ## Resources
 
 - [Laravel Documentation](https://laravel.com/docs/10.x/filesystem#main-content)
