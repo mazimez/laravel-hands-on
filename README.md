@@ -30,6 +30,14 @@ In our example, we will create migration files for a system where users can crea
 Once you have defined your migration files, run the `php artisan migrate` command to create all the tables in the database.
 remeber to set-up your .env file to connect to a DataBase
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- Laravel also provides a way to add comments on each table and columns. that's a good way to store meta-data about DB so other developers can understand the use of each column and table. try to add comments on table and columns
+- Laravel also provides some methods to store data related to geo-location. try to learn about it and use it in this project.
+- for primary key we usually use integer value (like 1,2,3), but we can also use `uuid` for it. try to learn about it and implement it into project.
+
 ## Resources
 
 - [Laravel Documentation for migration](https://laravel.com/docs/10.x/migrations)
