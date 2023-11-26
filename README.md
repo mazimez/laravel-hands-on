@@ -29,6 +29,14 @@ To test the implementation, you can use tools like Postman to make API calls, wh
 
 more detailed info about middleware is given in [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) branch. you can also look into it.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to customize the [localization.php](app/Http/Middleware/localization.php) and take the language information from different key of header or maybe entire different way then using header.
+- we created only 1 new `messages` file to store all of our language keys, but you can try to maintain different files related to different modules in your project(to ignore having too large files also merge conflicts while working in team).
+- try to add new languages that has "right-to-left" (RTL) writing like `arabic` or `urdu` and see how your projects adapts to that languages.
+
 ## Resources
 
 -   [Laravel Documentation](https://laravel.com/docs/10.x/localization)
