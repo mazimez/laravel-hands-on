@@ -30,6 +30,13 @@ To implement authentication, follow these steps:
 
 7. To test these APIs, you can use a client like Postman. We've provided a public Postman collection for this project, which you can access [here](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- there are also other packages to implement this auth system like `passport`. try to learn about it and implement auth using that package.
+- here we only see how the auth works in APIs, `sanctum` also provides auth for WEB based application too. try to learn about it more.
+
 ## Resources
 
 - [Laravel Documentation](https://laravel.com/docs/10.x/sanctum)
