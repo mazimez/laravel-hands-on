@@ -41,6 +41,12 @@ To use seeders and factories in your Laravel project, follow these steps:
 10. Add each seeder class to an array in the `run()` method of `DatabaseSeeder.php`. The seeders will execute in the order they appear in the array.
 11. you can use `php artisan migrate:fresh --seed` command to clear your existing Database and run all migration and also run all seeders, all of that in just 1 command.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- you can use `relationships` on models to seed data on it's connected tables too. we are going to use this in our future branches but you can start learning about it right now.
+- the `Faker` library has a very wide variety of data it can generate like address, company names, colors, locations and many more(even images/files too). try to learn about it and use it as much as you can.
 ## Resources
 
 - [Laravel Documentation for Seeders](https://laravel.com/docs/10.x/seeding#writing-seeders)
