@@ -29,14 +29,14 @@ class UserFileController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.user_files_returned'),
+                    'message' => __('user_messages.user_files_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.user_files_returned'),
+            'message' => __('user_messages.user_files_returned'),
             'status' => '1'
         ]);
     }
@@ -61,7 +61,7 @@ class UserFileController extends Controller
                 }
                 if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
-                        'message' => __('messages.file_type_not_supported'),
+                        'message' => __('file_messages.file_type_not_supported'),
                         'status' => '0'
                     ]);
                 }
@@ -73,7 +73,7 @@ class UserFileController extends Controller
             }
         }
         return response()->json([
-            'message' => __('messages.user_files_added'),
+            'message' => __('user_messages.user_files_added'),
             'status' => '1'
         ]);
     }
@@ -112,7 +112,7 @@ class UserFileController extends Controller
         $this->authorize('deleteUserFile', [File::class, $file, $user]);
         $file->delete();
         return response()->json([
-            'message' => __('messages.user_file_deleted'),
+            'message' => __('user_messages.user_file_deleted'),
             'status' => '1'
         ]);
     }

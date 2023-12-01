@@ -3,20 +3,37 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\File;
-use App\Models\Post;
+use App\Http\Requests\CommonPaginationRequest;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class PostFileController extends Controller
+class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(CommonPaginationRequest $request)
     {
-        //
+        $user = Auth::user();
+        $data = $user->notifications()->with(['notifiable']);
+
+        $data = $data->latest();
+        if ($request->has('page')) {
+            return response()->json(
+                collect([
+                    'message' => __('notification_messages.notification_returned'),
+                    'status' => '1',
+                ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
+            );
+        }
+        return response()->json([
+            'data' => $data->get(),
+            'message' => __('notification_messages.notification_returned'),
+            'status' => '1'
+        ]);
     }
 
     /**
@@ -56,17 +73,11 @@ class PostFileController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Post  $post
-     * @param  File  $file
+     * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Post $post, File $file)
+    public function destroy($id)
     {
-        $this->authorize('deletePostFile', [File::class, $file, $post]);
-        $file->delete();
-        return response()->json([
-            'message' => __('post_messages.post_file_deleted'),
-            'status' => '1'
-        ]);
+        //
     }
 }

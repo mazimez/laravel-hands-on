@@ -19,11 +19,11 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        $posts = Post::factory(30)->createQuietly();
+        $posts = Post::factory(10)->createQuietly();
         foreach ($posts as $post) {
             $files = File::factory(3)->for($post->user, 'owner')->make();
             $post->files()->saveMany($files);
-            $comments = PostComment::factory(15)->for($post)->create();
+            $comments = PostComment::factory(5)->for($post)->create();
             $user_ids = User::inRandomOrder()->limit(rand(0, 5))->get()->pluck('id');
             $post->likers()->sync($user_ids);
             $tag_ids = Tag::inRandomOrder()->limit(rand(0, 4))->get()->pluck('id');

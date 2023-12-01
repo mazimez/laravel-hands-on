@@ -20,13 +20,13 @@ class OnlyAdminAllowed
     {
         if (!Auth::user()) {
             return response()->json([
-                'message' => __('messages.unauthenticated'),
+                'message' => __('access_messages.unauthenticated'),
                 'status' => '401',
             ], 401);
         }
         if (Auth::user()->type != User::ADMIN) {
             return response()->json([
-                'message' => __('messages.only_admin_allowed'),
+                'message' => __('access_messages.only_admin_allowed'),
                 'status' => '0',
             ]);
         }

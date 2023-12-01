@@ -57,6 +57,10 @@
                 console.log(reason);
             });
     }
+    messaging.onMessage(function(payload){
+        console.log(JSON.parse(payload.data.data));
+    });
+
 
     IntitalizeFireBaseMessaging();
 </script>

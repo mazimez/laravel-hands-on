@@ -24,10 +24,10 @@ class PostCommentPolicy
             return true;
         }
         if ($post->is_blocked) {
-            return $this->deny(__('messages.post_blocked_can_not_see_comments'));
+            return $this->deny(__('post_post_messages.post_blocked_can_not_see_comments'));
         }
         if (!$post->is_verified) {
-            return $this->deny(__('messages.post_not_verified_can_not_see_comments'));
+            return $this->deny(__('post_post_messages.post_not_verified_can_not_see_comments'));
         }
         return true;
     }
@@ -54,10 +54,10 @@ class PostCommentPolicy
     public function create(User $user, Post $post)
     {
         if ($post->is_blocked) {
-            return $this->deny(__('messages.post_blocked_can_not_add_comments'));
+            return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
         if (!$post->is_verified) {
-            return $this->deny(__('messages.post_not_verified_can_not_add_comments'));
+            return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
         return true;
     }
@@ -73,16 +73,16 @@ class PostCommentPolicy
     public function update(User $user, PostComment $postComment, Post $post)
     {
         if ($post->is_blocked) {
-            return $this->deny(__('messages.post_blocked_can_not_add_comments'));
+            return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
         if (!$post->is_verified) {
-            return $this->deny(__('messages.post_not_verified_can_not_add_comments'));
+            return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
         if ($postComment->post_id != $post->id) {
-            return $this->deny(__('messages.comment_does_not_belong_to_post'));
+            return $this->deny(__('access_messages.comment_does_not_belong_to_post'));
         }
         if ($postComment->user_id != $user->id) {
-            return $this->deny(__('messages.not_your_comment'));
+            return $this->deny(__('access_messages.not_your_comment'));
         }
         return true;
     }
@@ -101,16 +101,16 @@ class PostCommentPolicy
             return true;
         }
         if ($post->is_blocked) {
-            return $this->deny(__('messages.post_blocked_can_not_add_comments'));
+            return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
         if (!$post->is_verified) {
-            return $this->deny(__('messages.post_not_verified_can_not_add_comments'));
+            return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
         if ($postComment->post_id != $post->id) {
-            return $this->deny(__('messages.comment_does_not_belong_to_post'));
+            return $this->deny(__('access_messages.comment_does_not_belong_to_post'));
         }
         if ($postComment->user_id != $user->id) {
-            return $this->deny(__('messages.not_your_comment'));
+            return $this->deny(__('access_messages.not_your_comment'));
         }
         return true;
     }

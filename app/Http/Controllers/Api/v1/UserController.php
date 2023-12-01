@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Laravel\Socialite\Facades\Socialite;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -41,14 +42,18 @@ class UserController extends Controller
 
         if (!password_verify($request->password, $user->password)) {
             return response()->json([
-                'message' => __('messages.wrong_password'),
+                'message' => __('user_messages.wrong_password'),
                 'status' => '0',
             ]);
+        }
+        if ($request->has('firebase_token')) {
+            $user->firebase_tokens = $user->firebase_tokens ? collect($user->firebase_tokens)->push($request->firebase_token)->unique()->values()->all() : [$request->firebase_token];
+            $user->save();
         }
         return response()->json([
             'data' => $user,
             'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
-            'message' => __('messages.user_login'),
+            'message' => __('user_messages.user_login'),
             'status' => '1'
         ]);
     }
@@ -75,17 +80,20 @@ class UserController extends Controller
         if (!$user) {
             $user = User::create([
                 'name' => $social_user->getName(),
-                'profile_image' => $this->saveFileFromUrl($social_user->getAvatar(), 'users'),
+                'profile_image' => $social_user->getAvatar() ? $this->saveFileFromUrl($social_user->getAvatar(), 'users') : null,
                 'email' => $social_user->getEmail(),
                 'password' => null,
                 'type' => User::USER
             ]);
         }
-
+        if ($request->has('firebase_token')) {
+            $user->firebase_tokens = $user->firebase_tokens ? collect($user->firebase_tokens)->push($request->firebase_token)->unique()->values()->all() : [$request->firebase_token];
+            $user->save();
+        }
         return response()->json([
             'data' => $user->refresh(),
             'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
-            'message' => __('messages.user_login'),
+            'message' => __('user_messages.user_login'),
             'status' => '1'
         ]);
     }
@@ -134,14 +142,14 @@ class UserController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.user_list_returned'),
+                    'message' => __('user_messages.user_list_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.user_list_returned'),
+            'message' => __('user_messages.user_list_returned'),
             'status' => '1'
         ]);
     }
@@ -163,7 +171,7 @@ class UserController extends Controller
             'type' => User::USER
         ]);
         return response()->json([
-            'message' => __('messages.user_registered'),
+            'message' => __('user_messages.user_registered'),
             'status' => '1'
         ]);
     }
@@ -181,7 +189,7 @@ class UserController extends Controller
         }
         return response()->json([
             'data' => $user,
-            'message' => __('messages.user_detail_returned'),
+            'message' => __('user_messages.user_detail_returned'),
             'status' => '1'
         ]);
     }
@@ -201,7 +209,7 @@ class UserController extends Controller
         if ($request->has('phone_number')) {
             if (User::where('phone_number', $request->phone_number)->where('id', '!=', $auth_user->id)->exists()) {
                 return response()->json([
-                    'message' => __('messages.phone_number_already_used'),
+                    'message' => __('user_messages.phone_number_already_used'),
                     'status' => '1'
                 ]);
             }
@@ -217,7 +225,7 @@ class UserController extends Controller
         $auth_user->save();
         return response()->json([
             'data' => $auth_user->refresh(),
-            'message' => __('messages.user_updated'),
+            'message' => __('user_messages.user_updated'),
             'status' => '1'
         ]);
     }
@@ -232,7 +240,7 @@ class UserController extends Controller
         $user = Auth::user();
         if ($user->is_phone_verified) {
             return response()->json([
-                'message' => __('messages.phone_number_already_verified'),
+                'message' => __('user_messages.phone_number_already_verified'),
                 'status' => '0'
             ]);
         }
@@ -308,6 +316,23 @@ class UserController extends Controller
         return view('email_verified');
     }
 
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+        try {
+            $user->currentAccessToken()->delete();
+        } catch (Throwable $th) {
+        }
+        if ($request->has('firebase_token')) {
+            $user->firebase_tokens = collect($user->firebase_tokens)->forget(collect($user->firebase_tokens)->search($request->firebase_token))->values()->all();
+            $user->save();
+        }
+        return response()->json([
+            'message' => __('user_messages.user_logout'),
+            'status' => '1',
+        ]);
+    }
 
 
     /**

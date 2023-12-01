@@ -18,7 +18,7 @@ class PostIndexRequest extends FormRequest
         $user = Auth::user();
         if ($this->has('is_blocked') || $this->has('is_verified')) {
             if (!$user || $user->type != User::ADMIN) {
-                throw new \Exception(__('messages.only_admin_can_use_this_filter'));
+                throw new \Exception(__('access_messages.only_admin_can_use_this_filter'));
             }
         }
         return true;

@@ -34,14 +34,14 @@ class UserBadgeController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.user_badges_returned'),
+                    'message' => __('badge_messages.user_badges_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.user_badges_returned'),
+            'message' => __('badge_messages.user_badges_returned'),
             'status' => '1'
         ]);
     }

@@ -26,6 +26,7 @@ class LoginRequest extends FormRequest
         return [
             'password' => 'required',
             'email' => 'required|email|exists:users,email',
+            'firebase_token' => '',
         ];
     }
 }

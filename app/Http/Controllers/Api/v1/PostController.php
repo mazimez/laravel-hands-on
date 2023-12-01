@@ -93,14 +93,14 @@ class PostController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.post_list_returned'),
+                    'message' => __('post_messages.post_list_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.post_list_returned'),
+            'message' => __('post_messages.post_list_returned'),
             'status' => '1'
         ]);
     }
@@ -132,7 +132,7 @@ class PostController extends Controller
                 }
                 if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
-                        'message' => __('messages.file_type_not_supported'),
+                        'message' => __('file_messages.file_type_not_supported'),
                         'status' => '0'
                     ]);
                 }
@@ -152,7 +152,7 @@ class PostController extends Controller
         }
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
-            'message' => __('messages.post_created'),
+            'message' => __('post_messages.post_created'),
             'status' => '1'
         ]);
     }
@@ -168,7 +168,7 @@ class PostController extends Controller
         $this->authorize('view', [Post::class, $post]);
         return response()->json([
             'data' => $post->loadMissing(['user', 'files', 'tags']),
-            'message' => __('messages.post_detail_returned'),
+            'message' => __('post_messages.post_detail_returned'),
             'status' => '1'
         ]);
     }
@@ -185,7 +185,7 @@ class PostController extends Controller
         $post->save();
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files']),
-            'message' => __('messages.post_detail_returned'),
+            'message' => __('post_messages.post_detail_returned'),
             'status' => '1'
         ]);
     }
@@ -202,7 +202,7 @@ class PostController extends Controller
         $post->save();
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files']),
-            'message' => __('messages.post_detail_returned'),
+            'message' => __('post_messages.post_detail_returned'),
             'status' => '1'
         ]);
     }
@@ -242,7 +242,7 @@ class PostController extends Controller
                 }
                 if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
-                        'message' => __('messages.file_type_not_supported'),
+                        'message' => __('file_messages.file_type_not_supported'),
                         'status' => '0'
                     ]);
                 }
@@ -265,7 +265,7 @@ class PostController extends Controller
         $post->save();
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
-            'message' => __('messages.post_updated'),
+            'message' => __('post_messages.post_updated'),
             'status' => '1'
         ]);
     }
@@ -285,7 +285,7 @@ class PostController extends Controller
         }
         $post->delete();
         return response()->json([
-            'message' => __('messages.post_deleted'),
+            'message' => __('post_messages.post_deleted'),
             'status' => '1'
         ]);
     }

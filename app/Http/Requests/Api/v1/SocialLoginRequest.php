@@ -26,6 +26,7 @@ class SocialLoginRequest extends FormRequest
         return [
             'provider' => 'required|in:google,facebook',
             'access_token' => 'required',
+            'firebase_token' => '',
         ];
     }
 }

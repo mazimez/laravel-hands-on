@@ -23,7 +23,7 @@ class TestController extends Controller
         }
         return response()->json([
             'data' => Storage::url($file_path),
-            'message' => __('messages.file_uploaded'),
+            'message' => __('file_messages.file_uploaded'),
             'status' => '1',
         ]);
     }
@@ -32,7 +32,7 @@ class TestController extends Controller
     {
         $this->deleteFile($request->file_path);
         return response()->json([
-            'message' => __('messages.file_deleted'),
+            'message' => __('file_messages.file_deleted'),
             'status' => '1',
         ]);
     }
@@ -86,7 +86,7 @@ class TestController extends Controller
     {
         return response()->json([
             'data' => $this->saveFileFromUrl($request->url, "test"),
-            'message' => __('messages.file_uploaded'),
+            'message' => __('file_messages.file_uploaded'),
             'status' => '1',
         ]);
     }

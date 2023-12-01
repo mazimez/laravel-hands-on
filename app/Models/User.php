@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Traits\FcmNotificationManager;
 use App\Traits\SmsManager;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +37,8 @@ class User extends Authenticatable
         'type',
         'otp',
         'is_phone_verified',
-        'is_email_verified'
+        'is_email_verified',
+        'firebase_tokens'
     ];
 
     /**
@@ -72,6 +74,7 @@ class User extends Authenticatable
         'remember_token',
         'email_verified_at',
         'otp',
+        'firebase_tokens'
     ];
 
     /**
@@ -82,7 +85,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'distance' => "string",
-        'is_following' => 'boolean'
+        'is_following' => 'boolean',
+        'firebase_tokens' => 'array',
     ];
 
     public function posts()
@@ -98,6 +102,11 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, UserFollows::class, 'follower_id', 'followed_id', 'id', 'id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 
     public function files()

@@ -39,7 +39,7 @@ class FilePolicy
             return true;
         }
         if ($user->id != $user_to_check->id) {
-            return $this->deny(__('messages.can_not_view_someone_else_files'));
+            return $this->deny(__('file_messages.can_not_view_someone_else_files'));
         }
         return true;
     }
@@ -89,20 +89,20 @@ class FilePolicy
     public function deletePostFile(User $user, File $file, Post $post)
     {
         if (!$file->post) {
-            return $this->deny(__('messages.file_does_not_belongs_to_any_post'));
+            return $this->deny(__('file_messages.file_does_not_belongs_to_any_post'));
         }
 
         if ($post->id != $file->post->id) {
-            return $this->deny(__('messages.file_does_not_belong_to_post'));
+            return $this->deny(__('file_messages.file_does_not_belong_to_post'));
         }
         if ($user->type == User::ADMIN) {
             return true;
         }
         if ($user->id != $post->user_id) {
-            return $this->deny(__('messages.not_your_post'));
+            return $this->deny(__('post_messages.not_your_post'));
         }
         if ($user->id != $file->user_id) {
-            return $this->deny(__('messages.not_your_file'));
+            return $this->deny(__('file_messages.not_your_file'));
         }
         return true;
     }
@@ -117,17 +117,17 @@ class FilePolicy
     public function deleteUserFile(User $user, File $file, User $user_to_check)
     {
         if (!$file->user) {
-            return $this->deny(__('messages.file_does_not_belongs_to_any_user'));
+            return $this->deny(__('file_messages.file_does_not_belongs_to_any_user'));
         }
 
         if ($user_to_check->id != $file->user->id) {
-            return $this->deny(__('messages.file_does_not_belong_to_user'));
+            return $this->deny(__('file_messages.file_does_not_belong_to_user'));
         }
         if ($user->type == User::ADMIN) {
             return true;
         }
         if ($user->id != $file->user_id) {
-            return $this->deny(__('messages.not_your_file'));
+            return $this->deny(__('file_messages.not_your_file'));
         }
         return true;
     }

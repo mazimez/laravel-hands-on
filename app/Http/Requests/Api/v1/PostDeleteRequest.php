@@ -18,7 +18,7 @@ class PostDeleteRequest extends FormRequest
         $user = Auth::user();
         if ($user->type == User::ADMIN) {
             if ($this->missing('reason')) {
-                throw new \Exception(__('messages.reason_required_to_delete_post'));
+                throw new \Exception(__('post_messages.reason_required_to_delete_post'));
             }
         }
 

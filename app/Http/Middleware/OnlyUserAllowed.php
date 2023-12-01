@@ -20,13 +20,13 @@ class OnlyUserAllowed
     {
         if (!Auth::user()) {
             return response()->json([
-                'message' => __('messages.unauthenticated'),
+                'message' => __('access_messages.unauthenticated'),
                 'status' => '401',
             ], 401);
         }
         if (Auth::user()->type != User::USER) {
             return response()->json([
-                'message' => __('messages.only_user_allowed'),
+                'message' => __('access_messages.only_user_allowed'),
                 'status' => '0',
             ]);
         }

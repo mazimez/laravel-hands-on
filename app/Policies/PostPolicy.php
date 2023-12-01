@@ -35,12 +35,12 @@ class PostPolicy
         }
         if ($post->is_blocked) {
             if (!($user && $post->user_id == $user->id)) {
-                return $this->deny(__('messages.post_blocked'));
+                return $this->deny(__('post_messages.post_blocked'));
             }
         }
         if (!$post->is_verified) {
             if (!($user && $post->user_id == $user->id)) {
-                return $this->deny(__('messages.post_not_verified'));
+                return $this->deny(__('post_messages.post_not_verified'));
             }
         }
         return true;
@@ -67,7 +67,7 @@ class PostPolicy
     public function update(User $user, Post $post)
     {
         if ($post->user_id != $user->id) {
-            return $this->deny(__('messages.not_your_post'));
+            return $this->deny(__('post_messages.not_your_post'));
         }
         return true;
     }
@@ -85,7 +85,7 @@ class PostPolicy
             return true;
         }
         if ($post->user_id != $user->id) {
-            return $this->deny(__('messages.not_your_post'));
+            return $this->deny(__('post_messages.not_your_post'));
         }
         return true;
     }

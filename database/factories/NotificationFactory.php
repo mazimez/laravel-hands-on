@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostComment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Notification>
  */
-class PostCommentFactory extends Factory
+class NotificationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +19,8 @@ class PostCommentFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'post_id' => Post::inRandomOrder()->first()->id,
-            'comment' => fake()->text(50),
+            'title' => fake()->text(10),
+            'message' => fake()->text(50),
         ];
     }
 }

@@ -88,7 +88,11 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api/v1')
             ->middleware('api')
             ->namespace($this->namespace . "\Api")
-            ->group(base_path('routes/api/v1.php'));
+            ->group(base_path('routes/api/v1/base.php'))
+            ->group(base_path('routes/api/v1/posts.php'))
+            ->group(base_path('routes/api/v1/tags.php'))
+            ->group(base_path('routes/api/v1/users.php'))
+            ->group(base_path('routes/api/v1/notifications.php'));
     }
     /**
      * Define the "api" routes for the application.
@@ -102,7 +106,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api/v2')
             ->middleware('api')
             ->namespace($this->namespace . "\Api")
-            ->group(base_path('routes/api/v2.php'));
+            ->group(base_path('routes/api/v2/base.php'));
     }
     /**
      * Define the "web" routes for the application.

@@ -28,14 +28,14 @@ class PostCommentController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.post_comment_list_returned'),
+                    'message' => __('post_messages.post_comment_list_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.post_comment_list_returned'),
+            'message' => __('post_messages.post_comment_list_returned'),
             'status' => '1'
         ]);
     }
@@ -56,7 +56,7 @@ class PostCommentController extends Controller
         ]);
         return response()->json([
             'data' => $comment->refresh()->loadMissing(['user']),
-            'message' => __('messages.post_comment_list_returned'),
+            'message' => __('post_messages.post_comment_list_returned'),
             'status' => '1'
         ]);
     }
@@ -86,7 +86,7 @@ class PostCommentController extends Controller
         $comment->save();
         return response()->json([
             'data' => $comment->refresh()->loadMissing(['user']),
-            'message' => __('messages.post_comment_updated'),
+            'message' => __('post_messages.post_comment_updated'),
             'status' => '1'
         ]);
     }
@@ -102,7 +102,7 @@ class PostCommentController extends Controller
         $this->authorize('delete', [PostComment::class, $comment, $post]);
         $comment->delete();
         return response()->json([
-            'message' => __('messages.comment_deleted'),
+            'message' => __('post_messages.comment_deleted'),
             'status' => '1'
         ]);
     }
@@ -121,14 +121,14 @@ class PostCommentController extends Controller
         if ($request->has('page')) {
             return response()->json(
                 collect([
-                    'message' => __('messages.post_comments_likers_returned'),
+                    'message' => __('post_messages.post_comments_likers_returned'),
                     'status' => '1',
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
         return response()->json([
             'data' => $data->get(),
-            'message' => __('messages.post_comments_likers_returned'),
+            'message' => __('post_messages.post_comments_likers_returned'),
             'status' => '1'
         ]);
     }
@@ -146,7 +146,7 @@ class PostCommentController extends Controller
         $comment->likers()->toggle([$auth_user->id]);
 
         return response()->json([
-            'message' => __('messages.post_comment_like_toggle'),
+            'message' => __('post_messages.post_comment_like_toggle'),
             'status' => '1'
         ]);
     }

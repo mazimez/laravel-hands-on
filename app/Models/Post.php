@@ -88,6 +88,17 @@ class Post extends Model
         );
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(
+            Notification::class,
+            'notifiable',
+            'notifiable_type',
+            'notifiable_id',
+            'id',
+        );
+    }
+
     // public function files()
     // {
     //     return $this->hasMany(PostFile::class);
