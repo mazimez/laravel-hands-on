@@ -59,4 +59,5 @@ you can directly go to any branch for the topic that you want to understand, and
 31. [debugging-telescope](https://github.com/mazimez/laravel-hands-on/tree/debugging-telescope)
 32. [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing)
 33. [fcm-notification-part-1](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-1)
+34. [fcm-notification-part-2-optimization](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-2-optimization)
 
