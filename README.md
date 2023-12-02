@@ -43,6 +43,13 @@ This documentation covers the basic implementation of Sorting & Searching. Futur
 - try to understand this code and improve it(take it as a `HomeWork`)
 - using this approach to store lat-long as a `string` in DataBase is not that good. but for our example it doesn't matter much, we will see how we can handle this location data properly in future branches.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- till now we see the searching and sorting in general, but you we haven't see how sorting reacts while sorting dates, times and also numbers stored as string. you can try to do some more sorting on these different types of data.
+- there comes a time where you need to `sort` or `search` things after the query has been executed. for that you can use [laravel's collection](https://laravel.com/docs/10.x/collections#introduction) and methods like `search`, `sort` to perform those actions. try to get used to it.
+
 ## Note
 
 You can utilize the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to make API calls.
