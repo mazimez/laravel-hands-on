@@ -29,8 +29,13 @@ We will be implementing CRUD operations for our Post resource (table).
 
 6. We also have the `show` method, which returns a specific post, and the `destroy` method, which deletes a post. Notice how we directly obtain an instance of the `Post` model from the method's parameter, utilizing [route-model-binding](https://laravel.com/docs/10.x/routing#route-model-binding).
 
-
 That concludes the basic implementation of CRUD operations in your project. There are still many other concepts we can explore, such as `policies` and `filters`. We will delve into those topics in future branches.
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- as you know in this example, we created each route separately and also returning the exact data we get from DB. but Laravel provides things like [api-resource-routes](https://laravel.com/docs/10.x/controllers#api-resource-routes) and [eloquent-resources](https://laravel.com/docs/10.x/eloquent-resources#introduction) that can help you customize things. try to understand and use it.
 
 ## Note
 You can use the [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection) to call this APIs.
