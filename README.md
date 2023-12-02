@@ -24,15 +24,22 @@ We will use relationships to connect our `Post` model with `User` and other mode
 
 3. We've created [PostCommentFactory](database/factories/PostCommentFactory.php) and [PostFileFactory](database/factories/PostFileFactory.php) to generate dummy data for these resources. Now that we've used relationships in seeders and factories, let's incorporate them into our APIs (controllers).
 
-4. Open [PostController](app/Http/Controllers/Api/v1/PostController.php) and examine the `index` method. We've used the `with` method on the `Post` model and added the `user` and `file` relationships to it. This attaches (preloads) the `User` and `PostFile` models with each `Post` when returning JSON. This is how you can include data from other models (tables) with your main model. There are other methods like `withCount`, `withSum`, `withMin`, etc., that operate on the same concept. You can read about them in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships).
+4. Open [PostController](app/Http/Controllers/Api/v1/PostController.php) and examine the `index` method. We've used the `with` method on the `Post` model and added the `user` and `file` relationships to it. This attaches (preloads) the `User` and `PostFile` models with each `Post` when returning JSON. This is how you can include data from other models (tables) with your main model.
 
-5. In the `index` method, notice that we use the `orWhereHas` function and pass the relationship `user` as a string when performing a search. This allows us to apply queries on the related `users` table, enabling us to search within the `users` table through the `posts` table. There are many other methods available, such as `whereDoesntHave`, `doesntHave`, etc.
+5. In the `index` method, notice that we use the `orWhereHas` function and pass the relationship `user` as a string when performing a search. This allows us to apply queries on the related `users` table, enabling us to search within the `users` table through the `posts` table.
 
 6. Moving on to the `show` method, we utilize the `loadMissing` function, which loads the specified relationships only for that particular instance of the `Post` model. There are also functions like `loadCount`, `loadSum`, etc.
 
 7. We've also added a new [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php) that uses similar functions.
 
 These are the basics of Eloquent Relationships. Familiarize yourself with these functions as you'll need them frequently. In future branches, we'll cover additional concepts such as polymorphic relationships and pivot tables.
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+-  just like the `with` method we saw in [PostController](app/Http/Controllers/Api/v1/PostController.php), There are other methods like `withCount`, `withSum`, `withMin`, etc., that operate on the same concept. You can read about them in the [Laravel documentation](https://laravel.com/docs/10.x/eloquent-relationships). so, try to use those methods in your APIs too.
+- just like `orWhereHas` method, There are many other methods available, such as `whereDoesntHave`, `doesntHave`, etc. you can also try to use them too.
 
 ## Note
 
