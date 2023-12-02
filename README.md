@@ -49,6 +49,13 @@ you may have noticed that we added some codes just for access-control or checkin
 
 Feel free to explore more about `Scope` and `Attributes` and other topics related to it
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- you can try to find a solution to the problem we have in [User](app/Models/User.php) model.
+- there comes a time when you want run the query without any global scope or attributes applied on it. Laravel also provides a way for it that we will cover in later branches, but you can try to find it on your own.
+
 ## Note
 
 To simplify API calls, you can utilize the provided [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
