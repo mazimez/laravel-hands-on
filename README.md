@@ -32,11 +32,15 @@ Follow these instructions to implement the changes and utilize the resources:
 
 6. In the [PostController](app/Http/Controllers/Api/v1/PostController.php), modify the `index` method to include the `likers` relationship. Use [withCount](https://laravel.com/docs/10.x/eloquent-relationships#counting-related-models) to display the count of likes for each post. The `withCount` method is one of many techniques that simplify aggregating data from different tables into a single API response. Refer to the Laravel documentation on [aggregation](https://laravel.com/docs/10.x/eloquent-relationships#aggregating-related-models) for more details.
 
-By following this approach, you can reduce redundant code and make your code more reliant on relationships rather than the database. This becomes especially useful when updating the database to implement polymorphic relationships. Furthermore, you can aggregate data from different tables into a single API response.
+By following this approach, you can reduce redundant code and make your code more reliant on relationships rather than the database. 
 
-For simplified API calls, you can utilize the provided [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
+## DIY (Do It Yourself)
 
-Feel free to explore additional methods like `sync` and `toggle` to implement more features. Consider it as a DIY (Do It Yourself) opportunity.
+Here are some additional tasks you can undertake:
+
+- in this section, you get to know about the methods like `sync` and `toggle`. try to find more methods likes this and use it in your project.
+- we have only looked into couple of relationships, but there are many more like this. so try to learn about all of them and use it in your project.
+- there is also a concept of `polymorphic relationships` that we will cover in later branches, but you can start learning about it from now.
 
 ## Note
 
