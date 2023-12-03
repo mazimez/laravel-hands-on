@@ -47,6 +47,14 @@ so that's how you can use middleware to add your common `rules/logic`. you can s
 try to follow this approach in all of you projects, this will make it easy to update your `rules` without effecting your `logics`.
 
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- in our example, most of our middleware's only check things with logged-in user but middleware can be used to check things in request like parameters, headers etc. so try to make more middleware like that.
+
+
+
 ## Reference
 
 1. [Laravel Documentation for Middleware](https://laravel.com/docs/10.x/middleware)
