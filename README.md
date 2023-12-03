@@ -45,6 +45,14 @@ Please follow the step-by-step instructions below to implement the changes and l
 
 Polymorphic relationships are powerful and can be highly beneficial for implementing unique features. However, they can also be complex and challenging to understand fully. I recommend focusing on this topic and practicing with your own examples to deepen your understanding.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- there comes a time where your requirements may not be fulfilled by basic polymorphic relationship. for example, you need to connect 1 resource with some `pivot` table that may not have any primary key or may be to some resource that's not even stored in Database but in Cache or some other place. in that time, you may need to implement your own type of relationship. defining your own custom relationship will greatly improve your understanding about relationships, so you should try to do it.
+
+
+
 ## Note
 
 - After this branch, we will proceed to remove the [2023_05_14_062725_create_post_files_table](database/migrations/2023_05_14_062725_create_post_files_table.php) migration and [PostFile](app/Models/PostFile.php) model, as they are no longer required due to the successful implementation of the polymorphic relationship.
