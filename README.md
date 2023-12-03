@@ -39,6 +39,14 @@ Please follow these step-by-step instructions to implement the changes and make 
 
 8. **Updating PostSeeder**: Finally, update [PostSeeder](database/seeders/PostSeeder.php) to include sample likes for each `PostComment`. This step ensures that the database is seeded with relevant data for testing and demonstration purposes.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- here we make our `like` feature generic so it can be used on any resource. try to do this with `comment` as well, meaning comments can be added on any resource like `posts`, `user` or any other resource. it may be a little complicated but that will help you understand the concept in more detail.
+- just like `morphToMany` method, we have other methods like `morphTo`, `morphOne` that you should try to use to get more grip on this concept.
+
+
 ## Note
 - Please be aware that in Part 2 of this guide, we will proceed to remove [2023_05_14_063015_create_post_likes_table](database/migrations/2023_05_14_063015_create_post_likes_table.php) migration and [PostLike](app/Models/PostLike.php) model since they will no longer be needed due to the successful implementation of the polymorphic relationship.
 - also if you have any doubts on `polymorphism` topic or any other topic in this guide, feel free to open a new [discussion](https://github.com/mazimez/laravel-hands-on/discussions) where you can discuss that topic in detail with other developers.
