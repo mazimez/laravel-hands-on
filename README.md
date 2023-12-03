@@ -41,13 +41,18 @@ Please follow these instructions to implement the changes and make use of the av
 
 9. To use the `toggle` method, navigate to the [UserFollowController](app/Http/Controllers/Api/v1/UserFollowController.php), specifically within the `toggle` method. We use the `authorize` method, specifying the custom method we created in the policy (`toggle`) as the first parameter. In the array, we pass the user to be followed. It's important to note that we only pass a single `user` variable, even though the `toggle` method in the policy expects two users. This is because the first user is fetched from `AUTH` and does not need to be explicitly passed. This illustrates how custom methods can be created within policies and used according to your needs.
 
-10. Additional examples of policies can be found in the [PostCommentController](app/Http/Controllers/Api/v1/PostCommentController.php). You can explore these examples and consider applying more policies to other controllers within your project as a "Do-It-Yourself" task.
-
 By employing policies, we can apply our user rules to the project. Separating rules from logic allows for easier rule updates without interfering with the overall logic. In our case, if any other rules for posts are added,
 
  we only need to update the policies while keeping the controllers intact.
 
 There are various other ways to apply rules, such as using the `authorize` method provided in requests for each API. However, utilizing policies provides a clearer overview of all rules and their management. You have the freedom to choose among the available options.
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- we have added policies to only couple of places, try to apply it in whole project.
+- there is also methods like `can` and `cannot` that you can use with `policies`, here is it's [Laravel doc](https://laravel.com/docs/10.x/authorization#authorizing-actions-using-policies). try to use these methods as well.
 
 ## Note
 
