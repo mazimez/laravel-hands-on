@@ -22,11 +22,13 @@ class PostCommentObserver
         if ($overall_post_comment_count > 0) {
             $first_comment_badge = Badge::where('slug', Badge::FIRST_COMMENT)->first();
             if ($first_comment_badge) {
-                //TODO::try to first check if this badge is already added for this user, if not then only add it
-                $post_comment->badges()->create([
-                    'user_id' => $post_comment->post->user_id,
-                    'badge_id' => $first_comment_badge->id,
-                ]);
+                $user_to_give_badge = $post_comment->post->user;
+                if (!$user_to_give_badge->badges()->where('badges.id', $first_comment_badge->id)->exists()) {
+                    $post_comment->badges()->create([
+                        'user_id' => $post_comment->post->user_id,
+                        'badge_id' => $first_comment_badge->id,
+                    ]);
+                }
             }
         }
     }

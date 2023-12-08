@@ -44,6 +44,11 @@ class UserBadge extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function badge()
+    {
+        return $this->belongsTo(Badge::class, 'badge_id');
+    }
+
     public function post()
     {
         return $this->morphTo(
@@ -57,6 +62,17 @@ class UserBadge extends Model
     public function badgeable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(
+            Notification::class,
+            'notifiable',
+            'notifiable_type',
+            'notifiable_id',
+            'id',
+        );
     }
 
     //SCOPES

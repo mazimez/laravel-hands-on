@@ -21,11 +21,12 @@ class PostObserver
             if ($user->posts()->count() <= 0) {
                 $first_post_badge = Badge::where('slug', Badge::FIRST_POST)->first();
                 if ($first_post_badge) {
-                    //TODO::try to first check if this badge is already added for this user, if not then only add it
-                    $post->badges()->create([
-                        'user_id' => $post->user->id,
-                        'badge_id' => $first_post_badge->id,
-                    ]);
+                    if (!$user->badges()->where('badges.id', $first_post_badge->id)->exists()) {
+                        $post->badges()->create([
+                            'user_id' => $post->user->id,
+                            'badge_id' => $first_post_badge->id,
+                        ]);
+                    }
                 }
             }
         }

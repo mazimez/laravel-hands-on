@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommonPaginationRequest;
+use App\Jobs\SendNotificationJob;
+use App\Models\Badge;
+use App\Models\Likable;
 use App\Models\Notification;
 use App\Models\Post;
 use App\Models\PostLike;
@@ -44,6 +47,7 @@ class PostLikeController extends Controller
     public function toggle(Post $post)
     {
         $auth_user = Auth::user();
+
         //OPTION-1 (with proper message about like/unlike)
         $liker = $post->likers()->where('user_id', $auth_user->id)->first();
         if ($liker) {
@@ -66,8 +70,28 @@ class PostLikeController extends Controller
                     'post_id' => $post->id,
                 ],
             ]);
-            Notification::sendNotification($notification);
+            SendNotificationJob::dispatch($notification);
         }
+
+        $first_like_badge = Badge::where('slug', Badge::FIRST_LIKE)->first();
+        if ($first_like_badge) {
+            $user_to_give_badge = $post->user;
+            if (!$user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
+                $overall_post_like_count = Likable::where('user_id', '!=', $post->user_id)
+                    ->whereHas('post', function ($query) use ($post) {
+                        $query->where('user_id', $post->user_id);
+                    })
+                    ->where('likable_type', Post::class)
+                    ->count();
+                if ($overall_post_like_count > 0) {
+                    $post->badges()->create([
+                        'user_id' => $post->user_id,
+                        'badge_id' => $first_like_badge->id,
+                    ]);
+                }
+            }
+        }
+
 
         return response()->json([
             'message' => __('post_messages.post_liked'),

@@ -46,5 +46,11 @@ class BadgeSeeder extends Seeder
             'name' => "First Comment",
             'description' => "Given when user gets first comment on any of it's post ever in system",
         ]);
+        $first_like_badge = Badge::updateOrCreate([
+            'slug' => Badge::FIRST_LIKE,
+        ], [
+            'name' => "First Like",
+            'description' => "Given when user gets first like on any of it's post ever in system",
+        ]);
     }
 }

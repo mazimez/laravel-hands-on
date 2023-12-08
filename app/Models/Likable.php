@@ -5,27 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Badge extends Model
+class Likable extends Model
 {
     use HasFactory;
 
     //public $timestamps = false;
 
-    const FIRST_POST = "FIRST_POST";
-    const PHONE_VERIFIED = "PHONE_VERIFIED";
-    const EMAIL_VERIFIED = "EMAIL_VERIFIED";
-    const FIRST_FOLLOWER = "FIRST_FOLLOWER";
-    const FIRST_COMMENT = "FIRST_COMMENT";
-    const FIRST_LIKE = "FIRST_LIKE";
-
     //TABLE
-    public $table = 'badges';
+    public $table = 'likables';
 
     //FILLABLE
     protected $fillable = [
-        'name',
-        'slug',
-        'description',
+        'user_id',
+        'likable_type',
+        'likable_id'
     ];
 
     //HIDDEN
@@ -41,9 +34,15 @@ class Badge extends Model
     protected $casts = [];
 
     //RELATIONSHIPS
-    //public function example(){
-    //    return $this->hasMany();
-    //}
+    public function post()
+    {
+        return $this->morphTo(
+            Post::class,
+            'likable_type',
+            'likable_id',
+            'id'
+        )->withoutGlobalScope('active')->withoutGlobalScope('is_liked');
+    }
 
     //SCOPES
     //public function scopeExample($query)

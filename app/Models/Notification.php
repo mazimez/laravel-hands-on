@@ -16,7 +16,7 @@ class Notification extends Model
     const OPEN_POST = "OPEN_POST", DO_NOTHING = "DO_NOTHING", OPEN_PROFILE = "OPEN_PROFILE";
 
     //TYPES
-    const POST_LIKED = "POST_LIKED";
+    const POST_LIKED = "POST_LIKED", NEW_BADGE_ADDED = "NEW_BADGE_ADDED";
 
     //public $timestamps = false;
 
