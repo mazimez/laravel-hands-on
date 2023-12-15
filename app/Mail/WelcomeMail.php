@@ -4,19 +4,18 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
 
 class WelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public User $user;
+
     public $link;
 
     /**
@@ -28,7 +27,7 @@ class WelcomeMail extends Mailable
     {
         $this->user = $user;
         $this->link = route('email.verify', [
-            'hash' => Crypt::encrypt($user->id)
+            'hash' => Crypt::encrypt($user->id),
         ]);
     }
 
@@ -40,7 +39,7 @@ class WelcomeMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: "Welcome " . $this->user->name,
+            subject: 'Welcome '.$this->user->name,
         );
     }
 

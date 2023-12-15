@@ -3,11 +3,11 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
 class SampleMail extends Mailable
@@ -15,7 +15,9 @@ class SampleMail extends Mailable
     use Queueable, SerializesModels;
 
     public $test_message = null;
+
     public $file = null;
+
     public $extension = null;
 
     /**
@@ -70,9 +72,10 @@ class SampleMail extends Mailable
     {
         if ($this->file) {
             return [
-                Attachment::fromData(fn () => $this->file, 'file' . '.' . $this->extension),
+                Attachment::fromData(fn () => $this->file, 'file'.'.'.$this->extension),
             ];
         }
+
         return [];
     }
 }

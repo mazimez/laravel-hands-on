@@ -23,7 +23,7 @@ class UserBadgeController extends Controller
         $data = $data->orderBy('user_badges.created_at', 'desc');
 
         if ($request->has('search')) {
-            $search = '%' . $request->search . '%';
+            $search = '%'.$request->search.'%';
             $data = $data->where(function ($query) use ($search) {
                 $query->where('name', 'like', $search)
                     ->where('slug', 'like', $search)
@@ -39,10 +39,11 @@ class UserBadgeController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('badge_messages.user_badges_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Mail\MostPostedMail;
-use App\Models\Post;
 use App\Models\User;
 use App\Traits\ErrorManager;
 use Carbon\Carbon;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 class CalculateMonthlyRewards extends Command
 {
     use ErrorManager;
+
     /**
      * The name and signature of the console command.
      *

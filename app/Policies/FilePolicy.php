@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FilePolicy
 {
@@ -41,6 +41,7 @@ class FilePolicy
         if ($user->id != $user_to_check->id) {
             return $this->deny(__('file_messages.can_not_view_someone_else_files'));
         }
+
         return true;
     }
 
@@ -88,7 +89,7 @@ class FilePolicy
      */
     public function deletePostFile(User $user, File $file, Post $post)
     {
-        if (!$file->post) {
+        if (! $file->post) {
             return $this->deny(__('file_messages.file_does_not_belongs_to_any_post'));
         }
 
@@ -104,6 +105,7 @@ class FilePolicy
         if ($user->id != $file->user_id) {
             return $this->deny(__('file_messages.not_your_file'));
         }
+
         return true;
     }
 
@@ -116,7 +118,7 @@ class FilePolicy
      */
     public function deleteUserFile(User $user, File $file, User $user_to_check)
     {
-        if (!$file->user) {
+        if (! $file->user) {
             return $this->deny(__('file_messages.file_does_not_belongs_to_any_user'));
         }
 
@@ -129,6 +131,7 @@ class FilePolicy
         if ($user->id != $file->user_id) {
             return $this->deny(__('file_messages.not_your_file'));
         }
+
         return true;
     }
 

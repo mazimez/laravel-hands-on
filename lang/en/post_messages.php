@@ -11,6 +11,7 @@ return [
     |
     */
     //POST
+    # pint ignore/file
     "post_list_returned" => "Posts list returned successfully",
     "post_detail_returned" => "Post detail returned successfully",
     "post_deleted" => "Post deleted successfully",

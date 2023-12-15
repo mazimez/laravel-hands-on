@@ -14,7 +14,6 @@ use App\Models\Badge;
 use App\Models\User;
 use App\Models\UserBadge;
 use App\Traits\FileManager;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -24,23 +23,24 @@ use Throwable;
 class UserController extends Controller
 {
     use FileManager;
+
     /**
      * Login the user and return the bearer token
      *
-     * @param  \App\Http\Requests\Api\v1\LoginRequest $request
+     * @param  \App\Http\Requests\Api\v1\LoginRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(LoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => __('messages.user_not_found'),
                 'status' => '0',
             ]);
         }
 
-        if (!password_verify($request->password, $user->password)) {
+        if (! password_verify($request->password, $user->password)) {
             return response()->json([
                 'message' => __('user_messages.wrong_password'),
                 'status' => '0',
@@ -50,18 +50,19 @@ class UserController extends Controller
             $user->firebase_tokens = $user->firebase_tokens ? collect($user->firebase_tokens)->push($request->firebase_token)->unique()->values()->all() : [$request->firebase_token];
             $user->save();
         }
+
         return response()->json([
             'data' => $user,
             'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
             'message' => __('user_messages.user_login'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * Login the user with social account(via access token)
      *
-     * @param  \App\Http\Requests\Api\v1\SocialLoginRequest $request
+     * @param  \App\Http\Requests\Api\v1\SocialLoginRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function socialLogin(SocialLoginRequest $request)
@@ -77,31 +78,32 @@ class UserController extends Controller
         }
 
         $user = User::where('type', User::USER)->where('email', $social_user->getEmail())->first();
-        if (!$user) {
+        if (! $user) {
             $user = User::create([
                 'name' => $social_user->getName(),
                 'profile_image' => $social_user->getAvatar() ? $this->saveFileFromUrl($social_user->getAvatar(), 'users') : null,
                 'email' => $social_user->getEmail(),
                 'password' => null,
-                'type' => User::USER
+                'type' => User::USER,
             ]);
         }
         if ($request->has('firebase_token')) {
             $user->firebase_tokens = $user->firebase_tokens ? collect($user->firebase_tokens)->push($request->firebase_token)->unique()->values()->all() : [$request->firebase_token];
             $user->save();
         }
+
         return response()->json([
             'data' => $user->refresh(),
             'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
             'message' => __('user_messages.user_login'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Http\Requests\Api\v1\UserIndexRequest $request
+     * @param  \App\Http\Requests\Api\v1\UserIndexRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(UserIndexRequest $request)
@@ -112,13 +114,13 @@ class UserController extends Controller
             $longitude = $request->longitude;
             if ($latitude && $longitude) {
                 $data = $data->selectRaw(
-                    "*,
+                    '*,
                 round(( 6371 * acos( cos( radians(?) ) *
                 cos( radians( latitude ) )
                 * cos( radians( longitude ) - radians(?)
                 ) + sin( radians(?) ) *
                 sin( radians( latitude ) ) )
-                ),2) AS distance ",
+                ),2) AS distance ',
                     [$latitude, $longitude, $latitude]
                 );
 
@@ -131,7 +133,7 @@ class UserController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = '%' . $request->search . '%';
+            $search = '%'.$request->search.'%';
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('name', 'like', $search)
                     ->orWhere('phone_number', 'like', $search)
@@ -147,17 +149,18 @@ class UserController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('user_messages.user_list_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Api\v1\UserCreateRequest $request
+     * @param  \App\Http\Requests\Api\v1\UserCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserCreateRequest $request)
@@ -168,11 +171,12 @@ class UserController extends Controller
             'phone_number' => $request->phone_number,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'type' => User::USER
+            'type' => User::USER,
         ]);
+
         return response()->json([
             'message' => __('user_messages.user_registered'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -187,17 +191,18 @@ class UserController extends Controller
         if ($request->has('user_id')) {
             $user = User::findOrFail($request->user_id);
         }
+
         return response()->json([
             'data' => $user,
             'message' => __('user_messages.user_detail_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Api\v1\UserUpdateRequest $request
+     * @param  \App\Http\Requests\Api\v1\UserUpdateRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function update(UserUpdateRequest $request)
@@ -210,7 +215,7 @@ class UserController extends Controller
             if (User::where('phone_number', $request->phone_number)->where('id', '!=', $auth_user->id)->exists()) {
                 return response()->json([
                     'message' => __('user_messages.phone_number_already_used'),
-                    'status' => '1'
+                    'status' => '1',
                 ]);
             }
             $auth_user->phone_number = $request->phone_number;
@@ -223,10 +228,11 @@ class UserController extends Controller
         }
 
         $auth_user->save();
+
         return response()->json([
             'data' => $auth_user->refresh(),
             'message' => __('user_messages.user_updated'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -241,7 +247,7 @@ class UserController extends Controller
         if ($user->is_phone_verified) {
             return response()->json([
                 'message' => __('user_messages.phone_number_already_verified'),
-                'status' => '0'
+                'status' => '0',
             ]);
         }
         $phone_verified_badge = Badge::where('slug', Badge::PHONE_VERIFIED)->first();
@@ -253,16 +259,17 @@ class UserController extends Controller
             ]);
         }
         User::sendOtp($user);
+
         return response()->json([
             'message' => __('messages.otp_sent_to_user'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * confirm user's phone number with given verification code
      *
-     * @param  \App\Http\Requests\Api\v1\ConfirmPhoneRequest $request
+     * @param  \App\Http\Requests\Api\v1\ConfirmPhoneRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function confirmPhone(ConfirmPhoneRequest $request)
@@ -271,7 +278,7 @@ class UserController extends Controller
         if ($user->otp != $request->otp) {
             return response()->json([
                 'message' => __('messages.wrong_otp'),
-                'status' => '1'
+                'status' => '1',
             ]);
         }
         $user->otp = null;
@@ -285,17 +292,18 @@ class UserController extends Controller
                 'badge_id' => $phone_verified_badge->id,
             ]);
         }
+
         return response()->json([
             'message' => __('messages.otp_verified'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * verify user's email
      *
-     * @param  Illuminate\Http\Request $request
-     * @param  Illuminate\Http\Request $request
+     * @param  Illuminate\Http\Request  $request
+     * @param  Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function verifyEmail(Request $request, $hash)
@@ -316,7 +324,6 @@ class UserController extends Controller
         return view('email_verified');
     }
 
-
     public function logout(Request $request)
     {
         $user = Auth::user();
@@ -328,12 +335,12 @@ class UserController extends Controller
             $user->firebase_tokens = collect($user->firebase_tokens)->forget(collect($user->firebase_tokens)->search($request->firebase_token))->values()->all();
             $user->save();
         }
+
         return response()->json([
             'message' => __('user_messages.user_logout'),
             'status' => '1',
         ]);
     }
-
 
     /**
      * Remove the specified resource from storage.

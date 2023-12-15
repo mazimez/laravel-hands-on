@@ -17,7 +17,7 @@ class Tag extends Model
     //FILLABLE
     protected $fillable = [
         'name',
-        'color_hex'
+        'color_hex',
     ];
 
     //HIDDEN
@@ -48,5 +48,4 @@ class Tag extends Model
     //{
     //    return $data;
     //}
-
 }

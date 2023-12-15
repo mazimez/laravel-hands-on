@@ -12,11 +12,18 @@ use Illuminate\Support\Facades\Storage;
 class Notification extends Model
 {
     use HasFactory, FcmNotificationManager, ErrorManager;
+
     //CLICK ACTIONS
-    const OPEN_POST = "OPEN_POST", DO_NOTHING = "DO_NOTHING", OPEN_PROFILE = "OPEN_PROFILE";
+    const OPEN_POST = 'OPEN_POST';
+
+    const DO_NOTHING = 'DO_NOTHING';
+
+    const OPEN_PROFILE = 'OPEN_PROFILE';
 
     //TYPES
-    const POST_LIKED = "POST_LIKED", NEW_BADGE_ADDED = "NEW_BADGE_ADDED";
+    const POST_LIKED = 'POST_LIKED';
+
+    const NEW_BADGE_ADDED = 'NEW_BADGE_ADDED';
 
     //public $timestamps = false;
 
@@ -32,7 +39,7 @@ class Notification extends Model
         'click_action',
         'meta_data',
         'notifiable_type',
-        'notifiable_id'
+        'notifiable_id',
     ];
 
     //HIDDEN
@@ -46,7 +53,7 @@ class Notification extends Model
 
     //CASTS
     protected $casts = [
-        'meta_data' => 'array'
+        'meta_data' => 'array',
     ];
 
     //RELATIONSHIPS
@@ -71,14 +78,13 @@ class Notification extends Model
         return $this->belongsTo(User::class);
     }
 
-
     /**
      * send the notification to user based on it's data
      *
      * @param  \App\Models\Notification  $notification
-     * @return boolean
+     * @return bool
      */
-    static function sendNotification(Notification $notification)
+    public static function sendNotification(Notification $notification)
     {
         try {
             switch ($notification->type) {
@@ -128,5 +134,4 @@ class Notification extends Model
     //{
     //    return $data;
     //}
-
 }

@@ -2,13 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\Badge;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\User;
 use App\Models\UserBadge;
-use App\Observers\BadgeObserver;
 use App\Observers\FileObserver;
 use App\Observers\PostCommentObserver;
 use App\Observers\PostObserver;

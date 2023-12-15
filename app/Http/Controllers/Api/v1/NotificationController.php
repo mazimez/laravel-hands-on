@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommonPaginationRequest;
-use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,10 +28,11 @@ class NotificationController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('notification_messages.notification_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 

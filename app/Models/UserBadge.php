@@ -21,7 +21,7 @@ class UserBadge extends Model
         'badge_id',
         'badgeable_type',
         'badgeable_id',
-        'meta_data'
+        'meta_data',
     ];
 
     //HIDDEN
@@ -35,7 +35,7 @@ class UserBadge extends Model
 
     //CASTS
     protected $casts = [
-        'meta_data' => 'array'
+        'meta_data' => 'array',
     ];
 
     //RELATIONSHIPS
@@ -86,5 +86,4 @@ class UserBadge extends Model
     //{
     //    return $data;
     //}
-
 }

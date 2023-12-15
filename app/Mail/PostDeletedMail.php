@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,6 +13,7 @@ class PostDeletedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $post_title;
+
     public $deletion_reason;
 
     /**

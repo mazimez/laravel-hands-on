@@ -4,14 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PostDetailFeatureTest extends TestCase
 {
     public $user;
+
     public $should_delete_user;
+
     public $post;
 
     public function setUp(): void
@@ -21,7 +21,7 @@ class PostDetailFeatureTest extends TestCase
 
         $this->user = User::where('email', 'test@gmail.com')->first();
         $this->should_delete_user = false;
-        if (!$this->user) {
+        if (! $this->user) {
             $this->should_delete_user = true;
             $this->user = User::factory()->createQuietly([
                 'email' => 'test@gmail.com',
@@ -29,7 +29,7 @@ class PostDetailFeatureTest extends TestCase
             ]);
         }
 
-        if (!$this->post) {
+        if (! $this->post) {
             $this->post = Post::factory()->createQuietly([
                 'is_verified' => 1,
                 'is_blocked' => 0,
@@ -56,7 +56,7 @@ class PostDetailFeatureTest extends TestCase
     public function test_post_detail()
     {
         //checking for post data
-        $post_response = $this->actingAs($this->user)->get('api/v1/posts/' . $this->post->id);
+        $post_response = $this->actingAs($this->user)->get('api/v1/posts/'.$this->post->id);
         $this->assertEquals(200, $post_response->getStatusCode());
         $post_response = json_decode($post_response->getContent(), true);
 

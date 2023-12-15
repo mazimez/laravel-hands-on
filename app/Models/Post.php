@@ -22,7 +22,7 @@ class Post extends Model
         'description',
         'meta_data',
         'is_verified',
-        'is_blocked'
+        'is_blocked',
     ];
 
     /**
@@ -37,9 +37,10 @@ class Post extends Model
 
         static::addGlobalScope('is_liked', function ($query) {
             $user = Auth::user();
-            if (!$user) {
+            if (! $user) {
                 return $query;
             }
+
             return $query->withExists(['likers as is_liked' => function ($query) use ($user) {
                 return $query->where('users.id', $user->id);
             }]);
@@ -57,7 +58,7 @@ class Post extends Model
 
     //CASTS
     protected $casts = [
-        'meta_data' => 'array'
+        'meta_data' => 'array',
     ];
 
     //RELATIONSHIPS
@@ -104,7 +105,6 @@ class Post extends Model
     //     return $this->hasMany(PostFile::class);
     // }
 
-
     // public function file()
     // {
     //     return $this->hasOne(PostFile::class)->where('type', PostFile::PHOTO);
@@ -120,6 +120,7 @@ class Post extends Model
             'id', //primary key on this table(model)
         )->where('type', File::PHOTO);
     }
+
     public function comments()
     {
         return $this->hasMany(PostComment::class);
@@ -161,5 +162,4 @@ class Post extends Model
     //{
     //    return $data;
     //}
-
 }

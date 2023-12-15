@@ -37,6 +37,7 @@ class UserFollows extends Model
     {
         return $this->belongsTo(User::class, 'id', 'follower_id');
     }
+
     public function followed()
     {
         return $this->belongsTo(User::class, 'id', 'followed_id');
@@ -47,5 +48,4 @@ class UserFollows extends Model
     //{
     //    return $data;
     //}
-
 }

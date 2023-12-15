@@ -28,10 +28,11 @@ class UserFollowController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('user_messages.user_followers_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -51,10 +52,11 @@ class UserFollowController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('user_messages.user_following_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -81,7 +83,7 @@ class UserFollowController extends Controller
 
         return response()->json([
             'message' => __('messages.follow_toggle'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 

@@ -17,6 +17,6 @@ return [
     'sent' => 'Vi har skickat en återställningslänk till din e-postadress!',
     'throttled' => 'Var vänlig vänta innan du försöker igen.',
     'token' => 'Återställningstoken för lösenordet är ogiltigt.',
-    'user' => "Vi hittar ingen användare med den e-postadressen.",
+    'user' => 'Vi hittar ingen användare med den e-postadressen.',
 
 ];

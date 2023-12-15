@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 class PostController extends Controller
 {
     use FileManager;
+
     /**
      * Display a listing of the resource.
      *
@@ -31,15 +32,15 @@ class PostController extends Controller
         $user = Auth::user();
         if ($user && $user->type == User::ADMIN) {
             $data = Post::withoutGlobalScope('active')->with([
-                'user', 'file', 'tags'
+                'user', 'file', 'tags',
             ])->withCount([
-                'likers', 'comments'
+                'likers', 'comments',
             ]);
         } else {
             $data = Post::with([
-                'user', 'file', 'tags'
+                'user', 'file', 'tags',
             ])->withCount([
-                'likers', 'comments'
+                'likers', 'comments',
             ]);
         }
 
@@ -64,7 +65,7 @@ class PostController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = '%' . $request->search . '%';
+            $search = '%'.$request->search.'%';
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('title', 'like', $search)
                     ->orWhere('description', 'like', $search);
@@ -79,10 +80,10 @@ class PostController extends Controller
         if ($request->has('sort_field')) {
             $sort_field = $request->sort_field;
             $sort_order = $request->input('sort_order', 'asc'); //default ascending
-            if (!in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
+            if (! in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
                 return response()->json([
                     'message' => __('messages.invalid_field_for_sorting'),
-                    'status' => '0'
+                    'status' => '0',
                 ]);
             }
             $data = $data->orderBy($sort_field, $sort_order);
@@ -98,10 +99,11 @@ class PostController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('post_messages.post_list_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -118,7 +120,7 @@ class PostController extends Controller
             'user_id' => $auth_user->id,
             'title' => $request->title,
             'description' => $request->description,
-            'meta_data' => json_decode($request->meta_data)
+            'meta_data' => json_decode($request->meta_data),
         ]);
 
         if ($post && $request->has('files')) {
@@ -130,16 +132,16 @@ class PostController extends Controller
                 if (Str::of($file->getMimeType())->contains('video/')) {
                     $file_type = File::VIDEO;
                 }
-                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
+                if (! in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('file_messages.file_type_not_supported'),
-                        'status' => '0'
+                        'status' => '0',
                     ]);
                 }
                 $post->files()->create([
                     'user_id' => $post->user->id,
                     'file_path' => $this->saveFile($file, 'posts'),
-                    'type' => $file_type
+                    'type' => $file_type,
                 ]);
             }
         }
@@ -150,60 +152,64 @@ class PostController extends Controller
         if ($request->has('tag_ids')) {
             $post->tags()->sync($request->tag_ids);
         }
+
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
             'message' => __('post_messages.post_created'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Post $post
+     * @param  Post  $post
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Post $post)
     {
         $this->authorize('view', [Post::class, $post]);
+
         return response()->json([
             'data' => $post->loadMissing(['user', 'files', 'tags']),
             'message' => __('post_messages.post_detail_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * block-toggle the given post
      *
-     * @param  Post $post
+     * @param  Post  $post
      * @return \Illuminate\Http\JsonResponse
      */
     public function blockToggle(Post $post)
     {
-        $post->is_blocked = !$post->is_blocked;
+        $post->is_blocked = ! $post->is_blocked;
         $post->save();
+
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files']),
             'message' => __('post_messages.post_detail_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
     /**
      * verify-toggle the given post
      *
-     * @param  Post $post
+     * @param  Post  $post
      * @return \Illuminate\Http\JsonResponse
      */
     public function verifyToggle(Post $post)
     {
-        $post->is_verified = !$post->is_verified;
+        $post->is_verified = ! $post->is_verified;
         $post->save();
+
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files']),
             'message' => __('post_messages.post_detail_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -211,7 +217,7 @@ class PostController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Api\v1\PostUpdateRequest  $request
-     * @param  Post $post
+     * @param  Post  $post
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(PostUpdateRequest $request, Post $post)
@@ -240,16 +246,16 @@ class PostController extends Controller
                 if (Str::of($file->getMimeType())->contains('video/')) {
                     $file_type = File::VIDEO;
                 }
-                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
+                if (! in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('file_messages.file_type_not_supported'),
-                        'status' => '0'
+                        'status' => '0',
                     ]);
                 }
                 $post->files()->create([
                     'user_id' => $post->user->id,
                     'file_path' => $this->saveFile($file, 'posts'),
-                    'type' => $file_type
+                    'type' => $file_type,
                 ]);
             }
         }
@@ -263,10 +269,11 @@ class PostController extends Controller
         //     ]);
         // }
         $post->save();
+
         return response()->json([
             'data' => $post->refresh()->loadMissing(['user', 'files', 'tags']),
             'message' => __('post_messages.post_updated'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -284,9 +291,10 @@ class PostController extends Controller
             PostDeletedEvent::dispatch($post->title, $request->reason, $post->user->email);
         }
         $post->delete();
+
         return response()->json([
             'message' => __('post_messages.post_deleted'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 }

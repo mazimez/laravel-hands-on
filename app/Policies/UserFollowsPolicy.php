@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Models\UserFollows;
 use App\Models\User;
+use App\Models\UserFollows;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserFollowsPolicy
 {
@@ -21,6 +21,7 @@ class UserFollowsPolicy
         if ($auth_user->id == $user_to_follow->id) {
             return $this->deny(__('messages.can_not_follow_self'));
         }
+
         return true;
     }
 

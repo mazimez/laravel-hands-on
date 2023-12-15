@@ -4,22 +4,21 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Traits\FcmNotificationManager;
 use App\Traits\SmsManager;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    const ADMIN = 'ADMIN';
 
-    const ADMIN = "ADMIN", USER = "USER";
+    const USER = 'USER';
 
     /**
      * The attributes that are mass assignable.
@@ -38,7 +37,7 @@ class User extends Authenticatable
         'otp',
         'is_phone_verified',
         'is_email_verified',
-        'firebase_tokens'
+        'firebase_tokens',
     ];
 
     /**
@@ -61,7 +60,7 @@ class User extends Authenticatable
 
     //APPENDS
     protected $appends = [
-        'is_following'
+        'is_following',
     ];
 
     /**
@@ -74,7 +73,7 @@ class User extends Authenticatable
         'remember_token',
         'email_verified_at',
         'otp',
-        'firebase_tokens'
+        'firebase_tokens',
     ];
 
     /**
@@ -84,7 +83,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'distance' => "string",
+        'distance' => 'string',
         'is_following' => 'boolean',
         'firebase_tokens' => 'array',
     ];
@@ -137,10 +136,10 @@ class User extends Authenticatable
         )->withPivot(['created_at', 'updated_at']);
     }
 
-    static function sendOtp(User $user)
+    public static function sendOtp(User $user)
     {
         if (config('services.two_factor.is_otp_live')) {
-            if (!$user->phone_number) {
+            if (! $user->phone_number) {
                 throw new Exception(__('messages.need_phone_number_to_send_otp'));
             }
 
@@ -176,9 +175,10 @@ class User extends Authenticatable
     {
         //FIXME::dont use attribute, try to do it with scope instead
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
+
         return UserFollows::where('followed_id', $user->id)->where('follower_id', $this->id)->exists();
     }
 }

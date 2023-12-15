@@ -22,9 +22,9 @@ class TagFactory extends Factory
                 fake()->company(),
                 fake()->colorName(),
                 fake()->city(),
-                fake()->country()
+                fake()->country(),
             ]),
-            'color_hex' => fake()->unique()->hexColor()
+            'color_hex' => fake()->unique()->hexColor(),
         ];
     }
 }

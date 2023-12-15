@@ -11,12 +11,17 @@ class Badge extends Model
 
     //public $timestamps = false;
 
-    const FIRST_POST = "FIRST_POST";
-    const PHONE_VERIFIED = "PHONE_VERIFIED";
-    const EMAIL_VERIFIED = "EMAIL_VERIFIED";
-    const FIRST_FOLLOWER = "FIRST_FOLLOWER";
-    const FIRST_COMMENT = "FIRST_COMMENT";
-    const FIRST_LIKE = "FIRST_LIKE";
+    const FIRST_POST = 'FIRST_POST';
+
+    const PHONE_VERIFIED = 'PHONE_VERIFIED';
+
+    const EMAIL_VERIFIED = 'EMAIL_VERIFIED';
+
+    const FIRST_FOLLOWER = 'FIRST_FOLLOWER';
+
+    const FIRST_COMMENT = 'FIRST_COMMENT';
+
+    const FIRST_LIKE = 'FIRST_LIKE';
 
     //TABLE
     public $table = 'badges';
@@ -56,5 +61,4 @@ class Badge extends Model
     //{
     //    return $data;
     //}
-
 }

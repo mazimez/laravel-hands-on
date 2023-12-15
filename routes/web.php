@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -22,7 +21,6 @@ Route::get('/', function () {
 
 Route::get('/email/verify/{hash}', 'Api\v1\UserController@verifyEmail')->name('email.verify');
 
-
 Route::get('auth/google', function () {
     return Socialite::driver('google')->redirect();
 });
@@ -37,6 +35,7 @@ Route::get('/login', function () {
     if (Auth::user()) {
         return redirect('/home');
     }
+
     return view('auth.login');
 });
 Route::post('/login', 'Web\UserController@login')->name('login');

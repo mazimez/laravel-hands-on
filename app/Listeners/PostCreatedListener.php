@@ -5,15 +5,14 @@ namespace App\Listeners;
 use App\Events\PostCreatedEvent;
 use App\Mail\PostCreatedMail;
 use App\Models\User;
-
 use App\Traits\ErrorManager;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class PostCreatedListener implements ShouldQueue
 {
     use ErrorManager;
+
     /**
      * Create the event listener.
      *

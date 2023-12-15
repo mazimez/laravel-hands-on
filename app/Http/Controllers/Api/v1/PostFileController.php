@@ -64,9 +64,10 @@ class PostFileController extends Controller
     {
         $this->authorize('deletePostFile', [File::class, $file, $post]);
         $file->delete();
+
         return response()->json([
             'message' => __('post_messages.post_file_deleted'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 }

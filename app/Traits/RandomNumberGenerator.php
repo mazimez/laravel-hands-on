@@ -8,6 +8,7 @@ trait RandomNumberGenerator
     protected function generateRandomNumber()
     {
         $random = \mt_rand('000000000', '999999999');
+
         return $random;
     }
 }

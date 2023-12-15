@@ -11,6 +11,6 @@ return [
     |
     */
     //badge
-    "user_badges_returned" => "User badges returned successfully",
+    'user_badges_returned' => 'User badges returned successfully',
 
 ];

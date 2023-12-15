@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 class UserObserver
 {
     use FileManager, ErrorManager;
+
     /**
      * Handle the User "created" event.
      *

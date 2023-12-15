@@ -27,6 +27,7 @@ class localization
             }
         }
         app()->setLocale($local);
+
         return $next($request);
     }
 }

@@ -18,7 +18,7 @@ class Likable extends Model
     protected $fillable = [
         'user_id',
         'likable_type',
-        'likable_id'
+        'likable_id',
     ];
 
     //HIDDEN
@@ -55,5 +55,4 @@ class Likable extends Model
     //{
     //    return $data;
     //}
-
 }

@@ -8,7 +8,6 @@ use App\Http\Requests\Api\v1\EditPostCommentRequest;
 use App\Http\Requests\CommonPaginationRequest;
 use App\Models\Post;
 use App\Models\PostComment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostCommentController extends Controller
@@ -33,10 +32,11 @@ class PostCommentController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('post_messages.post_comment_list_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -54,10 +54,11 @@ class PostCommentController extends Controller
             'user_id' => $auth_user->id,
             'comment' => $request->comment,
         ]);
+
         return response()->json([
             'data' => $comment->refresh()->loadMissing(['user']),
             'message' => __('post_messages.post_comment_list_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -84,10 +85,11 @@ class PostCommentController extends Controller
         $this->authorize('update', [PostComment::class, $comment, $post]);
         $comment->comment = $request->comment;
         $comment->save();
+
         return response()->json([
             'data' => $comment->refresh()->loadMissing(['user']),
             'message' => __('post_messages.post_comment_updated'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -101,9 +103,10 @@ class PostCommentController extends Controller
     {
         $this->authorize('delete', [PostComment::class, $comment, $post]);
         $comment->delete();
+
         return response()->json([
             'message' => __('post_messages.comment_deleted'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -126,10 +129,11 @@ class PostCommentController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('post_messages.post_comments_likers_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -147,7 +151,7 @@ class PostCommentController extends Controller
 
         return response()->json([
             'message' => __('post_messages.post_comment_like_toggle'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 }

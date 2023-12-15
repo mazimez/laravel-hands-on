@@ -14,6 +14,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect('/home');
         }
+
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
 

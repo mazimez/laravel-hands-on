@@ -26,7 +26,7 @@ class UserIndexRequest extends FormRequest
         return [
             'latitude' => '',
             'longitude' => '',
-            'distance' => 'numeric'
+            'distance' => 'numeric',
         ];
     }
 }

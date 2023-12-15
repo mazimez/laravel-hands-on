@@ -8,6 +8,7 @@ use App\Traits\FileManager;
 class FileObserver
 {
     use FileManager;
+
     /**
      * Handle the File "created" event.
      *

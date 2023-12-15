@@ -8,7 +8,6 @@ use App\Models\PostComment;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostSeeder extends Seeder
 {

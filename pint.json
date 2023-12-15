@@ -1,0 +1,11 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "no_superfluous_phpdoc_tags":false
+    },
+    "exclude": [
+        "vendor",
+        "node_modules",
+        "storage/app/*/*"
+    ]
+}

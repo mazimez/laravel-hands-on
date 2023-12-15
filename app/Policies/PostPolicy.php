@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PostPolicy
 {
@@ -34,15 +34,16 @@ class PostPolicy
             return true;
         }
         if ($post->is_blocked) {
-            if (!($user && $post->user_id == $user->id)) {
+            if (! ($user && $post->user_id == $user->id)) {
                 return $this->deny(__('post_messages.post_blocked'));
             }
         }
-        if (!$post->is_verified) {
-            if (!($user && $post->user_id == $user->id)) {
+        if (! $post->is_verified) {
+            if (! ($user && $post->user_id == $user->id)) {
                 return $this->deny(__('post_messages.post_not_verified'));
             }
         }
+
         return true;
     }
 
@@ -69,6 +70,7 @@ class PostPolicy
         if ($post->user_id != $user->id) {
             return $this->deny(__('post_messages.not_your_post'));
         }
+
         return true;
     }
 
@@ -87,6 +89,7 @@ class PostPolicy
         if ($post->user_id != $user->id) {
             return $this->deny(__('post_messages.not_your_post'));
         }
+
         return true;
     }
 

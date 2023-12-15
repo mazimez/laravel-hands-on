@@ -3,9 +3,9 @@
 namespace App\Policies;
 
 use App\Models\Post;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\PostComment;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PostCommentPolicy
 {
@@ -26,9 +26,10 @@ class PostCommentPolicy
         if ($post->is_blocked) {
             return $this->deny(__('post_post_messages.post_blocked_can_not_see_comments'));
         }
-        if (!$post->is_verified) {
+        if (! $post->is_verified) {
             return $this->deny(__('post_post_messages.post_not_verified_can_not_see_comments'));
         }
+
         return true;
     }
 
@@ -56,9 +57,10 @@ class PostCommentPolicy
         if ($post->is_blocked) {
             return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
-        if (!$post->is_verified) {
+        if (! $post->is_verified) {
             return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
+
         return true;
     }
 
@@ -75,7 +77,7 @@ class PostCommentPolicy
         if ($post->is_blocked) {
             return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
-        if (!$post->is_verified) {
+        if (! $post->is_verified) {
             return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
         if ($postComment->post_id != $post->id) {
@@ -84,6 +86,7 @@ class PostCommentPolicy
         if ($postComment->user_id != $user->id) {
             return $this->deny(__('access_messages.not_your_comment'));
         }
+
         return true;
     }
 
@@ -103,7 +106,7 @@ class PostCommentPolicy
         if ($post->is_blocked) {
             return $this->deny(__('post_post_messages.post_blocked_can_not_add_comments'));
         }
-        if (!$post->is_verified) {
+        if (! $post->is_verified) {
             return $this->deny(__('post_messages.post_not_verified_can_not_add_comments'));
         }
         if ($postComment->post_id != $post->id) {
@@ -112,6 +115,7 @@ class PostCommentPolicy
         if ($postComment->user_id != $user->id) {
             return $this->deny(__('access_messages.not_your_comment'));
         }
+
         return true;
     }
 

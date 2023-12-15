@@ -19,6 +19,7 @@ class UserFactory extends Factory
     public function definition()
     {
         $location = fake()->randomElement(config('default_locations'));
+
         return [
             'type' => User::USER,
             'name' => fake()->name(),

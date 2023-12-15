@@ -8,19 +8,21 @@ use App\Traits\FcmNotificationManager;
 use App\Traits\FileManager;
 use App\Traits\SmsManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
 class TestController extends Controller
 {
     use FileManager, SmsManager, FcmNotificationManager;
+
     public function fileUpload(Request $request)
     {
         $file_path = null;
         if ($request->has('file')) {
             $file_path = $this->saveFile($request->file, 'test');
         }
+
         return response()->json([
             'data' => Storage::url($file_path),
             'message' => __('file_messages.file_uploaded'),
@@ -31,6 +33,7 @@ class TestController extends Controller
     public function fileDestroy(Request $request)
     {
         $this->deleteFile($request->file_path);
+
         return response()->json([
             'message' => __('file_messages.file_deleted'),
             'status' => '1',
@@ -85,7 +88,7 @@ class TestController extends Controller
     public function fileUploadFromUrl(Request $request)
     {
         return response()->json([
-            'data' => $this->saveFileFromUrl($request->url, "test"),
+            'data' => $this->saveFileFromUrl($request->url, 'test'),
             'message' => __('file_messages.file_uploaded'),
             'status' => '1',
         ]);
@@ -96,6 +99,7 @@ class TestController extends Controller
         if ($request->has('phone_number') && $request->has('otp')) {
             SmsManager::sendTwoFactorMessage($request->phone_number, $request->otp);
         }
+
         return response()->json([
             'message' => __('messages.otp_sent'),
             'status' => '1',
@@ -105,6 +109,7 @@ class TestController extends Controller
     public function sendFcmNotification(Request $request)
     {
         $this->sendNotification([$request->firebase_token], $request->title, $request->message);
+
         return response()->json([
             'message' => __('messages.notification_sent'),
             'status' => '1',

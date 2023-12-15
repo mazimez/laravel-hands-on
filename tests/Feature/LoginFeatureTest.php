@@ -3,13 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LoginFeatureTest extends TestCase
 {
     public $user;
+
     public $should_delete_user;
 
     public function setUp(): void
@@ -19,7 +18,7 @@ class LoginFeatureTest extends TestCase
 
         $this->user = User::where('email', 'test@gmail.com')->first();
         $this->should_delete_user = false;
-        if (!$this->user) {
+        if (! $this->user) {
             $this->should_delete_user = true;
             $this->user = User::factory()->createQuietly([
                 'email' => 'test@gmail.com',
@@ -48,7 +47,7 @@ class LoginFeatureTest extends TestCase
         //assertion check for user detail(before login)
         //TODO::figure out why we need to pass application/json for laravel to consider this as an API and use Handler exception.
         $response = $this->get('api/v1/users/detail', [
-            "Accept" => "application/json"
+            'Accept' => 'application/json',
         ]);
         $response->assertUnauthorized();
 
@@ -70,7 +69,7 @@ class LoginFeatureTest extends TestCase
 
         //assertion check for user detail
         $response = $this->get('api/v1/users/detail', [
-            'Authorization' => 'Bearer ' . $responseData['token'],
+            'Authorization' => 'Bearer '.$responseData['token'],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
     }

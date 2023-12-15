@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 class UserFileController extends Controller
 {
     use FileManager;
+
     /**
      * Display a listing of the resource.
      *
@@ -34,10 +35,11 @@ class UserFileController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('user_messages.user_files_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -59,22 +61,23 @@ class UserFileController extends Controller
                 if (Str::of($file->getMimeType())->contains('video/')) {
                     $file_type = File::VIDEO;
                 }
-                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
+                if (! in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('file_messages.file_type_not_supported'),
-                        'status' => '0'
+                        'status' => '0',
                     ]);
                 }
                 $auth_user->files()->create([
                     'user_id' => $auth_user->id,
                     'file_path' => $this->saveFile($file, 'users'),
-                    'type' => $file_type
+                    'type' => $file_type,
                 ]);
             }
         }
+
         return response()->json([
             'message' => __('user_messages.user_files_added'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -111,9 +114,10 @@ class UserFileController extends Controller
     {
         $this->authorize('deleteUserFile', [File::class, $file, $user]);
         $file->delete();
+
         return response()->json([
             'message' => __('user_messages.user_file_deleted'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 }

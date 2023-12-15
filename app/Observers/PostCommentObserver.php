@@ -23,7 +23,7 @@ class PostCommentObserver
             $first_comment_badge = Badge::where('slug', Badge::FIRST_COMMENT)->first();
             if ($first_comment_badge) {
                 $user_to_give_badge = $post_comment->post->user;
-                if (!$user_to_give_badge->badges()->where('badges.id', $first_comment_badge->id)->exists()) {
+                if (! $user_to_give_badge->badges()->where('badges.id', $first_comment_badge->id)->exists()) {
                     $post_comment->badges()->create([
                         'user_id' => $post_comment->post->user_id,
                         'badge_id' => $first_comment_badge->id,

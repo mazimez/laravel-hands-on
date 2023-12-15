@@ -9,7 +9,6 @@ use App\Models\Badge;
 use App\Models\Likable;
 use App\Models\Notification;
 use App\Models\Post;
-use App\Models\PostLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,10 +30,11 @@ class PostLikeController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('post_messages.post_likers_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 
@@ -52,9 +52,10 @@ class PostLikeController extends Controller
         $liker = $post->likers()->where('user_id', $auth_user->id)->first();
         if ($liker) {
             $post->likers()->detach($auth_user);
+
             return response()->json([
                 'message' => __('post_messages.post_like_removed'),
-                'status' => '1'
+                'status' => '1',
             ]);
         }
         $post->likers()->attach($auth_user);
@@ -76,7 +77,7 @@ class PostLikeController extends Controller
         $first_like_badge = Badge::where('slug', Badge::FIRST_LIKE)->first();
         if ($first_like_badge) {
             $user_to_give_badge = $post->user;
-            if (!$user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
+            if (! $user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
                 $overall_post_like_count = Likable::where('user_id', '!=', $post->user_id)
                     ->whereHas('post', function ($query) use ($post) {
                         $query->where('user_id', $post->user_id);
@@ -92,12 +93,10 @@ class PostLikeController extends Controller
             }
         }
 
-
         return response()->json([
             'message' => __('post_messages.post_liked'),
-            'status' => '1'
+            'status' => '1',
         ]);
-
 
         //OPTION-2 (with just toggle logic)
         // $post->likers()->toggle([$auth_user->id]);

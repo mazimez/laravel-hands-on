@@ -13,7 +13,11 @@ class File extends Model
 
     //TABLE
     public $table = 'files';
-    const PHOTO = "PHOTO", VIDEO = "VIDEO";
+
+    const PHOTO = 'PHOTO';
+
+    const VIDEO = 'VIDEO';
+
     //FILLABLE
     protected $fillable = [
         'user_id',
@@ -72,5 +76,4 @@ class File extends Model
     //{
     //    return $data;
     //}
-
 }

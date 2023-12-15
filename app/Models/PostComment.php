@@ -30,9 +30,10 @@ class PostComment extends Model
         parent::boot();
         static::addGlobalScope('is_liked', function ($query) {
             $user = Auth::user();
-            if (!$user) {
+            if (! $user) {
                 return $query;
             }
+
             return $query->withExists(['likers as is_liked' => function ($query) use ($user) {
                 return $query->where('users.id', $user->id);
             }]);
@@ -56,10 +57,12 @@ class PostComment extends Model
     {
         return $this->belongsTo(Post::class)->withoutGlobalScope('active');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function badges()
     {
         return $this->morphMany(
@@ -89,5 +92,4 @@ class PostComment extends Model
     //{
     //    return $data;
     //}
-
 }

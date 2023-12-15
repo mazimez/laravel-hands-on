@@ -24,7 +24,7 @@ class ConfirmPhoneRequest extends FormRequest
     public function rules()
     {
         return [
-            'otp' => 'required|numeric|exists:users,otp'
+            'otp' => 'required|numeric|exists:users,otp',
         ];
     }
 }

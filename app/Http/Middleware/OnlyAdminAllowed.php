@@ -18,7 +18,7 @@ class OnlyAdminAllowed
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::user()) {
+        if (! Auth::user()) {
             return response()->json([
                 'message' => __('access_messages.unauthenticated'),
                 'status' => '401',
@@ -30,6 +30,7 @@ class OnlyAdminAllowed
                 'status' => '0',
             ]);
         }
+
         return $next($request);
     }
 }

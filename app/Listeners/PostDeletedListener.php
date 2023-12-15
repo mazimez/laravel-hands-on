@@ -5,13 +5,12 @@ namespace App\Listeners;
 use App\Events\PostDeletedEvent;
 use App\Mail\PostDeletedMail;
 use App\Traits\ErrorManager;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class PostDeletedListener
 {
     use ErrorManager;
+
     /**
      * Create the event listener.
      *

@@ -41,7 +41,7 @@ return [
         'api_url' => 'https://2factor.in/API/V1/',
         'api_key' => env('TWO_FACTOR_API_KEY'),
         'template_name' => env('TWO_FACTOR_TEMPLATE_NAME'),
-        'is_otp_live' => env('IS_OTP_LIVE', 0)
+        'is_otp_live' => env('IS_OTP_LIVE', 0),
     ],
     'firebase' => [
         'api_key' => env('API_KEY'),

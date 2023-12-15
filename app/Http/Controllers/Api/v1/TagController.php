@@ -5,7 +5,6 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommonPaginationRequest;
 use App\Models\Tag;
-use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
@@ -20,7 +19,7 @@ class TagController extends Controller
         $data = Tag::query();
 
         if ($request->has('search')) {
-            $search = '%' . $request->search . '%';
+            $search = '%'.$request->search.'%';
             $data = $data->where(function ($query) use ($search) {
                 $query->where('name', 'like', $search);
             });
@@ -34,10 +33,11 @@ class TagController extends Controller
                 ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
             );
         }
+
         return response()->json([
             'data' => $data->get(),
             'message' => __('messages.tag_list_returned'),
-            'status' => '1'
+            'status' => '1',
         ]);
     }
 }
