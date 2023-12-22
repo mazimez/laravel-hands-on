@@ -1,58 +1,60 @@
-# Laravel Pint
+# PDF Generation
 
-In every project, irrespective of the language or framework employed, adherence to fundamental coding standards is crucial. This practice enhances project organization, fosters ease of comprehension, and facilitates collaboration. Coding standards encompass aspects such as appropriately naming folders and files, employing meaningful and standardized variable names, and formatting code for readability.
-
-While poorly organized code may function correctly, it lacks maintainability and poses challenges when introducing new features. As a project expands, investing time in establishing and rigorously adhering to basic coding standards among your team becomes imperative. Various programming languages provide tools to enforce these standards. For instance, TypeScript and JavaScript have tools like `js prettier` and `ES lint`, while Laravel(PHP) offers a similar tool known as `Laravel Pint`. In this section, we will delve into how you can utilize `Laravel Pint` to apply coding standards to your projects.
+In the realm of software development, the necessity to generate PDFs arises in various scenarios, whether it be for introducing new features or meeting legal requirements. Many systems offer users the ability to export their data into formats like PDF or Excel, and in some cases, the generation of invoice PDFs becomes imperative. This section will guide you through utilizing Laravel for PDF generation.
 
 ## Description
 
-`Laravel Pint` serves as a code style fixer designed to format your code according to specified standards. It allows customization to apply particular rules tailored to your project. Before delving into the details of `Laravel Pint`, it is advisable to establish rules collaboratively with your team. These rules may encompass naming conventions for folders and files, as well as guidelines for variable naming. Refer to [this documentation](https://cs.symfony.com/doc/rules/) for a comprehensive list of commonly used rules. Once the rules are decided, we can proceed with their application.
+Laravel provides several packages to facilitate PDF generation, with one notable option being `barryvdh/laravel-dompdf`. This package is user-friendly and covers the fundamental requirements for PDF generation. In this example, we'll employ this package. Feel free to explore other packages if needed.
 
-It's important to note that not every rule needs to be followed. The decision to adhere to specific rules is at your discretion, and different projects may warrant different rule sets. `Laravel Pint` allows for flexibility in excluding specific parts or files if certain rules cannot be applied for valid reasons. The primary goal is to ensure that your project adheres to rules that enhance team understanding and collaboration.
-
-While `Laravel Pint` comes pre-installed with Laravel 10, if you are using an older version, you can obtain it by running the following command:
-
+To install the package, execute the following command:
 ```bash
-composer require laravel/pint --dev
+composer require barryvdh/laravel-dompdf
 ```
 
-Once installed, you can execute it using the command:
-
+After installation, generate the configuration file for this package using the command:
 ```bash
-./vendor/bin/pint
+php artisan vendor:publish --provider="Barryvdh\DomPDF\ServiceProvider"
 ```
+
+Now that the package is installed, we'll use it to generate a PDF for the posts in our system. This PDF, accessible only to administrators, will include comprehensive information about each post, such as its title, description, tags, and images.
 
 ## Files
-
-1. [pint.json](pint.json): JSON file to configure `pint`.
-2. `other files`: Updated by `pint` to fix formats.
+1. [PostController](app/Http/Controllers/Api/v1/PostController.php) and [TestController](app/Http/Controllers/Api/v1/TestController.php): Updated controllers to incorporate `dom-pdf` for PDF generation.
+2. [post_pdf.blade](resources/views/pdfs/post_pdf.blade.php) and [test_pdf.blade](resources/views/pdfs/test_pdf.blade.php): Blade files updated for PDF templates.
+3. [composer.json](composer.json) and [dompdf](config/dompdf.php): Installation of the new package for PDF generation.
 
 ## Getting Started
 
-1. After installing `Pint`, run it with `./vendor/bin/pint`. This will scan your files for issues related to coding standards or rules you have set up. At the end, it will provide a list of files that have been updated, along with information about the updates (i.e., which rule prompted the update).
+1. Before delving into the coding aspect, it's essential to note that the `laravel-dompdf` package can generate PDFs based on both blade files and direct HTML data. Additionally, you can download and store the PDFs. Refer to the [dompdf](config/dompdf.php) config file for package configuration options. To begin, we'll test these functionalities in our [TestController](app/Http/Controllers/Api/v1/TestController.php).
 
-2. To decide which rules to apply, create a new JSON file [pint.json](pint.json) where you define all the necessary rules. It mainly consists of three parts: `preset`, `rules`, and `exclude`. Use `exclude` to ignore specific files and folders, similar to `.gitignore` for Git. For instance, include folders like `vendor`, `node_modules`, and `storage`; you can add any other folder as needed.
+2. Introduce a new route for testing PDF generation: `generate-pdf`, handled by [TestController](app/Http/Controllers/Api/v1/TestController.php). This route accepts parameters `input_type`, `data`, and `output_type`. `input_type` determines whether the PDF uses a blade file or HTML data, while `output_type` specifies options like `download`, `stream`, or `raw_data` for returning the PDF as a file or raw data.
 
-3. `preset` contains pre-defined rules suggested for particular use cases. Setting `preset` to `laravel` applies rules recommended by Laravel itself, aligning with the framework's components such as controllers, models, views, observers, migrations, etc. Other values for `preset` include `psr12`, `per`, and `symfony`. More information can be found on [pint's GitHub](https://github.com/laravel/pint/blob/main/resources/presets/laravel.php).
+3. In the `generatePdf` method, utilize the `Pdf` class and methods like `loadHTML` or `loadView` to load HTML or blade file content. Methods such as `download`, `stream`, and `output` are used to generate, download, or stream the PDF. The `download` method is commonly used to initiate direct downloads.
 
-4. `rules` is where you can add extra rules not included in your `preset`, and you can also override any rules from here. For example, we override the rule `no_superfluous_phpdoc_tags` to false since we want to retain our PHPDoc tags. This is the space to include rules decided upon with your team. Refer to [this documentation](https://cs.symfony.com/doc/rules/) to find rules that best suit your needs.
+4. This API, accessible without authentication and utilizing the GET method, can be called directly in a browser or Postman. The PDF response will either be downloaded or visible in the response. The raw data of the PDF can be obtained as a string, typically used for storage.
 
-5. Apply rules that enhance project understanding and collaboration; avoid unnecessary rules that do not contribute to project improvement.
+5. Examine the [test_pdf.blade](resources/views/pdfs/test_pdf.blade.php) view. This typical blade file contains CSS and features the addition of `page-break-after: always;` in the `styles` section for content separation. Images can be embedded in this HTML. With the test API ready, we can now generate a PDF for posts in our system.
+
+6. In the [posts](routes/api/v1/posts.php) route file, add a new route: `posts/:id/download`, restricted to the `only_admin_allowed` middleware to grant access only to administrators. Create the [post_pdf.blade](resources/views/pdfs/post_pdf.blade.php) file for the post PDF design, passing the necessary `$post` data, including tags and files.
+
+7. While displaying post files, consider file types, differentiating between photos and videos. Note the use of `file_path` without a full URL, suitable for local development. In production, use `Storage::url` for the full URL. The example doesn't use `Storage::url` due to its `http` output, while `dom-pdf` requires `https`.
+
+8. With the blade file ready, incorporate it into [PostController](app/Http/Controllers/Api/v1/PostController.php), passing the `$post` variable for PDF generation, and use the `download()` method for PDF download. Further customization of the design is possible, including adjustments to the [dompdf](config/dompdf.php) config file for custom fonts and PDF size.
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- Consider creating custom rules for special logic that may be needed.
-- Explore ways to ignore specific parts of your code from formatting or checking by `pint`.
+- Review and update the [dompdf](config/dompdf.php) config for enhanced PDF control.
+- Investigate methods to store generated PDFs or send them as email attachments. Refer to [laravel-dompdf's GitHub](https://github.com/barryvdh/laravel-dompdf) for more information.
 
 ## Additional Notes
 
-- `Pint` aids in enhancing code readability and sometimes improves performance. Consider incorporating it into all your projects from the outset.
+- `dom-pdf` offers numerous features, to be discussed in subsequent branches. Consider exploring other PDF generation packages.
 - Engage in insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel DOC for PINT](https://laravel.com/docs/10.x/pint)
-2. [Configuring Laravel Pint](https://laravel-news.com/configuring-laravel-pint)
+1. [Generate Simple Invoice PDF with Images and CSS](https://laraveldaily.com/post/laravel-dompdf-generate-simple-invoice-pdf-with-images-css)
+2. [laravel-dompdf's GitHub](https://github.com/barryvdh/laravel-dompdf)

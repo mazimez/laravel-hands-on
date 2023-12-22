@@ -16,6 +16,7 @@ Route::group(['middleware' => ['localization']], function () {
             Route::group(['middleware' => ['only_admin_allowed']], function () {
                 Route::post('{post}/verify-toggle', 'v1\PostController@verifyToggle');
                 Route::post('{post}/block-toggle', 'v1\PostController@blockToggle');
+                Route::post('{post}/download', 'v1\PostController@generatePdf');
             });
 
             //POST-COMMENTS

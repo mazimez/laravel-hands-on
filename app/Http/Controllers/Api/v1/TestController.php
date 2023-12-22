@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\GeneratePdfRequest;
 use App\Mail\SampleMail;
 use App\Traits\FcmNotificationManager;
 use App\Traits\FileManager;
 use App\Traits\SmsManager;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -114,5 +116,34 @@ class TestController extends Controller
             'message' => __('messages.notification_sent'),
             'status' => '1',
         ]);
+    }
+
+    public function generatePdf(GeneratePdfRequest $request)
+    {
+        $pdf = null;
+        if ($request->has('input_type')) {
+            switch ($request->input_type) {
+                case 'html':
+                    $pdf = Pdf::loadHTML($request->data);
+                    break;
+                case 'view':
+                    $pdf = Pdf::loadView('pdfs/test_pdf', ['data' => $request->data]);
+                    break;
+            }
+        }
+
+        if ($request->has('output_type')) {
+            switch ($request->output_type) {
+                case 'download':
+                    return $pdf->download($request->filename ?? 'document');
+                    break;
+                case 'stream':
+                    return $pdf->stream();
+                    break;
+                case 'raw_data':
+                    return $pdf->output();
+                    break;
+            }
+        }
     }
 }

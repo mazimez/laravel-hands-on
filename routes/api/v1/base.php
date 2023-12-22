@@ -14,4 +14,5 @@ Route::group(['middleware' => ['localization']], function () {
     Route::post('google-login', 'v1\TestController@googleLogin');
     Route::post('send-otp', 'v1\TestController@sendOtp');
     Route::post('send-notification', 'v1\TestController@sendFcmNotification');
+    Route::get('generate-pdf', 'v1\TestController@generatePdf');
 });
