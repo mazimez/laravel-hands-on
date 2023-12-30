@@ -13,6 +13,7 @@ Route::group(['middleware' => ['localization']], function () {
         Route::group(['prefix' => 'users'], function () {
             Route::group(['middleware' => ['only_admin_allowed']], function () {
                 Route::get('/', 'v1\UserController@index');
+                Route::get('/export', 'v1\UserController@excelExport');
             });
             Route::get('/detail', 'v1\UserController@show');
             Route::post('/update', 'v1\UserController@update');

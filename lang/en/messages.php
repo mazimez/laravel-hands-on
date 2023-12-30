@@ -33,4 +33,5 @@ return [
     'otp_verified' => 'OTP verified successfully',
     'notification_failed_to_send' => 'Fail to sent :failure_number notifications',
     'notification_sent' => 'Notification sent',
+    'data_exported' => 'Data exported successfully',
 ];

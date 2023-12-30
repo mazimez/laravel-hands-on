@@ -1,60 +1,59 @@
-# PDF Generation
+# Excel Generation
 
-In the realm of software development, the necessity to generate PDFs arises in various scenarios, whether it be for introducing new features or meeting legal requirements. Many systems offer users the ability to export their data into formats like PDF or Excel, and in some cases, the generation of invoice PDFs becomes imperative. This section will guide you through utilizing Laravel for PDF generation.
+In the world of system data analysis and smooth data migration, generating Excel files is crucial, just like PDF generation. This process helps keep systems flexible and allows exporting entire datasets for easy migration.
 
 ## Description
 
-Laravel provides several packages to facilitate PDF generation, with one notable option being `barryvdh/laravel-dompdf`. This package is user-friendly and covers the fundamental requirements for PDF generation. In this example, we'll employ this package. Feel free to explore other packages if needed.
+Laravel(PHP) offers various packages for Excel generation, and one widely used option is `maatwebsite/excel`. To get started, follow the steps below. For detailed guidance, check out the [documentation](https://docs.laravel-excel.com/).
 
-To install the package, execute the following command:
+To install the package, run the following command in your terminal:
 ```bash
-composer require barryvdh/laravel-dompdf
+composer require maatwebsite/excel
 ```
 
-After installation, generate the configuration file for this package using the command:
+After installation, create the configuration file for this package using the following command:
 ```bash
-php artisan vendor:publish --provider="Barryvdh\DomPDF\ServiceProvider"
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider" --tag=config
 ```
 
-Now that the package is installed, we'll use it to generate a PDF for the posts in our system. This PDF, accessible only to administrators, will include comprehensive information about each post, such as its title, description, tags, and images.
+Keep in mind that this package requires PHP extensions like `php_xml` and `php_simplexml` to be enabled. Ensure these extensions are active when moving to a production environment.
 
 ## Files
-1. [PostController](app/Http/Controllers/Api/v1/PostController.php) and [TestController](app/Http/Controllers/Api/v1/TestController.php): Updated controllers to incorporate `dom-pdf` for PDF generation.
-2. [post_pdf.blade](resources/views/pdfs/post_pdf.blade.php) and [test_pdf.blade](resources/views/pdfs/test_pdf.blade.php): Blade files updated for PDF templates.
-3. [composer.json](composer.json) and [dompdf](config/dompdf.php): Installation of the new package for PDF generation.
+1. [UserController](app/Http/Controllers/Api/v1/UserController.php) and [TestController](app/Http/Controllers/Api/v1/TestController.php): Controllers updated to integrate `maatwebsite/excel` for Excel generation.
+2. [test_excel.blade](resources/views/excel_exports/test_excel.blade.php) and [test_excel.blade](resources/views/excel_exports/test_excel.blade.php): Blade files updated for Excel templates.
+3. [UserExport](app/Exports/UserExport.php), [TestExportFromView](app/Exports/TestExportFromView.php), [TestExportFromCollection](app/Exports/TestExportFromCollection.php): Export classes added to facilitate data export in Excel format.
+4. [composer.json](composer.json) and [excel](config/excel.php): Installation of the new package for Excel generation.
 
 ## Getting Started
 
-1. Before delving into the coding aspect, it's essential to note that the `laravel-dompdf` package can generate PDFs based on both blade files and direct HTML data. Additionally, you can download and store the PDFs. Refer to the [dompdf](config/dompdf.php) config file for package configuration options. To begin, we'll test these functionalities in our [TestController](app/Http/Controllers/Api/v1/TestController.php).
+1. Similar to PDF generation, create a new `test-API` within [TestController](app/Http/Controllers/Api/v1/TestController.php) to generate sample Excel files. Execute this API in a browser or through Postman to obtain the Excel file. There are multiple methods for Excel generation, including using a simple `blade` file or directly retrieving data from a query. The data can be either downloaded as a file or stored in the system's storage.
 
-2. Introduce a new route for testing PDF generation: `generate-pdf`, handled by [TestController](app/Http/Controllers/Api/v1/TestController.php). This route accepts parameters `input_type`, `data`, and `output_type`. `input_type` determines whether the PDF uses a blade file or HTML data, while `output_type` specifies options like `download`, `stream`, or `raw_data` for returning the PDF as a file or raw data.
+2. Create [TestExportFromCollection](app/Exports/TestExportFromCollection.php) by executing the command `php artisan make:export TestExportFromCollection`. This allows direct Excel export from a query (collection) without relying on a `blade` file. Additionally, create [TestExportFromView](app/Exports/TestExportFromView.php) to export data from a `blade` file.
 
-3. In the `generatePdf` method, utilize the `Pdf` class and methods like `loadHTML` or `loadView` to load HTML or blade file content. Methods such as `download`, `stream`, and `output` are used to generate, download, or stream the PDF. The `download` method is commonly used to initiate direct downloads.
+3. In [TestExportFromView](app/Exports/TestExportFromView.php), the implementation of the `FromView` interface necessitates the `view` method, returning the view containing the desired `blade` file. [test_excel.blade](resources/views/excel_exports/test_excel.blade.php) contains a table formatting the data into columns with headings. For [TestExportFromCollection](app/Exports/TestExportFromCollection.php), interfaces like `FromCollection` and `WithMapping` require methods such as `collection` (returning a collection object of data for export) and `map` (defining which fields of the collection should be displayed).
 
-4. This API, accessible without authentication and utilizing the GET method, can be called directly in a browser or Postman. The PDF response will either be downloaded or visible in the response. The raw data of the PDF can be obtained as a string, typically used for storage.
+4. With both export files ready, utilize them in [TestController](app/Http/Controllers/Api/v1/TestController.php). Extract information from the request regarding the desired Excel format (as `Collection` or with `View`) and whether to download or store the file. If stored, retrieve its `URL` using the `Storage` Facade. If downloaded, execute the API in a browser for direct download or use Postman to obtain the raw string data, providing the option to save it as a file. This outlines the basic process of downloading data in Excel format, with plans to create an API for exporting user data.
 
-5. Examine the [test_pdf.blade](resources/views/pdfs/test_pdf.blade.php) view. This typical blade file contains CSS and features the addition of `page-break-after: always;` in the `styles` section for content separation. Images can be embedded in this HTML. With the test API ready, we can now generate a PDF for posts in our system.
+5. Add a new route `users/export` in the [users](routes/api/v1/users.php) route file, calling the `excelExport` method in [UserController](app/Http/Controllers/Api/v1/UserController.php). Develop a new export file, [UserExport](app/Exports/UserExport.php), dedicated to exporting user data using a `blade` file.
 
-6. In the [posts](routes/api/v1/posts.php) route file, add a new route: `posts/:id/download`, restricted to the `only_admin_allowed` middleware to grant access only to administrators. Create the [post_pdf.blade](resources/views/pdfs/post_pdf.blade.php) file for the post PDF design, passing the necessary `$post` data, including tags and files.
+6. Observe the implementation of interfaces like `FromView`, `WithColumnWidths`, `WithColumnFormatting`, and `WithStyles` in [UserExport](app/Exports/UserExport.php). These interfaces offer extensive customization options for the exported Excel file, including column widths and row background colors. Further details on these interfaces are available in the [documentation](https://docs.laravel-excel.com/).
 
-7. While displaying post files, consider file types, differentiating between photos and videos. Note the use of `file_path` without a full URL, suitable for local development. In production, use `Storage::url` for the full URL. The example doesn't use `Storage::url` due to its `http` output, while `dom-pdf` requires `https`.
-
-8. With the blade file ready, incorporate it into [PostController](app/Http/Controllers/Api/v1/PostController.php), passing the `$post` variable for PDF generation, and use the `download()` method for PDF download. Further customization of the design is possible, including adjustments to the [dompdf](config/dompdf.php) config file for custom fonts and PDF size.
+7. Upon calling the API via Postman, receive raw string data for file saving. Alternatively, store the file in the system's storage and return its `URL`.
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- Review and update the [dompdf](config/dompdf.php) config for enhanced PDF control.
-- Investigate methods to store generated PDFs or send them as email attachments. Refer to [laravel-dompdf's GitHub](https://github.com/barryvdh/laravel-dompdf) for more information.
+- Delve into the [excel](config/excel.php) configuration file to tailor Excel exports to better suit your requirements.
+- Refer to the [documentation](https://docs.laravel-excel.com/) to incorporate images into the Excel file and explore queuing options for this exporting task.
 
 ## Additional Notes
 
-- `dom-pdf` offers numerous features, to be discussed in subsequent branches. Consider exploring other PDF generation packages.
-- Engage in insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
+- The focus has been on exporting data from the database; however, the same package facilitates data import. Future branches will delve into data import, providing an avenue for further exploration.
+- Foster insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Generate Simple Invoice PDF with Images and CSS](https://laraveldaily.com/post/laravel-dompdf-generate-simple-invoice-pdf-with-images-css)
-2. [laravel-dompdf's GitHub](https://github.com/barryvdh/laravel-dompdf)
+1. [laravel-excel documentation](https://docs.laravel-excel.com/3.1/exports/extending.html)
+2. [Excel Export example](https://techsolutionstuff.com/post/laravel-10-import-export-csv-and-excel-file)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\ConfirmPhoneRequest;
 use App\Http\Requests\Api\v1\GetUserDetailRequest;
@@ -14,10 +15,12 @@ use App\Models\Badge;
 use App\Models\User;
 use App\Models\UserBadge;
 use App\Traits\FileManager;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Laravel\Socialite\Facades\Socialite;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class UserController extends Controller
@@ -33,14 +36,14 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
-        if (! $user) {
+        if (!$user) {
             return response()->json([
                 'message' => __('messages.user_not_found'),
                 'status' => '0',
             ]);
         }
 
-        if (! password_verify($request->password, $user->password)) {
+        if (!password_verify($request->password, $user->password)) {
             return response()->json([
                 'message' => __('user_messages.wrong_password'),
                 'status' => '0',
@@ -78,7 +81,7 @@ class UserController extends Controller
         }
 
         $user = User::where('type', User::USER)->where('email', $social_user->getEmail())->first();
-        if (! $user) {
+        if (!$user) {
             $user = User::create([
                 'name' => $social_user->getName(),
                 'profile_image' => $social_user->getAvatar() ? $this->saveFileFromUrl($social_user->getAvatar(), 'users') : null,
@@ -133,7 +136,7 @@ class UserController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = '%'.$request->search.'%';
+            $search = '%' . $request->search . '%';
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('name', 'like', $search)
                     ->orWhere('phone_number', 'like', $search)
@@ -351,5 +354,15 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * export the data of resource into excel file
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function excelExport()
+    {
+        return Excel::download(new UserExport, 'user_export_' . Carbon::now()->format('Y-m-d H:i:s') . '.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

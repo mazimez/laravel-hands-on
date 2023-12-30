@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Exports\TestExportFromCollection;
+use App\Exports\TestExportFromView;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\GenerateExcelRequest;
 use App\Http\Requests\Api\v1\GeneratePdfRequest;
 use App\Mail\SampleMail;
 use App\Traits\FcmNotificationManager;
@@ -13,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TestController extends Controller
 {
@@ -142,6 +146,54 @@ class TestController extends Controller
                     break;
                 case 'raw_data':
                     return $pdf->output();
+                    break;
+            }
+        }
+    }
+
+    public function generateExcel(GenerateExcelRequest $request)
+    {
+        if ($request->has('input_type')) {
+            switch ($request->input_type) {
+                case 'collection':
+                    switch ($request->output_type) {
+                        case 'download':
+                            return Excel::download(new TestExportFromCollection, ($request->filename ?? 'test_export').'.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+                            break;
+                        case 'store':
+                            Excel::store(new TestExportFromCollection, ($request->filename ?? 'test_export').'.xlsx', config('filesystems.default'), \Maatwebsite\Excel\Excel::XLSX);
+
+                            return response()->json([
+                                'data' => Storage::url(($request->filename ?? 'test_export').'.xlsx'),
+                                'message' => __('messages.data_exported'),
+                                'status' => '1',
+                            ]);
+                            break;
+
+                        default:
+                            // code...
+                            break;
+                    }
+                    break;
+                case 'view':
+                    switch ($request->output_type) {
+                        case 'download':
+                            return Excel::download(new TestExportFromView, ($request->filename ?? 'test_export').'.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+                            break;
+                        case 'store':
+                            Excel::store(new TestExportFromView, ($request->filename ?? 'test_export').'.xlsx', config('filesystems.default'), \Maatwebsite\Excel\Excel::XLSX);
+
+                            return response()->json([
+                                'data' => Storage::url(($request->filename ?? 'test_export').'.xlsx'),
+                                'message' => __('messages.data_exported'),
+                                'status' => '1',
+                            ]);
+                            break;
+
+                        default:
+                            // code...
+                            break;
+                    }
                     break;
             }
         }
