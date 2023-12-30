@@ -63,4 +63,5 @@ you can directly go to any branch for the topic that you want to understand, and
 35. [job-queues](https://github.com/mazimez/laravel-hands-on/tree/job-queues)
 36. [laravel-pint](https://github.com/mazimez/laravel-hands-on/tree/laravel-pint)
 37. [pdf-generation](https://github.com/mazimez/laravel-hands-on/tree/pdf-generation)
+38. [excel-generation](https://github.com/mazimez/laravel-hands-on/tree/excel-generation)
 
