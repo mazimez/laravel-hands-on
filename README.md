@@ -43,6 +43,14 @@ Follow these steps to implement the outlined changes effectively and optimize th
 
  all the tests and reports any errors that may occur.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- the test cases we write here will work same in `Testing` and `production` environments but you may want your tests to work a little different in `production` then in `Testing`. for that you can check [phpunit.xml](phpunit.xml) and [Laravel-doc](https://laravel.com/docs/10.x/testing#environment)
+- here we write test cases for just 1-2 APIs but you can try to add more test cases for other APIs as well.
+- we create the very basic test cases where we didn't focus on files and mails that gets stored and sent from our system, we can test mails in our test cases as well. try to learn more about it.
+
 ## Additional Notes
 
 - In future branches, we will delve into how testing can be extended beyond APIs to cover other aspects of our applications, such as database structures and background processes.
