@@ -32,6 +32,14 @@ Follow these steps to seamlessly implement the changes and maximize the utility 
 7. you may be thinking that now you always need to keep that `php artisan schedule:work` active in order to scheduler to work, and that can not be possible when we put our project into Production on any Server. well that' where Cron-JOB comes in play. Cron-job will allow us to run this kind of commands in background without us having to keep the command running manually.
 
 8. Cron-jobs are specific to Ubuntu/Linux OS, so we can not use it if we are on Windows and process of Setting up the cron job is little completed and hard to explain in this branch since we already cover scheduler. so we will discuss this in another branch that will focus on Deploying your Laravel projects.
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- In scheduler, you can run your commands on almost any period(daily,weekly,monthly etc.) but sometimes you may need it to follow a certain time zone(like `Asia/Kolkata`,`Europe/London` ). well Laravel also provides that too, so try to run some scheduler task from different time zones.
+- there can come a time when you want 1 task to gets executed only after some other task is completed for that you can `then` function to achieve this. there is also `withoutOverlapping` method that stops 2 commands to run on same time. there are couple of more methods like that, try to learn about it and use it in your project.
+
 ## Note
 
 - In future branches, we will see how we can use the scheduler even without `Artisan Command`.
