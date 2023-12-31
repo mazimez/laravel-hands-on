@@ -38,6 +38,13 @@ Follow these step-by-step instructions to effectively implement the changes and 
 
 9. **Refining File Deletion for Posts**: To further enhance file management, a [PostObserver](app/Observers/PostObserver.php) is introduced. This observer ensures that associated files are deleted whenever a post is removed.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- there may come a time when you don't want observer to perform any action when new resource gets `created/updated` etc. mainly in seeder since that data is just dummy data and we don't want to send mails when any dummy user gets created. you can find a way to somehow stop observer from observing(we will see it in next branch)
+- observer can sometime creates very interesting scenarios like if you create and observer for some resource and on the `created` method you create another resource of that same class then it can end up in an infinite loop. try to create this situation and see how you can overcome it.
+
 ## Note
 
 - Engage in comprehensive discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
