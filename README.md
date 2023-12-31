@@ -34,6 +34,13 @@ Follow these steps to seamlessly implement the changes and maximize the utility 
 
 7. With proper configuration, your APIs, such as 'create user' or 'create post,' will continue to provide normal responses to end-users while discreetly logging any encountered errors. This error-handling approach can be extended beyond email errors to address various types of issues within your system.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- there are many customization you can do with [logging](config/logging.php) config and log system in general. for example, there can be some errors that are very crucial to you and you want to get notified on the stop when that error happen, you can do that with Laravel-logging and directly send mail about that error or maybe send message on `slack` too. try to implement this kind of error handling system.
+- while storing error on a file inside your Laravel project, there will come a time when you error file gets larger in file size. most of it's data is not needed so you can simply remove content from it in you local machine but when you put this on some sever(in production), you need to make sure to either check and clear this file periodically or put some kind of automatic system for it. in later branches we will learn about `scheduler-cron` that can help you with this. try to learn about it and implement it.
+
 ## Note
 
 - In future branches, we will explore integrating logging with tools like Slack. This branch primarily focuses on acquainting you with Laravel's logging capabilities and their utilization for error storage.
