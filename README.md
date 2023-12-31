@@ -41,6 +41,14 @@ Please follow these step-by-step instructions to implement the changes effective
 
 This was the basic introduction to the Laravel-mails, there are still many topics we will explore about it in future branches.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- here we send the mail using `Gmail` account, it is not necessary that you always want to use Gmail. so try to send mail using some other service and see what kind of changes it require.
+- if you see the [mail](config/mail.php), there is an option of `markdown` that we haven't talk about yet. we will talk about it in later branches but till then you can try to learn about it on your own.
+- also we haven't looked into Queues yet but we can add our mails into Queues so it will be sent in background so it wont take time while calling the API. we will look into that soon but you can research about it on your own.
+
 ## Note
 
 - don't hesitate to initiate a new [discussion](https://github.com/mazimez/laravel-hands-on/discussions) to engage in comprehensive conversations with fellow developers.
