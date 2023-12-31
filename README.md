@@ -36,9 +36,15 @@ Always ensure you use the latest versions of the OS and PHP. Refer to [Laravel's
 
 9. **Continuous Improvement**: Keep in mind that the deployment process varies for each case and may encounter unexpected issues. Stay connected with the online community to find optimal solutions. Deployment practices evolve, becoming increasingly automated, so explore better options over time.
 
+
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- In future branches, we will delve deeper into deployment and automation, exploring topics such as [CI/CD](https://www.synopsys.com/glossary/what-is-cicd.html#:~:text=CI%20and%20CD%20stand%20for,are%20made%20frequently%20and%20reliably.) and [DevOps](https://aws.amazon.com/devops/what-is-devops/#:~:text=DevOps%20is%20the%20combination%20of,development%20and%20infrastructure%20management%20processes.). For now, you can try to learn about it on your own and try to make you production process easy and automated.
+
 ## Additional Notes
 
-- In future branches, we will delve deeper into deployment and automation, exploring topics such as [CI/CD](https://www.synopsys.com/glossary/what-is-cicd.html#:~:text=CI%20and%20CD%20stand%20for,are%20made%20frequently%20and%20reliably.) and [DevOps](https://aws.amazon.com/devops/what-is-devops/#:~:text=DevOps%20is%20the%20combination%20of,development%20and%20infrastructure%20management%20processes.). For now, this serves as a fundamental deployment guide.
 - Engage in in-depth discussions with fellow developers by initiating new [discussions](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
