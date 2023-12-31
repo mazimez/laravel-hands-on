@@ -51,6 +51,13 @@ so we use this methods in our seeder to make sure no unnecessary observer are us
 9. **Benefits of Using Queue**: It's important to note that Queue offers significant benefits, particularly in scenarios where time-consuming operations can hinder the responsiveness of an applicationif you try removing that `ShouldQueue` interface from `listener` that will execute it without `queue`, but then you will see that after this will take significantly more time while using `create post` API, that's because all mails are being sent right when you call the API and that's making it slow.
 By using Queue, these operations are seamlessly executed in the background, enhancing overall performance.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- try to find more places where you can use this queue concept.
+- we haven't talk about `jobs & queue` yet but we will do it in future branches, till then you can try to research about it on your own.
+- here we only use queue with the Database, but there are lots of other ways to handle queue as well(like `AWS`). try to implement other ways as well.
 ## Note
 
 - `Queues` has a lot more use cases that we will cover in future branches. this was an Introduction to `Queue` and how we can use it with `Event` and `Listeners`. remember to not over use `Event-Listener` and also `Observer`, those features should only be used when it's really improving System's Speed and Stability.
