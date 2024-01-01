@@ -49,8 +49,14 @@ Upon successful execution of these commands, you'll need to make adjustments to 
 8. At the top of the Telescope user interface, you'll find options to "pause recording," "clear entries," and "auto-load," among others. Enabling "auto-load" ensures that you don't need to manually refresh the page repeatedly. You can explore the various sections to determine which are most valuable for your specific use case. Keep in mind that Telescope operates exclusively in the "testing" or "local" environments and is not active in "production."
 
 9. This concludes the implementation of Telescope into your system. While the basics have been covered,
+ 
 
- there are many advanced features, such as "tagging" and additional "watchers," which can be explored in future branches. Until then, leverage Telescope to debug your code and optimize your queries effectively.
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- there are many advanced features, such as "tagging" and additional "watchers," which can be explored in future branches. try to learn about them and use them on your own.
+- just like `Telescope` there are other tools/packages that you can use for debugging like `Debug Bar`. try to use that in your project as well.
 
 ## Additional Notes
 
