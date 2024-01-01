@@ -42,6 +42,12 @@ With this package installed, you'll be well-prepared to store files in AWS S3, r
 
 8. This concludes our current implementation of the "Badge system." In future branches, we plan to expand and introduce more badges.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- now that you know about `AWS-S3` and `Storage` facade, you can try to dive deeper into topics like `Image Compression` and `Image Encryption` etc. this topic requires you to  learn more about `Storage` facade as well as `AWS-S3`. so try to implement these into your project.
+
 ## Additional Notes
 
 - In upcoming branches, we will continue enhancing the "Badge system" by introducing more badges.
