@@ -36,6 +36,13 @@ Once you have gathered all the necessary information, you can call the API, pass
 
 8. This is how you can verify users in your system, either via email, SMS, or a combination of both. The specific verification process may vary based on your project's requirements, which could be more complex than this basic process. In upcoming branches, we will continue to enhance the "Badge system" by introducing more badges.
 
+## DIY (Do It Yourself)
+
+Here are some additional tasks you can undertake:
+
+- as `2-factor`, there are lots of other SMS services that you can use to send OTPs. try to implement other SMS services as well.
+- in mail verification, you may not want to send the link in mail and just send OTP in mail(same as SMS) and that's also a good way to verify user. try to implement that way too.
+
 ## Additional Notes
 
 - In upcoming branches, we will continue enhancing the "Badge system" by introducing more badges.
