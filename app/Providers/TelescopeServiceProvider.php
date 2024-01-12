@@ -33,6 +33,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                     $entry->type == EntryType::COMMAND ||
                     $entry->type == EntryType::EVENT ||
                     $entry->type == EntryType::JOB ||
+                    $entry->type == EntryType::CACHE ||
                     $entry->type == EntryType::LOG;
             }
             if ($this->app->environment('production')) {

@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Traits\FileManager;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -66,7 +67,7 @@ class PostController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = '%'.$request->search.'%';
+            $search = '%' . $request->search . '%';
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('title', 'like', $search)
                     ->orWhere('description', 'like', $search);
@@ -80,8 +81,8 @@ class PostController extends Controller
 
         if ($request->has('sort_field')) {
             $sort_field = $request->sort_field;
-            $sort_order = $request->input('sort_order', 'asc'); //default ascending
-            if (! in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
+            $sort_order = $request->input('sort_order', 'asc');
+            if (!in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
                 return response()->json([
                     'message' => __('messages.invalid_field_for_sorting'),
                     'status' => '0',
@@ -89,6 +90,23 @@ class PostController extends Controller
             }
             $data = $data->orderBy($sort_field, $sort_order);
         } else {
+            //------------ without cache
+            // $user_tag_ids = $user->tags->pluck('id')->toArray();
+
+            //------------ with cache
+            $user_tag_ids = Cache::remember("user_" . $user->id . "_tag_ids", now()->addWeek(), function () use ($user) {
+                return $user->tags->pluck('id')->toArray();
+            });
+
+
+            if (count($user_tag_ids) > 0) {
+                $data = $data
+                    ->withCount(['tags as connected_tags_count' => function ($query) use ($user_tag_ids) {
+                        $query = $query->whereIn('tags.id', $user_tag_ids);
+                    }])
+                    ->orderBy('connected_tags_count', 'desc');
+            }
+
             $data = $data->mostLikedFirst()->latest();
         }
 
@@ -133,7 +151,7 @@ class PostController extends Controller
                 if (Str::of($file->getMimeType())->contains('video/')) {
                     $file_type = File::VIDEO;
                 }
-                if (! in_array($file_type, [File::PHOTO, File::VIDEO])) {
+                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('file_messages.file_type_not_supported'),
                         'status' => '0',
@@ -186,7 +204,7 @@ class PostController extends Controller
      */
     public function blockToggle(Post $post)
     {
-        $post->is_blocked = ! $post->is_blocked;
+        $post->is_blocked = !$post->is_blocked;
         $post->save();
 
         return response()->json([
@@ -204,7 +222,7 @@ class PostController extends Controller
      */
     public function verifyToggle(Post $post)
     {
-        $post->is_verified = ! $post->is_verified;
+        $post->is_verified = !$post->is_verified;
         $post->save();
 
         return response()->json([
@@ -247,7 +265,7 @@ class PostController extends Controller
                 if (Str::of($file->getMimeType())->contains('video/')) {
                     $file_type = File::VIDEO;
                 }
-                if (! in_array($file_type, [File::PHOTO, File::VIDEO])) {
+                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('file_messages.file_type_not_supported'),
                         'status' => '0',
@@ -309,6 +327,6 @@ class PostController extends Controller
     {
         $pdf = Pdf::loadView('pdfs/post_pdf', ['post' => $post->loadMissing(['tags', 'files'])]);
 
-        return $pdf->download($post->created_at.'-'.$post->title);
+        return $pdf->download($post->created_at . '-' . $post->title);
     }
 }

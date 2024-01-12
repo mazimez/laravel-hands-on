@@ -124,6 +124,11 @@ class User extends Authenticatable
         return $this->hasMany(PostComment::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, UserTag::class);
+    }
+
     public function badges()
     {
         return $this->belongsToMany(

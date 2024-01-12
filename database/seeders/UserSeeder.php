@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\File;
+use App\Models\Tag;
 use App\Models\User;
+use App\Models\UserTag;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -16,12 +18,27 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::withoutEvents(function () {
-            User::create([
+            $default_user = User::create([
                 'type' => User::USER,
                 'name' => 'Default User',
                 'email' => 'test@gmail.com',
                 'password' => bcrypt('password'),
             ]);
+            $laravel_tag = Tag::where('name', 'PHP')->first();
+            if ($laravel_tag) {
+                UserTag::create([
+                    'user_id' => $default_user->id,
+                    'tag_id' => $laravel_tag->id,
+                ]);
+            }
+            $node_tag = Tag::where('name', 'node')->first();
+            if ($node_tag) {
+                UserTag::create([
+                    'user_id' => $default_user->id,
+                    'tag_id' => $node_tag->id,
+                ]);
+            }
+
             User::create([
                 'type' => User::ADMIN,
                 'name' => 'Admin User',

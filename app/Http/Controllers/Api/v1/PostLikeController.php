@@ -9,6 +9,7 @@ use App\Models\Badge;
 use App\Models\Likable;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\UserTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,6 +62,7 @@ class PostLikeController extends Controller
         $post->likers()->attach($auth_user);
 
         if ($auth_user->id != $post->user_id) {
+            UserTag::addTags($auth_user, $post->tags->pluck('id')->toArray());
             $notification = $post->notifications()->create([
                 'user_id' => $post->user_id,
                 'title' => __('notification_messages.post_like_title', ['user_name' => $post->user->name]),
@@ -77,7 +79,7 @@ class PostLikeController extends Controller
         $first_like_badge = Badge::where('slug', Badge::FIRST_LIKE)->first();
         if ($first_like_badge) {
             $user_to_give_badge = $post->user;
-            if (! $user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
+            if (!$user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
                 $overall_post_like_count = Likable::where('user_id', '!=', $post->user_id)
                     ->whereHas('post', function ($query) use ($post) {
                         $query->where('user_id', $post->user_id);
