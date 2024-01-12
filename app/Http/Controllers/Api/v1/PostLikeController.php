@@ -79,7 +79,7 @@ class PostLikeController extends Controller
         $first_like_badge = Badge::where('slug', Badge::FIRST_LIKE)->first();
         if ($first_like_badge) {
             $user_to_give_badge = $post->user;
-            if (!$user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
+            if (! $user_to_give_badge->badges()->where('badges.id', $first_like_badge->id)->exists()) {
                 $overall_post_like_count = Likable::where('user_id', '!=', $post->user_id)
                     ->whereHas('post', function ($query) use ($post) {
                         $query->where('user_id', $post->user_id);

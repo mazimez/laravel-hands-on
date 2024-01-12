@@ -48,12 +48,12 @@ class UserTag extends Model
      * add the tags into user's interested tags list
      *
      * @param  User  $user instance of user model on which you want to add tags
-     * @param  $tag_ids  array of tag ids that you want to add into users
+     * @param    $tag_ids  array of tag ids that you want to add into users
      */
     public static function addTags(User $user, $tag_ids)
     {
         $user->tags()->syncWithoutDetaching($tag_ids);
-        Cache::put("user_" . $user->id . "_tag_ids", $user->tags->pluck('id')->toArray(), now()->addWeek());
+        Cache::put('user_'.$user->id.'_tag_ids', $user->tags->pluck('id')->toArray(), now()->addWeek());
     }
 
     //SCOPES
