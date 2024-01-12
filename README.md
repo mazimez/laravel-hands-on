@@ -64,5 +64,5 @@ you can directly go to any branch for the topic that you want to understand, and
 36. [laravel-pint](https://github.com/mazimez/laravel-hands-on/tree/laravel-pint)
 37. [pdf-generation](https://github.com/mazimez/laravel-hands-on/tree/pdf-generation)
 38. [excel-generation](https://github.com/mazimez/laravel-hands-on/tree/excel-generation)
-39. [cache](https://github.com/mazimez/laravel-hands-on/tree/cache)
+39. [caching](https://github.com/mazimez/laravel-hands-on/tree/caching)
 
