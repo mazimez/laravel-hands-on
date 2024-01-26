@@ -15,33 +15,35 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
+//DEFAULT
 Route::get('/', function () {
     return view('welcome');
-});
-
-Route::get('/email/verify/{hash}', 'Api\v1\UserController@verifyEmail')->name('email.verify');
-
-Route::get('auth/google', function () {
-    return Socialite::driver('google')->redirect();
-});
-
-Route::get('callback/google', function () {
-    $social_user = Socialite::driver('google')->user();
-    dd($social_user);
 });
 
 //AUTH MANAGEMENT
 Route::get('/login', function () {
     if (Auth::user()) {
-        return redirect('/home');
+        return redirect('/dashboard');
     }
 
-    return view('auth.login');
+    return view('UI.auth.login');
 });
 Route::post('/login', 'Web\UserController@login')->name('login');
+
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/home', function () {
-        return view('auth.home', ['user' => Auth::user()]);
-    });
+    Route::get('dashboard', 'Web\DashboardController@show')->name('dashboard');
+    Route::get('users', 'Web\UserController@show')->name('users');
     Route::post('logout', 'Web\UserController@logout')->name('logout');
+});
+
+//EMAIL-VERIFICATION
+Route::get('/email/verify/{hash}', 'Api\v1\UserController@verifyEmail')->name('email.verify');
+
+//TEST-ROUTES
+Route::get('auth/google', function () {
+    return Socialite::driver('google')->redirect();
+});
+Route::get('callback/google', function () {
+    $social_user = Socialite::driver('google')->user();
+    dd($social_user);
 });

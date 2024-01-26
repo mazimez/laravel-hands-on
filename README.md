@@ -1,60 +1,58 @@
-# Caching
+# Web Basics
 
-Caching stands out as a pivotal technique in optimizing system performance. It involves strategically storing data in easily accessible locations, reducing the need for direct database queries. The primary objective is to enhance system speed by retrieving information from cache rather than the database, particularly in scenarios where data remains constant over time.
+Till now we focus on the API part of Laravel, now we will focus on the web part. Laravel provides very rich and powerful things to make Websites. we already learn a little bit about blade files that will be used in the web part of Laravel.
 
-However, it is crucial not to overly rely on caching, as it serves to expedite system processes rather than replace the original data source. Careful consideration must be given to ensuring cache data aligns with the corresponding database records, preventing discrepancies that may lead to outdated or inaccurate information.
+We also have tool/tech like `LiveWire`,`Vite`,`TailWind`, `Filament` etc. that help us make websites faster. we will look into these topics in later branches.
+
+Laravel also has a [starter-kits](https://laravel.com/docs/10.x/starter-kits) that you can see and implement. but we will go with simpler approach so it will be easy to understand.
 
 ## Description
 
-Laravel(PHP) provides a range of methods for implementing caching in your system. Options include storing cache in simple files within the Laravel project or utilizing more advanced solutions such as database or redis. In this example, we employ the file system (local storage) to store cache information. Feel free to explore alternative caching methods to suit your specific requirements.
+In this section, we just get to know the basics of Blade files and also update our WEB part a little bit. we added the login page in web in [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing) and [fcm-notification-part-1](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-1) branches. we will update that part and try to implement an Admin panel for our admin where he/she can check on users and posts.
 
-Our focus here is on leveraging cache to introduce a new feature that tailors content for users based on their specified interests. For instance, if a user expresses interest in posts with tags like php and node, the system should prioritize showing them content aligned with these preferences. To achieve this, we store information about user-tag relationships in both the database and cache, optimizing retrieval speed.
+building whole admin panel is will take more then just few branches. so we focus on only important parts that we must understand, other parts can be done later(as DIY). so for this branch, we prepare some BASE blade files that we can use to show some UI like sidebar and navigation on web pages.
 
-It's noteworthy that cache entries have a defined expiration period, ensuring periodic updates from the database to keep the cache current. You can adjust this duration based on your specific needs.
+in later branches, we will see how we can add things like `users-list`, `user-crud` etc. in WEB.
+
+we are using 1 template from CodePan. the [Admin Panel](https://codepen.io/ajeeb/pen/dRLQRR) template by [ajeeb](https://codepen.io/ajeeb) is a good template that you can use to get some basic UI of admin panel. you can also create your own UI elements from scratch.
 
 ## Files
-1. [2024_01_01_154916_create_user_tags_table](database/migrations/2024_01_01_154916_create_user_tags_table.php): added new migration for user tag.
-2. [cache](config/cache.php): config file updated to support caching.
-3. [User](app/Models/User.php), [UserTag](app/Models/UserTag.php): added/updated the models to support `userTag` and `cache`.
-4. [PostController](app/Http/Controllers/Api/v1/PostController.php), [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php): controllers updated to support `UserTag` and `cache` logic
-5. [TelescopeServiceProvider](app/Providers/TelescopeServiceProvider.php): service provider updated to store cache data in telescope.
+1. [DashboardController](app/Http/Controllers/Web/DashboardController.php) and [UserController](app/Http/Controllers/Api/v1/UserController.php): updated the controllers to use new `WEB blade files` and `UI`.
+2. [styles](public/css/styles.css) & [app](public/js/app.js): some `CSS` + `JS` to make UI attractive.
+3. [main](resources/views/UI/base/main.blade.php),[sidebar](resources/views/UI/base/sidebar.blade.php),[topbar](resources/views/UI/base/topbar.blade.php): added new blade files to show the UI.
+4. [web](routes/web.php): new route added for admin panel.
 6. `other changes made by laravel-pint for formatting`
 
 ## Getting Started
 
-1. before implementing cache, we will add our new feature without cache. for that first we need to add new table to store info about user's interests. we will create a new migration [2024_01_01_154916_create_user_tags_table](database/migrations/2024_01_01_154916_create_user_tags_table.php) and also [UserTag](app/Models/UserTag.php) for it.
+1. first we will start with rearranging our blade files, we will make 1 `UI` folder in `views` there we will put all of our blade files related to Admin panel(like Login page, blade files to handle CRUD on `User` and `Post` etc.). in the we make sub-folders like `auth`, `base`. in `auth` we put our login page and any other page related to user's authentication flow. in `base`, we will put different blade files for NavBar, SideBar, TopBar etc. of our admin panel.
 
-2. now on [User](app/Models/User.php) model we will add new relationship for `tags` that will give us tags for specific user. also we update our [UserSeeder](database/seeders/UserSeeder.php) so our default user will have 2 tags `PHP` and `node`. now we need to use this new table whenever someone likes any `post`, where we take all the tags connected to that post and sync it with the tags of users(by sync i mean if it's already there then we don't add it again).
+2. In [main](resources/views/UI/base/main.blade.php) blade file, we first add some `JS` and `CSS` libraries like `Bootstrap`, `Jquery` and `Font Awesome` to get some basic set-up for our Admin panel UI. also we use `asset` method to get the path of our JS and CSS files. since our app start from `public` folder, we can use `asset` method to get the path of our JS and CSS files. there are more methods like `asset` that you can learn from [Laravel-doc](https://laravel.com/docs/10.x/helpers#miscellaneous-method-list).
 
-3. we need to update our `post-like` API and add our `user-tag` logic there. so we go to [PostLikeController](app/Http/Controllers/Api/v1/PostLikeController.php) and while we send the like notification, we call the `addTags` method that will `sync` that post's `TAGs` with logged-in user. in that method, we use `syncWithoutDetaching` method that will add any new tags we have provided without removing the existing ones, we can't use `sync` or `attach` method since it doesn't exactly do the thing we want. so we use `syncWithoutDetaching`, you can learn more about it from [Laravel-doc](https://laravel.com/docs/10.x/eloquent-relationships#syncing-associations). you can also see that there is some code about `Cache` under that but we will focus on that later.
+3. we can also use content from another blade file into our main blade file with `@include`, we have included blade files like [sidebar](resources/views/UI/base/sidebar.blade.php), [topbar](resources/views/UI/base/topbar.blade.php) with `@include` to show our UI for `sidebar` and `topbar`. In [sidebar](resources/views/UI/base/sidebar.blade.php) we put different routes for different sections like `Dashboard` and `Users` etc. so user can navigate throw these routes.
 
-4. now, we will use this `UserTag` model while fetching the data about `posts` and give user some posts related to that user's tags. for that we go to [PostController](app/Http/Controllers/Api/v1/PostController.php) and while sorting the posts, if no sorting field is provided then we add our new logic in which we first get the IDs of all the tags of that user (focus on the `without cache` parts) and then use that ids to first get the `count` of those tags from our products, then we put `orderBy` on that count so the post that has tags related to user's tag will come up first. you can test it with our default user by calling post's list API and see that you should get the posts with tags `PHP` and `node` first. so this way our feature of showing posts according to user's interest is ready. now we will focus on using `Cache`.
+4. there is also method like `@yield`, `@extends` and `@section` that helps in extending our blade templates. look at [users](resources/views/UI/users.blade.php). here, we are extending our `main` blade file with `@extends` and in [main](resources/views/UI/base/main.blade.php) blade file we use `@yield` to indicate blade engine that another blade file will extend it and put it's own content here. in [users](resources/views/UI/users.blade.php) blade file we use `@section` and put our content there, this content will be putted inside the [main](resources/views/UI/base/main.blade.php) blade file. you can learn more about layout Extending from [Laravel doc](https://laravel.com/docs/10.x/blade#layouts-using-template-inheritance)
 
-5. to start using `Cache`, we will first go to [.env](.env), there we update 1 variable `CACHE_DRIVER` and set it's value to be `file` to inform Laravel that we use files to store cache. now we go to [cache](config/cache.php) config, there you can see there is option of `stores` that's an array with different ways you can store data in cache and we are going to use `file`, you can also decide where exactly you want to store your cache here. you can learn more about it from [Laravel-doc](https://laravel.com/docs/10.x/cache)
+5. we will also update our [UserController](app/Http/Controllers/Web/UserController.php) and update our `login` method a little where first we find the user with email and verify the password. we then use `Auth` facade's login method and pass our `$user` variable in it. this will handle the login process based on [auth](config/auth.php) config, in that config we have set it to authenticate with session, so Laravel will handle that on it's own.
 
-6. now that our cache system is ready, first we go to our [UserTag](app/Models/UserTag.php), in `addTags` method we use `Cache` Facade to store our cache data. here we store the ids of tags that for each user. the `put` method on cache is used to store the data, it takes string as key so you fetch this data again, we pass a key that's unique for each user(with it's id) and in other parameter we pass it's value, the array of tag-ids of the user. in 3rd parameter we pass the timestamp till which we store this cache data, we pass the date-time of 1 week from now. this way we store the data in cache and whenever this method is called, we update our cache with new tag-ids. you can also check this cache files in your `cache` folder or at the path you can given in you config file.
+6. now that our blade files are set up, you can `serve` the project and check our UI. it should show you the login page first and then the dashboard with sidebar. you can navigate into different sections as well. all of this is handled by [main](resources/views/UI/base/main.blade.php),[sidebar](resources/views/UI/base/sidebar.blade.php),[topbar](resources/views/UI/base/topbar.blade.php) blade files.
 
-7. now that our cache is stored, we will use this in our [PostController](app/Http/Controllers/Api/v1/PostController.php). there we will use `remember` method from `Cache` facade to fetch the user-tags data based on user's ID. keep in mind that here we pass 1 parameter at the end as callback so if that user's cache is not stored yet, it will create that cache based on that function. this way we always get the ids of tags no matter the cache is stored or not.
-
-8. now that we get our data from cache, we use it normally without any issue. this will allow us to not fetch the tag-ids again and again while getting the post list. you can also use `Telescope` to compare both ways (with Cache and Without cache). in `Telescope` you can also see the cache data by going at `cache` route, don't forget to update [TelescopeServiceProvider](app/Providers/TelescopeServiceProvider.php) so it also starts storing `cache` data.
-
-9. this way we can use cache to fetch data that's needed more often but don't change frequently. keep in mind that you shouldn't store all the data in cache either, specially not any sensitive info.
+7. you can customize this file to change the UI and make it look better, but try to focus on more on using the Blade template and it's different methods like `@yield`, `@extends` and `@section`. there are lot of other methods that we will use in later branches. this branch is just to get to know the basic of Blade files and the whole WEB part of Laravel.
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- Implement caching at other points in your system.
-- Experiment with storing various data types in cache, such as strings, integers, and even files. Refer to the documentation for details.
-- Investigate alternative cache storage options like redis or database.
+- try to update the UI and also show some data of logged-in user into dashboard.
+- try to create a register page as well that register new users. even though this Admin panel us just for admin type users but register page would be a good practice to get familiar with Blade files.
 
 ## Additional Notes
 
-- Till now, we have focused on using Laravel to develop APIs. from now on, we go over some topics to use Laravel for Web development too.
+- In next branch, we will focus on showing the list of users in to our admin panel. we also try to add filters and sorting on that user's list.
 - Foster insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel documentation for cache](https://laravel.com/docs/10.x/cache#adding-custom-cache-drivers)
-2. [Blog on Cache ](https://medium.com/@noor1yasser9/understanding-caching-in-laravel-b140542f08dd)
+1. [Laravel documentation for blade](https://laravel.com/docs/10.x/blade)
+2. [Basic of Blade](https://www.javatpoint.com/laravel-blade-template)

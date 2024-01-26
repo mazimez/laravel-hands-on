@@ -13,6 +13,7 @@ use App\Traits\FileManager;
 use App\Traits\SmsManager;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
@@ -38,6 +39,7 @@ class TestController extends Controller
 
     public function fileDestroy(Request $request)
     {
+        Artisan::command('cache:clear');
         $this->deleteFile($request->file_path);
 
         return response()->json([
