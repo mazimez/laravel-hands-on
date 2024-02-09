@@ -20,6 +20,8 @@ class User extends Authenticatable
 
     const USER = 'USER';
 
+    public $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *

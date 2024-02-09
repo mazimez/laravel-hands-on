@@ -1,58 +1,55 @@
-# Web Basics
+# Datatables
 
-Till now we focus on the API part of Laravel, now we will focus on the web part. Laravel provides very rich and powerful things to make Websites. we already learn a little bit about blade files that will be used in the web part of Laravel.
+Data tables are essential components for displaying tabular data efficiently, offering features such as sorting, filtering, searching, and pagination. They are commonly utilized in admin panels to present lists of users, posts, blogs, etc. Several libraries excel in providing robust data tables, including [JQuery Datatable](https://datatables.net/), [ag-grid](https://www.ag-grid.com/), and [tabulator](https://tabulator.info/), each catering to distinct use cases.
 
-We also have tool/tech like `LiveWire`,`Vite`,`TailWind`, `Filament` etc. that help us make websites faster. we will look into these topics in later branches.
+Notably, Laravel offers [laravel-datatables](https://yajrabox.com/docs/laravel-datatables/10.0), seamlessly integrated with Laravel 10.
 
-Laravel also has a [starter-kits](https://laravel.com/docs/10.x/starter-kits) that you can see and implement. but we will go with simpler approach so it will be easy to understand.
+In this example, we opt for [JQuery Datatable](https://datatables.net/) due to its ease of implementation and alignment with our basic requirements.
 
 ## Description
 
-In this section, we just get to know the basics of Blade files and also update our WEB part a little bit. we added the login page in web in [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing) and [fcm-notification-part-1](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-1) branches. we will update that part and try to implement an Admin panel for our admin where he/she can check on users and posts.
+In this section, our focus encompasses two primary objectives. Firstly, the development of a Dashboard page to provide an overview of the system's metrics, such as user and post counts. Secondly, the creation of a User List page to display all users, leveraging the capabilities of [JQuery Datatable](https://datatables.net/) to enable searching, sorting, and pagination functionalities.
 
-building whole admin panel is will take more then just few branches. so we focus on only important parts that we must understand, other parts can be done later(as DIY). so for this branch, we prepare some BASE blade files that we can use to show some UI like sidebar and navigation on web pages.
-
-in later branches, we will see how we can add things like `users-list`, `user-crud` etc. in WEB.
-
-we are using 1 template from CodePan. the [Admin Panel](https://codepen.io/ajeeb/pen/dRLQRR) template by [ajeeb](https://codepen.io/ajeeb) is a good template that you can use to get some basic UI of admin panel. you can also create your own UI elements from scratch.
+Consider exploring alternative datatable libraries for implementing the user list.
 
 ## Files
-1. [DashboardController](app/Http/Controllers/Web/DashboardController.php) and [UserController](app/Http/Controllers/Api/v1/UserController.php): updated the controllers to use new `WEB blade files` and `UI`.
-2. [styles](public/css/styles.css) & [app](public/js/app.js): some `CSS` + `JS` to make UI attractive.
-3. [main](resources/views/UI/base/main.blade.php),[sidebar](resources/views/UI/base/sidebar.blade.php),[topbar](resources/views/UI/base/topbar.blade.php): added new blade files to show the UI.
-4. [web](routes/web.php): new route added for admin panel.
-6. `other changes made by laravel-pint for formatting`
+
+1. [DashboardController](app/Http/Controllers/Web/DashboardController.php) and [UserController](app/Http/Controllers/Api/v1/UserController.php): Updates made to the controllers to include metric counts and user list display.
+2. [main](resources/views/UI/base/main.blade.php): Imports necessary JavaScript and CSS libraries for datatables.
+3. [home](resources/views/UI/home.blade.php) and [users](resources/views/UI/users.blade.php): Blade files updated to incorporate metric counts and the user list display.
+4. [web](routes/web.php): Addition of a new route for accessing the user list API.
+
 
 ## Getting Started
 
-1. first we will start with rearranging our blade files, we will make 1 `UI` folder in `views` there we will put all of our blade files related to Admin panel(like Login page, blade files to handle CRUD on `User` and `Post` etc.). in the we make sub-folders like `auth`, `base`. in `auth` we put our login page and any other page related to user's authentication flow. in `base`, we will put different blade files for NavBar, SideBar, TopBar etc. of our admin panel.
+1. Before commencing with the `dashboard` setup, modifications are made to the [main](resources/views/UI/base/main.blade.php) blade file, utilizing `@yield` and `@stack` directives to include custom styles (CSS) and scripts (JS). The utility of these methods is demonstrated in the [home](resources/views/UI/home.blade.php) blade file, where `@push` is employed to append custom CSS. This approach, similar to `@include` and `@section`, offers flexibility, allowing multiple `@push` instances to contribute to an existing stack. Additional methods like `@pushIf` and `@prepend` are available, detailed in the [Laravel documentation](https://laravel.com/docs/10.x/blade#stacks). Furthermore, JavaScript and CSS for `jquery.dataTables` are incorporated into [main](resources/views/UI/base/main.blade.php) to facilitate datatable creation in [users](resources/views/UI/users.blade.php).
 
-2. In [main](resources/views/UI/base/main.blade.php) blade file, we first add some `JS` and `CSS` libraries like `Bootstrap`, `Jquery` and `Font Awesome` to get some basic set-up for our Admin panel UI. also we use `asset` method to get the path of our JS and CSS files. since our app start from `public` folder, we can use `asset` method to get the path of our JS and CSS files. there are more methods like `asset` that you can learn from [Laravel-doc](https://laravel.com/docs/10.x/helpers#miscellaneous-method-list).
+2. In our [home](resources/views/UI/home.blade.php), after adding custome `css`, we will add `HTML` code to show different counts like `$user_count`, `$active_post_count` etc. all these counts are calculated from [DashboardController](app/Http/Controllers/Web/DashboardController.php) and sent to blade file. in blade file, we just show these counts with some `bootstrap` classes and `icons` from [font-awesome](https://fontawesome.com/). so now our `dashboard` is ready, we can focus on User list.
 
-3. we can also use content from another blade file into our main blade file with `@include`, we have included blade files like [sidebar](resources/views/UI/base/sidebar.blade.php), [topbar](resources/views/UI/base/topbar.blade.php) with `@include` to show our UI for `sidebar` and `topbar`. In [sidebar](resources/views/UI/base/sidebar.blade.php) we put different routes for different sections like `Dashboard` and `Users` etc. so user can navigate throw these routes.
+3. when showing the list of `Users` in admin panel, we need an API to fetch that data. so first we will create a new API(we can't use our existing APIs since that requires Bearer Tokens), now in [UserController](app/Http/Controllers/Web/UserController.php) of `WEB`, we add new method `indexApi` that will return the list of users with `search` and `sorting`. this API will be used in blade file [users](resources/views/UI/users.blade.php)
 
-4. there is also method like `@yield`, `@extends` and `@section` that helps in extending our blade templates. look at [users](resources/views/UI/users.blade.php). here, we are extending our `main` blade file with `@extends` and in [main](resources/views/UI/base/main.blade.php) blade file we use `@yield` to indicate blade engine that another blade file will extend it and put it's own content here. in [users](resources/views/UI/users.blade.php) blade file we use `@section` and put our content there, this content will be putted inside the [main](resources/views/UI/base/main.blade.php) blade file. you can learn more about layout Extending from [Laravel doc](https://laravel.com/docs/10.x/blade#layouts-using-template-inheritance)
+4. in [users](resources/views/UI/users.blade.php) file, we first add 1 empty `<table>` tag with the ID of `myTable` and class of `display`. this css class is provided by `jquery.dataTables` itself. now in `js` we first prepare an array of `columns` that decides which columns should be shown in our table. here, for image you can see we are using `render` option to actually add the `<img>` tag to show the image. also with `orderable` option you can disable the sorting for any column. now that our `columns` variable is ready, we use `DataTable()` function on our table element to actually render the dataTable.
 
-5. we will also update our [UserController](app/Http/Controllers/Web/UserController.php) and update our `login` method a little where first we find the user with email and verify the password. we then use `Auth` facade's login method and pass our `$user` variable in it. this will handle the login process based on [auth](config/auth.php) config, in that config we have set it to authenticate with session, so Laravel will handle that on it's own.
+5. there are lot of configurations for `DataTable()` that let us customize it according to our needs. for example, in `ajax` option, we can provide our `API` route that gives the users list. also there is a option of `dataFilter` and `data` too where `data` helps with sending data about `pagination`, `sorting`, `searching` into API, `dataFilter` helps in formatting the response and rendering the table. you can learn more about `dataFilter` and `data` from [datatables doc](https://datatables.net/examples/server_side/simple.html).
 
-6. now that our blade files are set up, you can `serve` the project and check our UI. it should show you the login page first and then the dashboard with sidebar. you can navigate into different sections as well. all of this is handled by [main](resources/views/UI/base/main.blade.php),[sidebar](resources/views/UI/base/sidebar.blade.php),[topbar](resources/views/UI/base/topbar.blade.php) blade files.
+6. there is also other option like `order` and `pageLength` that let's you set some default sorting and per_page limit. the `columns` option takes an array of the columns variable that we created earlier. you can customize all these option according to your needs.
 
-7. you can customize this file to change the UI and make it look better, but try to focus on more on using the Blade template and it's different methods like `@yield`, `@extends` and `@section`. there are lot of other methods that we will use in later branches. this branch is just to get to know the basic of Blade files and the whole WEB part of Laravel.
+7. so that's how you can show the list of users in admin panel. there are lot of other data-tables libraries that you can use for showing the list of users in admin panel with more customization and control. for our basic example, `Jquery Datable` is enough
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- try to update the UI and also show some data of logged-in user into dashboard.
-- try to create a register page as well that register new users. even though this Admin panel us just for admin type users but register page would be a good practice to get familiar with Blade files.
+- try to customize the data-table and add filters to get only those users who's email is verified. also try to change the look of data-table too, there are lots of `css` classes that you can use(try the [bootstrap](https://datatables.net/examples/styling/bootstrap.html) option)
+- try to make a similar data-table for posts with features like filters,sorting, pagination and searching etc.
 
 ## Additional Notes
 
-- In next branch, we will focus on showing the list of users in to our admin panel. we also try to add filters and sorting on that user's list.
+- In next branch, we will focus on adding/updating the data of any user in admin panel. for that we use [LiveWire](https://laravel-livewire.com/) that makes it easy and efficient.
 - Foster insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
 - Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Laravel documentation for blade](https://laravel.com/docs/10.x/blade)
-2. [Basic of Blade](https://www.javatpoint.com/laravel-blade-template)
+1. [Pros and Cons of DataTables](https://poovarasu.medium.com/pros-cons-in-datatables-ff9a4fa83f17)
+2. [Laravel database](https://medium.com/geekculture/implementation-of-datatables-in-laravel-cd284d74bf1c)

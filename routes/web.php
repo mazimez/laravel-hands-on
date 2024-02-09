@@ -32,8 +32,13 @@ Route::post('/login', 'Web\UserController@login')->name('login');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'Web\DashboardController@show')->name('dashboard');
-    Route::get('users', 'Web\UserController@show')->name('users');
+
     Route::post('logout', 'Web\UserController@logout')->name('logout');
+
+    Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+        Route::get('/', 'Web\UserController@index')->name('index');
+        Route::get('/api', 'Web\UserController@indexApi')->name('api');
+    });
 });
 
 //EMAIL-VERIFICATION

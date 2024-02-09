@@ -3,7 +3,7 @@
     <div class="menu_section">
         <ul class="nav side-menu">
             <li><a href={{ route('dashboard') }}> <i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href={{ route('users') }}> <i class="fa fa-user"></i> Users</a></li>
+            <li><a href={{ route('users.index') }}> <i class="fa fa-user"></i> Users</a></li>
         </ul>
     </div>
 
