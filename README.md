@@ -66,4 +66,5 @@ you can directly go to any branch for the topic that you want to understand, and
 38. [excel-generation](https://github.com/mazimez/laravel-hands-on/tree/excel-generation)
 39. [caching](https://github.com/mazimez/laravel-hands-on/tree/caching)
 40. [web-basics](https://github.com/mazimez/laravel-hands-on/tree/web-basics)
+41. [datatables](https://github.com/mazimez/laravel-hands-on/tree/datatables)
 
