@@ -21,7 +21,7 @@ We encourage you to actively engage with the content, experiment with the code, 
 
 ## Note
 
-This project primarily focuses on utilizing Laravel for developing APIs rather than web applications. If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
+This project primarily focuses on utilizing Laravel for developing APIs. Although it starts focusing on WEB part at 40th topic but If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
 
 ## Where to Start
 you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following is the Order that you should follow to go thorough each branch
@@ -67,4 +67,5 @@ you can directly go to any branch for the topic that you want to understand, and
 39. [caching](https://github.com/mazimez/laravel-hands-on/tree/caching)
 40. [web-basics](https://github.com/mazimez/laravel-hands-on/tree/web-basics)
 41. [datatables](https://github.com/mazimez/laravel-hands-on/tree/datatables)
+42. [livewire-part-1](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-1)
 
