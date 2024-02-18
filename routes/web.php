@@ -31,6 +31,8 @@ Route::get('/login', function () {
 Route::post('/login', 'Web\UserController@login')->name('login');
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::get('/livewire-test', 'Web\TestController@testLivewire')->name('livewire-test');
+
     Route::get('dashboard', 'Web\DashboardController@show')->name('dashboard');
 
     Route::post('logout', 'Web\UserController@logout')->name('logout');

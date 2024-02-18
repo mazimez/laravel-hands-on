@@ -1,55 +1,66 @@
-# Datatables
 
-Data tables are essential components for displaying tabular data efficiently, offering features such as sorting, filtering, searching, and pagination. They are commonly utilized in admin panels to present lists of users, posts, blogs, etc. Several libraries excel in providing robust data tables, including [JQuery Datatable](https://datatables.net/), [ag-grid](https://www.ag-grid.com/), and [tabulator](https://tabulator.info/), each catering to distinct use cases.
 
-Notably, Laravel offers [laravel-datatables](https://yajrabox.com/docs/laravel-datatables/10.0), seamlessly integrated with Laravel 10.
+# LiveWire Part-1
 
-In this example, we opt for [JQuery Datatable](https://datatables.net/) due to its ease of implementation and alignment with our basic requirements.
+LiveWire is a powerful tool that facilitates the creation of dynamic web pages and components within Laravel applications. Essentially, it offers a seamless integration between the frontend and backend through JavaScript (JS) and CSS libraries. For comprehensive insights into LiveWire, refer to the official documentation [here](https://livewire.laravel.com/). It enables real-time synchronization of forms with databases and supports various JS operations, leveraging libraries such as [AlpineJs](https://alpinejs.dev/) and [Laravel Echo](https://www.npmjs.com/package/laravel-echo).
+
+With a broad spectrum of applications, LiveWire caters to both simple and complex project requirements.
+
+In this example, the LiveWire topic is divided into three parts. In Part 1, we delve into the installation process and explore the concept of components in LiveWire.
 
 ## Description
 
-In this section, our focus encompasses two primary objectives. Firstly, the development of a Dashboard page to provide an overview of the system's metrics, such as user and post counts. Secondly, the creation of a User List page to display all users, leveraging the capabilities of [JQuery Datatable](https://datatables.net/) to enable searching, sorting, and pagination functionalities.
+This section aims to develop a web page (form) capable of capturing user input and storing it in a database while maintaining a real-time connection with the backend through LiveWire.
 
-Consider exploring alternative datatable libraries for implementing the user list.
+To begin, we install LiveWire using the following command:
+```
+composer require livewire/livewire
+```
+This grants us access to LiveWire commands via Artisan, allowing us to create components similar to how we generate models and controllers in Laravel.
+
+For this example, the focus is on real-time data updates using LiveWire, rather than database storage.
 
 ## Files
 
-1. [DashboardController](app/Http/Controllers/Web/DashboardController.php) and [UserController](app/Http/Controllers/Api/v1/UserController.php): Updates made to the controllers to include metric counts and user list display.
-2. [main](resources/views/UI/base/main.blade.php): Imports necessary JavaScript and CSS libraries for datatables.
-3. [home](resources/views/UI/home.blade.php) and [users](resources/views/UI/users.blade.php): Blade files updated to incorporate metric counts and the user list display.
-4. [web](routes/web.php): Addition of a new route for accessing the user list API.
+1. [TestController](app/Http/Controllers/Web/TestController.php): New controller to test Livewire.
+2. [TestComponent](app/Http/Livewire/TestComponent.php) and [test-component](resources/views/livewire/test-component.blade.php): new file for Livewire component.
+3. [livewire_test](resources/views/UI/livewire_test.blade.php): blade file to actually use Livewire component.
+4. [composer.json](composer.json), [composer.lock](composer.lock): Composer dependencies for Livewire.
+5. [web](routes/web.php) and [sidebar](resources/views/UI/base/sidebar.blade.php): new route and page for Livewire
 
 
 ## Getting Started
 
-1. Before commencing with the `dashboard` setup, modifications are made to the [main](resources/views/UI/base/main.blade.php) blade file, utilizing `@yield` and `@stack` directives to include custom styles (CSS) and scripts (JS). The utility of these methods is demonstrated in the [home](resources/views/UI/home.blade.php) blade file, where `@push` is employed to append custom CSS. This approach, similar to `@include` and `@section`, offers flexibility, allowing multiple `@push` instances to contribute to an existing stack. Additional methods like `@pushIf` and `@prepend` are available, detailed in the [Laravel documentation](https://laravel.com/docs/10.x/blade#stacks). Furthermore, JavaScript and CSS for `jquery.dataTables` are incorporated into [main](resources/views/UI/base/main.blade.php) to facilitate datatable creation in [users](resources/views/UI/users.blade.php).
+1. We create a new component using the command `php artisan make:livewire TestComponent`. This command generates two files: [TestComponent](app/Http/Livewire/TestComponent.php) and [test-component](resources/views/livewire/test-component.blade.php). The `TestComponent` represents the form to be built for user input, while the blade file contains the HTML, JS, and CSS code for rendering the form. Both files collaborate to establish a real-time connection.
 
-2. In our [home](resources/views/UI/home.blade.php), after adding custome `css`, we will add `HTML` code to show different counts like `$user_count`, `$active_post_count` etc. all these counts are calculated from [DashboardController](app/Http/Controllers/Web/DashboardController.php) and sent to blade file. in blade file, we just show these counts with some `bootstrap` classes and `icons` from [font-awesome](https://fontawesome.com/). so now our `dashboard` is ready, we can focus on User list.
+2. Next, we integrate the blade file into our project to view it in the browser. We create a new route in [web](routes/web.php) such as `/livewire-test`, linking it to [TestController](app/Http/Controllers/Web/TestController.php), which returns the view [livewire_test](resources/views/UI/livewire_test.blade.php). Within this view, we include our `main` blade file for basic UI presentation (e.g., sidebar), followed by `@livewireStyles` and `@livewireScripts` tags, essential for LiveWire functionality. Finally, we embed our [test-component](resources/views/livewire/test-component.blade.php) using `@livewire`.
 
-3. when showing the list of `Users` in admin panel, we need an API to fetch that data. so first we will create a new API(we can't use our existing APIs since that requires Bearer Tokens), now in [UserController](app/Http/Controllers/Web/UserController.php) of `WEB`, we add new method `indexApi` that will return the list of users with `search` and `sorting`. this API will be used in blade file [users](resources/views/UI/users.blade.php)
+3. In [TestController](app/Http/Controllers/Web/TestController.php), notice the `data` key containing values such as `name`, `email`, and `number`. This data is passed to [test-component](resources/views/livewire/test-component.blade.php), accessed within its `mount` method—a pivotal entry point for component data.
 
-4. in [users](resources/views/UI/users.blade.php) file, we first add 1 empty `<table>` tag with the ID of `myTable` and class of `display`. this css class is provided by `jquery.dataTables` itself. now in `js` we first prepare an array of `columns` that decides which columns should be shown in our table. here, for image you can see we are using `render` option to actually add the `<img>` tag to show the image. also with `orderable` option you can disable the sorting for any column. now that our `columns` variable is ready, we use `DataTable()` function on our table element to actually render the dataTable.
+4. Utilizing the passed data, we populate the form fields. Upon visiting `/livewire-test`, users encounter [test-component](resources/views/livewire/test-component.blade.php), showcasing the form. Observe the `form` tag, incorporating `wire:submit.prevent="storeData"`. This binds the form submission to the `storeData` method in [TestComponent](app/Http/Livewire/TestComponent.php), facilitating real-time data storage without page refresh.
 
-5. there are lot of configurations for `DataTable()` that let us customize it according to our needs. for example, in `ajax` option, we can provide our `API` route that gives the users list. also there is a option of `dataFilter` and `data` too where `data` helps with sending data about `pagination`, `sorting`, `searching` into API, `dataFilter` helps in formatting the response and rendering the table. you can learn more about `dataFilter` and `data` from [datatables doc](https://datatables.net/examples/server_side/simple.html).
+5. [TestComponent](app/Http/Livewire/TestComponent.php) includes a `rules` method for form validation, akin to Laravel's request validations. Additionally, the `updated` method triggers on any form field modification, enforcing real-time validation and error display via `@error` tags in the blade file.
 
-6. there is also other option like `order` and `pageLength` that let's you set some default sorting and per_page limit. the `columns` option takes an array of the columns variable that we created earlier. you can customize all these option according to your needs.
+6. Two buttons are included in the blade file—one with `type="submit"` and the other with `wire:click="showData"`. The `showData` method logs the updated data upon button click. Subsequently, the `storeData` method redirects to the dashboard upon form submission, demonstrating task execution on button click.
 
-7. so that's how you can show the list of users in admin panel. there are lot of other data-tables libraries that you can use for showing the list of users in admin panel with more customization and control. for our basic example, `Jquery Datable` is enough
+7. Thus, LiveWire empowers the creation of forms that update in real-time, eliminating the need for manual form submissions or page refreshes. Further customization options abound, detailed in the [LiveWire documentation](https://livewire.laravel.com/docs/forms).
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- try to customize the data-table and add filters to get only those users who's email is verified. also try to change the look of data-table too, there are lots of `css` classes that you can use(try the [bootstrap](https://datatables.net/examples/styling/bootstrap.html) option)
-- try to make a similar data-table for posts with features like filters,sorting, pagination and searching etc.
+- Delve into the LiveWire documentation to discover new tags beyond `@livewire`, `@livewireStyles`, and `@livewireScripts`.
+- Develop forms for various resources (e.g., Tags, Badges) to enhance LiveWire proficiency.
 
 ## Additional Notes
 
-- In next branch, we will focus on adding/updating the data of any user in admin panel. for that we use [LiveWire](https://laravel-livewire.com/) that makes it easy and efficient.
+- Part 2 will refine the form creation process in LiveWire, streamlining blade file usage and error handling.
 - Foster insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
-- Simplify interactions with developed APIs by utilizing our [Postman collection](https://elements.getpostman.com/redirect?entityId=13692349-4c7deece-f174-43a3-adfa-95e6cf36792b&entityType=collection).
 
 ## Additional Resources
 
-1. [Pros and Cons of DataTables](https://poovarasu.medium.com/pros-cons-in-datatables-ff9a4fa83f17)
-2. [Laravel database](https://medium.com/geekculture/implementation-of-datatables-in-laravel-cd284d74bf1c)
+1. [LiveWire Documentation](https://livewire.laravel.com/docs/quickstart)
+2. [Laravel Livewire | Form Example](https://raviyatechnical.medium.com/laravel-livewire-form-example-727a04cb4e75)
+
+---
+
