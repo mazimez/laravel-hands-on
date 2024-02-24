@@ -1,66 +1,56 @@
+# LiveWire Part-2
 
+In part-2, we will focus on modularizing our Livewire code to enhance reusability, alongside integrating real-time data validation features.
 
-# LiveWire Part-1
-
-LiveWire is a powerful tool that facilitates the creation of dynamic web pages and components within Laravel applications. Essentially, it offers a seamless integration between the frontend and backend through JavaScript (JS) and CSS libraries. For comprehensive insights into LiveWire, refer to the official documentation [here](https://livewire.laravel.com/). It enables real-time synchronization of forms with databases and supports various JS operations, leveraging libraries such as [AlpineJs](https://alpinejs.dev/) and [Laravel Echo](https://www.npmjs.com/package/laravel-echo).
-
-With a broad spectrum of applications, LiveWire caters to both simple and complex project requirements.
-
-In this example, the LiveWire topic is divided into three parts. In Part 1, we delve into the installation process and explore the concept of components in LiveWire.
+Livewire can also be used to implement complex logic and UI that handle lots of Data in many forms. in this example we will start with a very basic form and add more features in later branches.
 
 ## Description
 
-This section aims to develop a web page (form) capable of capturing user input and storing it in a database while maintaining a real-time connection with the backend through LiveWire.
+In part-1, we established a form with fields dynamically updated by the backend in real-time. Now, our objective is to refactor the code for modular reusability, mitigating redundancy and enhancing maintainability.
 
-To begin, we install LiveWire using the following command:
+To initiate this process, let's delve into key configurations. Obtain the Livewire configuration file with the following command:
 ```
-composer require livewire/livewire
+php artisan livewire:publish --config
 ```
-This grants us access to LiveWire commands via Artisan, allowing us to create components similar to how we generate models and controllers in Laravel.
+This generates a configuration file [livewire](config/livewire.php) featuring default settings. Notably, the view_path parameter specifies the storage location for Livewire components. Additionally, the temporary_file_upload option governs the handling of uploaded files by Livewire. Further insights can be gleaned from the [Livewire doc](https://livewire.laravel.com/docs/installation#publishing-the-configuration-file).
 
-For this example, the focus is on real-time data updates using LiveWire, rather than database storage.
+now we will focus on how we can divide our code to re-use it repeatedly.
 
 ## Files
 
-1. [TestController](app/Http/Controllers/Web/TestController.php): New controller to test Livewire.
-2. [TestComponent](app/Http/Livewire/TestComponent.php) and [test-component](resources/views/livewire/test-component.blade.php): new file for Livewire component.
-3. [livewire_test](resources/views/UI/livewire_test.blade.php): blade file to actually use Livewire component.
-4. [composer.json](composer.json), [composer.lock](composer.lock): Composer dependencies for Livewire.
-5. [web](routes/web.php) and [sidebar](resources/views/UI/base/sidebar.blade.php): new route and page for Livewire
+1. [TestController](app/Http/Controllers/Web/TestController.php): updated controller to use new blade file.
+2. [livewire](resources/views/layout/livewire.blade.php): new generic blade file for livewire component.
+3. [button](resources/views/components/button.blade.php),[error](resources/views/components/error.blade.php),[input](resources/views/components/input.blade.php): added the reusable components.
+4. [test-component](resources/views/livewire/test-component.blade.php): updated blade file to use the reusable components.
+5. [styles](public/css/styles.css): updated css file and added new classes.
 
 
 ## Getting Started
 
-1. We create a new component using the command `php artisan make:livewire TestComponent`. This command generates two files: [TestComponent](app/Http/Livewire/TestComponent.php) and [test-component](resources/views/livewire/test-component.blade.php). The `TestComponent` represents the form to be built for user input, while the blade file contains the HTML, JS, and CSS code for rendering the form. Both files collaborate to establish a real-time connection.
+1. Our primary objective is to enhance the reusability of the code within [test-component](resources/views/livewire/test-component.blade.php). To achieve this, we create a new directory named components under the views folder. This directory will house modular snippets representing different aspects of our primary form, such as `buttons`, `input fields`, and `error messages`.
 
-2. Next, we integrate the blade file into our project to view it in the browser. We create a new route in [web](routes/web.php) such as `/livewire-test`, linking it to [TestController](app/Http/Controllers/Web/TestController.php), which returns the view [livewire_test](resources/views/UI/livewire_test.blade.php). Within this view, we include our `main` blade file for basic UI presentation (e.g., sidebar), followed by `@livewireStyles` and `@livewireScripts` tags, essential for LiveWire functionality. Finally, we embed our [test-component](resources/views/livewire/test-component.blade.php) using `@livewire`.
+2. Within the `components` directory, we create files like [button](resources/views/components/button.blade.php), [error](resources/views/components/error.blade.php), [input](resources/views/components/input.blade.php). These snippets can be seamlessly integrated into our main Livewire components to display input fields, buttons, and error messages. Furthermore, the utilization of `wire:loading.class` on `<i>` tags within the input and button components provides visual cues indicating real-time data processing.
 
-3. In [TestController](app/Http/Controllers/Web/TestController.php), notice the `data` key containing values such as `name`, `email`, and `number`. This data is passed to [test-component](resources/views/livewire/test-component.blade.php), accessed within its `mount` method—a pivotal entry point for component data.
+3. In [test-component](resources/views/livewire/test-component.blade.php), we incorporate these components using syntax such as `<x-input/>` and `<x-error/>`. The `x-` prefix signifies to Livewire to retrieve code from our components directory for utilization. Additionally, parameters such as `model` and `type` can be passed into these components, facilitating dynamic behavior. This approach significantly streamlines the main Livewire component, rendering it more concise and comprehensible. Further customization options include creating custom components for diverse input types like text areas, dropdowns, and checkboxes.
 
-4. Utilizing the passed data, we populate the form fields. Upon visiting `/livewire-test`, users encounter [test-component](resources/views/livewire/test-component.blade.php), showcasing the form. Observe the `form` tag, incorporating `wire:submit.prevent="storeData"`. This binds the form submission to the `storeData` method in [TestComponent](app/Http/Livewire/TestComponent.php), facilitating real-time data storage without page refresh.
+4. Navigate to [TestController](app/Http/Controllers/Web/TestController.php), where the Livewire component is rendered within a view. Here, we employ a new blade file, [layout/livewire](resources/views/layout/livewire.blade.php). This generic blade file eliminates the need for separate files for each Livewire component, enhancing code organization and maintainability. Additionally, within [TestController](app/Http/Controllers/Web/TestController.php), `TestComponent::getName()` is utilized to retrieve the blade file name for the respective component, simplifying component tracking. These files can be tailored to suit specific project requirements.
 
-5. [TestComponent](app/Http/Livewire/TestComponent.php) includes a `rules` method for form validation, akin to Laravel's request validations. Additionally, the `updated` method triggers on any form field modification, enforcing real-time validation and error display via `@error` tags in the blade file.
-
-6. Two buttons are included in the blade file—one with `type="submit"` and the other with `wire:click="showData"`. The `showData` method logs the updated data upon button click. Subsequently, the `storeData` method redirects to the dashboard upon form submission, demonstrating task execution on button click.
-
-7. Thus, LiveWire empowers the creation of forms that update in real-time, eliminating the need for manual form submissions or page refreshes. Further customization options abound, detailed in the [LiveWire documentation](https://livewire.laravel.com/docs/forms).
+5. This encapsulates the process of optimizing the creation and rendering of `Livewire` components, fostering a more generic, rapid, and reusable development approach. Further customization can be undertaken to align with individual project specifications, as the flexibility of Livewire enables tailored solutions while adhering to established standards.
 
 ## DIY (Do It Yourself)
 
 Explore additional tasks:
 
-- Delve into the LiveWire documentation to discover new tags beyond `@livewire`, `@livewireStyles`, and `@livewireScripts`.
-- Develop forms for various resources (e.g., Tags, Badges) to enhance LiveWire proficiency.
+- try to make some re-usable component for different input fields like `drop-down`, `checkbox` etc. you can also try to add file upload option as well.
+- learn more about livewire's configuration file to control it much better.
 
 ## Additional Notes
 
-- Part 2 will refine the form creation process in LiveWire, streamlining blade file usage and error handling.
+- since we are now clear with livewire basic, Part 3 will focus more on how we can use `livewire` to actually fetch and store data into Database. also how we can manage files in it as well.
 - Foster insightful discussions with fellow developers by initiating new discussions on our [GitHub repository](https://github.com/mazimez/laravel-hands-on/discussions).
 
 ## Additional Resources
 
-1. [LiveWire Documentation](https://livewire.laravel.com/docs/quickstart)
-2. [Laravel Livewire | Form Example](https://raviyatechnical.medium.com/laravel-livewire-form-example-727a04cb4e75)
+1. [LiveWire Lifecycle](https://livewire.laravel.com/docs/lifecycle-hooks)
 
----
 

@@ -2,34 +2,29 @@
 
     <div class="row">
         <div class="col-2">
-            <label for="data.name">Name</label>
-            <input type="text" id="data.name" wire:model="data.name" />
-            @error('data.name')
-                <strong>{{ $message }}</strong>
-            @enderror
+            <x-input type="text" model="data.name" />
+            <x-error name="data.name" />
         </div>
     </div>
     <div class="row">
         <div class="col-2">
-            <label for="data.email">Email</label>
-            <input type="text" id="data.email" wire:model="data.email" />
-            @error('data.email')
-                <strong>{{ $message }}</strong>
-            @enderror
+            <x-input type="email" model="data.email" />
+            <x-error name="data.email" />
         </div>
     </div>
     <div class="row">
         <div class="col-2">
-            <label for="data.number">Number</label>
-            <input type="text" id="data.number" wire:model="data.number" />
-            @error('data.number')
-                <strong>{{ $message }}</strong>
-            @enderror
+            <x-input type="number" model="data.number" />
+            <x-error name="data.number" />
         </div>
     </div>
     <div class="row">
-        <button wire:click="showData">Show Data</button>
-        <button type="submit">Submit</button>
+        <div>
+            <x-button name="Show Data" type="button" target="showData" />
+        </div>
+        <div>
+            <x-button name="Submit" type="submit" target="storeData" />
+        </div>
     </div>
 
 </form>
