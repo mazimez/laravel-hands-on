@@ -68,4 +68,5 @@ you can directly go to any branch for the topic that you want to understand, and
 40. [web-basics](https://github.com/mazimez/laravel-hands-on/tree/web-basics)
 41. [datatables](https://github.com/mazimez/laravel-hands-on/tree/datatables)
 42. [livewire-part-1](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-1)
+43. [livewire-part-2](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-2)
 
