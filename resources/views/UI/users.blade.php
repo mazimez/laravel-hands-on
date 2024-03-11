@@ -1,11 +1,16 @@
 @extends('UI.base.main')
 @section('content')
-    <table id="myTable" class="display">
-
+    <div class="mb-6">
+        <a href="{{ route('users.create') }}" class="btn btn-primary">
+            Create New User
+        </a>
+    </div>
+    <table id="users" class="display">
     </table>
 
     @push('scripts')
         <script>
+            const editRoute = "{{ route('users.edit',['user' => '::ID']) }}";
             $(document).ready(function() {
                 let columns = [{
                         "data": "profile_image",
@@ -31,9 +36,18 @@
                         "data": "phone_number",
                         "title": "Phone Number"
                     },
+                    {
+                        "data": "id",
+                        "title": "Action",
+                        "orderable": false,
+                        'render': function(data, type, full, meta) {
+                            return `<a href="${editRoute.replace('::ID',data)}" class="btn btn-primary">Edit</a>`;
+
+                        }
+                    },
                 ];
 
-                var table = $('#myTable').DataTable({
+                var table = $('#users').DataTable({
                     "processing": true,
                     "serverSide": true,
                     "pageLength": 10,

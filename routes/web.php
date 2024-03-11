@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
         Route::get('/', 'Web\UserController@index')->name('index');
+        Route::get('/create', 'Web\UserController@create')->name('create');
+        Route::get('/{user}/edit', 'Web\UserController@edit')->name('edit');
         Route::get('/api', 'Web\UserController@indexApi')->name('api');
     });
 });
