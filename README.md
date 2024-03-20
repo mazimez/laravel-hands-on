@@ -2,9 +2,9 @@
 
 This section is the transition between Laravel 10 and Laravel 11. the codebase is updated with Laravel-11's structure.
 
-from this point on, new beaches will be added based on this branch and it will re-explain some topic that's been changed in Laravel-11.
+from this point on, new branches will be added based on this branch and it will re-explain some topics that's been changed in Laravel-11.
 
-any folder or file change that happen in new Laravel-11 will be mentioned and explained.
+any folder or file that changed in new Laravel-11 will be mentioned and explained.
 
 ## Description
 
