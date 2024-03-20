@@ -4,7 +4,7 @@ This section is the transition between Laravel 10 and Laravel 11. the codebase i
 
 from this point on, new branches will be added based on this branch and it will re-explain some topics that's been changed in Laravel-11.
 
-any folder or file that changed in new Laravel-11 will be mentioned and explained. you can also see the new folder structure from [laravel-doc](https://laravel.com/docs/11.x/structure#the-root-app-directory)
+any folder or file that changed in new Laravel-11 will be mentioned and explained. you can also see the new folder structure from [laravel-doc](https://laravel.com/docs/11.x/structure#introduction)
 
 ## Description
 
