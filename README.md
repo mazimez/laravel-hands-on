@@ -21,12 +21,19 @@ We encourage you to actively engage with the content, experiment with the code, 
 
 ## Note
 
-This project primarily focuses on utilizing Laravel for developing APIs. Although it starts focusing on WEB part at 40th topic but If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
+This project primarily focuses on utilizing Laravel for developing APIs. Although it starts focusing on WEB part at 40th topic but If you are using Laravel for website development, you may need to explore other projects as well. Additionally, this project assumes that you have some basic knowledge 
+of Laravel. If you are entirely new to Laravel, we recommend reading the official Laravel documentation as a starting point.
+
+With new Laravel-11 update and new Folder structure, we created a new branch [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11) with laravel-11's folder structure and it will be the new base branch and all the upcoming branch will follow that. we will re-explain all the topics that's been updated with laravel-11. the focus will be on what's exactly changed from Laravel 10 to 11 rather then explaining the actually Topic(since that's already explained in laravel-10 version)
+
+so whenever learning about any topic, first read about that with laravel-10's version and then see how it's updated in laravel-11.
 
 ## Where to Start
-you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following is the Order that you should follow to go thorough each branch
+- you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following MAP that you should follow to go thorough each branch
+- with laravel-11, each topic has it's new version of laravel-11 and  if there is no change for that topic in laravel-11 then it will be shown as `same as 10`
 
-1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits)
+0. [laravel-10](https://github.com/mazimez/laravel-hands-on/tree/master)   ------------------> [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11)  
+1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits) -----------------------> `same as 10`
 2. [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling)
 3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning)
 4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)
