@@ -15,6 +15,8 @@ we will go through each change like this and re-explain the topics with new code
 with new updates there are lot of new `artisan commands` that we can use. some of them are
 - `php artisan config:publish` : to publish default config files so we can change them.
 - `php artisan install:api` : to set-up project to develop APIs.
+- `php artisan make:trait`: to directly make any trait
+- `php artisan make:class`: to directly make any class
 
 you can visit [laracasts](https://laracasts.com/series/whats-new-in-laravel-11) for more detailed overview over whats changed plus you can go over our new branches for laravel-11 as well.
 
