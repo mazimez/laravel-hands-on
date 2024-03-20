@@ -23,7 +23,7 @@ you can visit [laracasts](https://laracasts.com/series/whats-new-in-laravel-11) 
 
 ## Instructions
 
-- our examples are focused on API, so first we will sure that laravel-11 is also set-up to develop APIs. you have probably noticed that in `routes` folder there is no `api.php` by default. for that we will first run the `php artisan install:api` command. this will update our codebase and also add [api.php](routes/api.php) file for us. this also install the `sanctum` package for `authentication`.
+- our examples are focused on API, so first we will make sure that laravel-11 is also set-up to develop APIs. you have probably noticed that in `routes` folder there is no `api.php` by default. for that we will first run the `php artisan install:api` command. this will update our codebase and also add [api.php](routes/api.php) file for us. this also install the `sanctum` package for `authentication`.
 - you have also noticed that in `.env` file, there are lot of new variables. we will talk about them in later branches, for now just update our `DB` related variables so it will use `mysql` instead of `sqlite` since that's what given to us as default. you can keep it `sqlite` if that's what you use.
 - since we already have a codebase in laravel-10, we will just go over all the topics explained there and just re-explain them with Laravel-11. not all of the topics will be re-explained, only the ones that are changed will be re-explained. so topics like `eloquent-relationships`,`scope-attribute`,`policies` wont be re-explained but topics like `exception-handling`,`middleware`,`scheduler-cron` will be re-explained. 
 - also at the end of each readme file, there will be a `next` section which will point you to the next branch to make it easy to follow.
