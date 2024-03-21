@@ -1,43 +1,31 @@
-# Laravel 11
+# Exception Handling - Laravel 11
 
-This section is the transition between Laravel 10 and Laravel 11. the codebase is updated with Laravel-11's structure.
-
-from this point on, new branches will be added based on this branch and it will re-explain some topics that's been changed in Laravel-11.
-
-any folder or file that changed in new Laravel-11 will be mentioned and explained. you can also see the new folder structure from [laravel-doc](https://laravel.com/docs/11.x/structure#introduction)
+In this section we focus on exception handling for Laravel 11. we will see what's changed from laravel-10 and how we can optimize exception handling in Laravel 11.
 
 ## Description
 
-with new Update of Laravel 11, there are lot of changes in the codebase and how to use it. things like `Exception handling`, `routes` and `scheduling` is updated and move to another place then it used to be.
+in Laravel-10, we used to have a `Handler.php` file where we can set-up all of our different exception and how we can handle it. now in laravel-11 there is not `Handler.php`, instead it is configured in [app.php](bootstrap/app.php) where we can set-up all of our different exception. you can learn more about it from [laravel-11-doc](https://laravel.com/docs/11.x/errors#introduction)
 
-we will go through each change like this and re-explain the topics with new code whenever needed.
-
-with new updates there are lot of new `artisan commands` that we can use. some of them are
-- `php artisan config:publish` : to publish default config files so we can change them.
-- `php artisan install:api` : to set-up project to develop APIs.
-- `php artisan make:trait`: to directly make any trait
-- `php artisan make:class`: to directly make any class
-
-you can visit [laracasts](https://laracasts.com/series/whats-new-in-laravel-11) for more detailed overview over whats changed plus you can go over our new branches for laravel-11 as well.
-
+we can either directly check for different exception in [app.php](bootstrap/app.php) or have a separate file where we handle all exception and just use it in [app.php](bootstrap/app.php). so we will create a separate file for it.
 
 ## Instructions
 
-- our examples are focused on API, so first we will make sure that laravel-11 is also set-up to develop APIs. you have probably noticed that in `routes` folder there is no `api.php` by default. for that we will first run the `php artisan install:api` command. this will update our codebase and also add [api.php](routes/api.php) file for us. this also install the `sanctum` package for `authentication`.
-- you have also noticed that in `.env` file, there are lot of new variables. we will talk about them in later branches, for now just update our `DB` related variables so it will use `mysql` instead of `sqlite` since that's what given to us as default. you can keep it `sqlite` if that's what you use.
-- since we already have a codebase in laravel-10, we will just go over all the topics explained there and just re-explain them with Laravel-11. not all of the topics will be re-explained, only the ones that are changed will be re-explained. so topics like `eloquent-relationships`,`scope-attribute`,`policies` wont be re-explained but topics like `exception-handling`,`middleware`,`scheduler-cron` will be re-explained. 
-- also at the end of each readme file, there will be a `next` section which will point you to the next branch to make it easy to follow.
+- we will create a new trait [ExceptionHandler](app/Traits/ExceptionHandler.php) with command like `php artisan make:trait ExceptionHandler`, so that we can use it in [app.php](bootstrap/app.php).
+- In [ExceptionHandler](app/Traits/ExceptionHandler.php), we create 1 method `handleApiException` that's used to take care of any exception we have in APIs. the exception that happen in `WEB` can be directly handled by Laravel's default methods. in that `handleApiException` method we check for each type of exception like `QueryException`, `ValidationException`,`ModelNotFoundException` etc. 
+- we use [ApiResponser](app/Traits/ApiResponser.php) to send the JSON response explaining the error. you can change the message you want to show in response and also status code of that `HTTP response`. so this way you can customize your exception handling for APIs and if you want you can do the same for WEB exception as well.
+- now there are couple of more updates in `Laravel-11` as well, in the old version we had variables like `$dontReport` and `$dontFlash` that we can use to hide some fields in error response. in Laravel-11, we can do the similar thing by accessing this variables using methods like `dontReport` and `dontFlash` on the `$exceptions` variable. `dontFlash` already has data like `current_password`, `password` added by default and you can add any other data as well.
 
-We encourage you to actively engage with the content, experiment with the code, and explore Laravel's capabilities.
+## DIY (Do It Yourself)
 
-## Note
+Here are some additional tasks you can undertake:
 
-- if you face any difficulties in the readme file or finding the correct topic/branch for your need then you can ask about this in [Github discussions](https://github.com/mazimez/laravel-hands-on/discussions)
+- try to add more exception for API and also give a custom message that's more understandable by customer. 
+- try to implement exception for WEB as well.
+- Laravel-11 also support reporting these exceptions to some external service like `sentry` and `flare`. we cover this topic in future branch as well till then try to research about it on your own.
 
 ## Resources
 
-- [laravel-11 doc](https://laravel.com/docs/11.x/)
-- [laracasts on laravel-11](https://laracasts.com/series/whats-new-in-laravel-11)
+- [laravel-11 doc for exceptions](https://laravel.com/docs/11.x/errors#introduction)
 
 ## Next branch
  - `coming soon`
