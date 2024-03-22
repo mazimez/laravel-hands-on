@@ -28,4 +28,4 @@ Here are some additional tasks you can undertake:
 - [laravel-11 doc for routing](https://laravel.com/docs/11.x/routing)
 
 ## Next branch
- - `coming soon`
+ - [localization-v11](https://github.com/mazimez/laravel-hands-on/tree/localization-v11)
