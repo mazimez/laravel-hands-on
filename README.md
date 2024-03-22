@@ -40,4 +40,4 @@ We encourage you to actively engage with the content, experiment with the code, 
 - [laracasts on laravel-11](https://laracasts.com/series/whats-new-in-laravel-11)
 
 ## Next branch
- - `coming soon`
+ - [exception-handling-v1](https://github.com/mazimez/laravel-hands-on/tree/exception-handling-v11)
