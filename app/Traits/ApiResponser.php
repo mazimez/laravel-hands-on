@@ -4,7 +4,13 @@ namespace App\Traits;
 
 trait ApiResponser
 {
-    //this method is used whenever we want to show some kind of error
+    /**
+     * Create a new error response in JSON format
+     *
+     * @param  string  $message
+     * @param  int  $status_code
+     * @return \Illuminate\Http\JsonResponse
+     */
     static function errorResponse($message, $status_code = 200)
     {
         return response()->json([

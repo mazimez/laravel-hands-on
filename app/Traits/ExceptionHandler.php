@@ -14,6 +14,13 @@ use App\Traits\ApiResponser;
 
 trait ExceptionHandler
 {
+    /**
+     * handle API exception with custom responses
+     *
+     * @param  Exceptions  $exceptions exception object
+     *
+     * @return \Illuminate\Http\JsonResponse | void
+     */
     static function handleApiException(Exceptions $exceptions)
     {
 
