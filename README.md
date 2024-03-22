@@ -35,8 +35,8 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 0. [laravel-10](https://github.com/mazimez/laravel-hands-on/tree/master)   ------------------> [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11)  
 1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits) -----------------------> `same as 10`
 2. [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling) -------> [exception-handling-v11](https://github.com/mazimez/laravel-hands-on/tree/exception-handling-v11)
-3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning) ------------> [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11)
-4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)
+3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning) -------------> [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11)
+4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)----------------->[localization-v11](https://github.com/mazimez/laravel-hands-on/tree/localization-v11)
 5. [migration](https://github.com/mazimez/laravel-hands-on/tree/migration)
 6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)
 7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)
