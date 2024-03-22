@@ -28,4 +28,4 @@ Here are some additional tasks you can undertake:
 - [laravel-11 doc for exceptions](https://laravel.com/docs/11.x/errors#introduction)
 
 ## Next branch
- - `coming soon`
+ - [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11)
