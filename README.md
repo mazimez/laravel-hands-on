@@ -1,31 +1,30 @@
-# API versioning - Laravel 11
+# Localization - Laravel 11
 
-In this section we focus on API versioning for Laravel 11. we will see what's changed from laravel-10 and how we can optimize/minimize API versioning in Laravel 11.
+In this section we focus on Localization for Laravel 11. we will see what's changed from laravel-10 and how we can still get the same results
 
 ## Description
 
-in Laravel-10, we used to have a `RouteServiceProvider .php` file where we can set-up our API versioning. now in laravel-11 there is no `RouteServiceProvider.php`, instead similar to exception, it is also configured in [app.php](bootstrap/app.php). there is a method `withRouting` that can take several parameters for `WEB` and `API` routes. you can learn more about it from [laravel-11-doc](https://laravel.com/docs/11.x/routing)
+in Laravel-10, we used to create a new middleware for `localization` and register it in `kernal` file but in Laravel-11 there is no `kernal` file anymore. instead similar for other topic, registering middleware can be done in [app](bootstrap/app.php)
 
-here we can configure `withRouting` method and implement the same structure for API versioning that we have for laravel-10. for that we will create a new trait and put our API versioning logic there and then just use it in [app.php](bootstrap/app.php).
+here we can configure `withMiddleware` method and register our middleware similar to what we did in laravel-10. you can learn more about it from [Laravel-11 doc](https://laravel.com/docs/11.x/localization).
+
+also in Laravel-11, the `Lang` folder isn't included by default, but you can get that with command `php artisan lang:publish`. you can also add new files for different languages in that folder as well.
 
 ## Instructions
 
-- if you have used the command `php artisan install:api` then `withRouting` method already has `api` parameter that connects it with [api.php](routes/api.php) but now we want it to connects to [v1](routes/api/v1.php) and [v2](routes/api/v2.php) with prefix `api/v1` and `api/v2`. to do that we can use `then` parameter on `withRouting` and further customize the API routes. you can learn more about this from [Laravel-doc](https://laravel.com/docs/11.x/routing#routing-customization)
-- first we will create a new trait [RouteHandler](app/Traits/RouteHandler.php) with command like `php artisan make:trait RouteHandler`, so that we can use it in [app.php](bootstrap/app.php).
-- In [RouteHandler](app/Traits/RouteHandler.php), we create 1 method `configureApiVersioning` that has similar code that we had in `RouteServiceProvider` for Laravel-10. keep in mind that it's returning a `Closure` or a function that will be given in `then` parameter of `withRouting` in [app.php](bootstrap/app.php).
-- In [RouteHandler](app/Traits/RouteHandler.php) we configure 2 new route group with prefix `api/v1` and `api/v2` that will connects to [v1](routes/api/v1.php) and [v2](routes/api/v2.php).
-- now if we try to call `api/v1/test` and `api/v2/test` then it will return the similar response that we had in laravel-10. so that's how you can configure API versioning in
+- first we will create a new middleware [HandleLocalization](app/Http/Middleware/HandleLocalization.php) with command like `php artisan make:middleware HandleLocalization`, and we put logic where we check in header of `X-App-Locale` and if it has valid language key then  we set the app's language with `setLocale` method.
+- once that middleware is created then we will register it in [app](bootstrap/app.php) in `withMiddleware` method. with method of `append` we can add this middleware at the end of default middleware. there is also `prepend` method that will add this middleware at the beginning of default middleware.
+- once we add that middleware then that will be applied all of our routes(`WEB` and `API` both). we also update [v1](routes/api/v1.php) route and use `messages.test` to return the message language wise. now you can check the API with postman and see that it returns data based on language set in header.
 
 ## DIY (Do It Yourself)
 
 Here are some additional tasks you can undertake:
 
-- you can further customize this `withRouting` method to have the routes in any way we want. try to customize it further for your `WEB` or `API` routes as well
-- try to implement exception for WEB as well.
+- as you know that this middleware is applied to `WEB` and `API` routes but you can also update this in a way that it only get's applied on `API` or only applied on `WEB`.
 
 ## Resources
 
-- [laravel-11 doc for routing](https://laravel.com/docs/11.x/routing)
+- [laravel-11 doc for localization](https://laravel.com/docs/11.x/localization)
 
 ## Next branch
  - `coming soon`
