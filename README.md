@@ -27,4 +27,4 @@ Here are some additional tasks you can undertake:
 - [laravel-11 doc for localization](https://laravel.com/docs/11.x/localization)
 
 ## Next branch
- - `coming soon`
+ - [migration-v11](https://github.com/mazimez/laravel-hands-on/tree/migration-v11)
