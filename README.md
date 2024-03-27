@@ -26,4 +26,4 @@ Here are some additional tasks you can undertake:
 - [laravel-doc for migration](https://laravel.com/docs/11.x/migrations#introduction)
 
 ## Next branch
- - `coming soon`
+ - [auth-sanctum-v11](https://github.com/mazimez/laravel-hands-on/tree/auth-sanctum-v11)
