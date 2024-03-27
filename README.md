@@ -38,9 +38,9 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning) -------------> [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11)
 4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)----------------->[localization-v11](https://github.com/mazimez/laravel-hands-on/tree/localization-v11)
 5. [migration](https://github.com/mazimez/laravel-hands-on/tree/migration)--------------------> [migration-v11](https://github.com/mazimez/laravel-hands-on/tree/migration-v11)
-6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)
-7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)
-8. [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum)
+6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)--------------> `same as 10`
+7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)------------------------> `same as 10`
+8. [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum)--------------->[auth-sanctum-v11](https://github.com/mazimez/laravel-hands-on/tree/auth-sanctum-v11)
 9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)
 10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)
