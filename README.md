@@ -41,8 +41,8 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)--------------> `same as 10`
 7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)------------------------> `same as 10`
 8. [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum)--------------->[auth-sanctum-v11](https://github.com/mazimez/laravel-hands-on/tree/auth-sanctum-v11)
-9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)
-10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)
+9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)------------>`same as 10`
+10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)------------------->`same as 10`
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)
 12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)
 13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)
