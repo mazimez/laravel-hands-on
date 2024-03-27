@@ -26,4 +26,4 @@ also table(migration) will also get included with `install:api`.
 - [laravel-doc for sanctum](https://laravel.com/docs/11.x/sanctum#main-content)
 
 ## Next branch
- - `coming soon`
+ - [enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11)
