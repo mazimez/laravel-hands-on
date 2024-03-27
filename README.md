@@ -1,29 +1,29 @@
-# Migration - Laravel 11
+# Authentication(Sanctum) - Laravel 11
 
-In this section we focus on Migration for Laravel 11. there hasn't been much change in how we use migration generally but there are some changes that makes our work with handling migrations files easy.
+Authentication with Sanctum is also updated a little in Laravel-11. before `Sanctum` package used to be installed by default in Laravel-10 but now it needs to be installed separately using `php artisan install:api`.
 
 ## Description
 
-in Laravel-10, the default Database connection was `mysql` but in Laravel-11 it's been changed to `sqlite` but we will stick with `mysql`. also you notice there is a new file [database.sqlite](database/database.sqlite) that might be useful when using `sqlite` but for now we will leave it as it is.
+once you have installed `Sanctum` package in Laravel-11, it will generate migration files as well to store the info about `user authentication`.
 
-also in older versions, migrations for `users` only contains info about `users` but in Laravel-11 it will contain info about `users` and other tables like `password_reset_tokens` and `sessions` as well. also the timestamp of these default migration files is also been updated to `0001_01_01_***`.
+also keep in mind that [User](app/Models/User.php) will not have `HasApiTokens` trait by default, you need to add it in your model. otherwise it will not generate token to authenticate our user.
 
-also table(migration) for sanctum package is also not included in Laravel-11, but you can always get it with `php artisan install:api` command which we already did.
+also table(migration) will also get included with `install:api`.
 
 ## Instructions
 
-- creating migration file in laravel-11 is similar to laravel-10 with command like `php artisan make:migration create_posts_table` will create [2024_03_25_150754_create_posts_table](database/migrations/2024_03_25_150754_create_posts_table.php) file.
-- the users table will also gets updated.
+- The APIs for login is similar to laravel-10, we create a route `users/login` that will take user's `email` and `password`, if it's correct then it will generate the token and return it, otherwise it will give an error.
+- to check if authentication is successful, we will use `auth:sanctum` middleware and add new route `users/detail` to get the logged-in user's info.
+- notice how we didn't add this middleware into [app.php](bootstrap/app.php) like `Localization` because that will apply it to all of our routes and we don't want that. we only want it to apply to specific routes.
 
 ## DIY (Do It Yourself)
+- Sanctum has a feature where you can generate token for specific task or ability. here is the [doc](https://laravel.com/docs/11.x/sanctum#token-abilities). try to implement this into your project.
+- you can also customize the token generation process to use a different way to generate token(maybe a different algorithm). here is the [doc](https://laravel.com/docs/11.x/sanctum#token-abilities). try to customize the token generation process and use a different algorithm to generate token.
 
-Here are some additional tasks you can undertake:
-
-- go over [laravel-doc for migration](https://laravel.com/docs/11.x/migrations#introduction)
 
 ## Resources
 
-- [laravel-doc for migration](https://laravel.com/docs/11.x/migrations#introduction)
+- [laravel-doc for sanctum](https://laravel.com/docs/11.x/sanctum#main-content)
 
 ## Next branch
  - `coming soon`
