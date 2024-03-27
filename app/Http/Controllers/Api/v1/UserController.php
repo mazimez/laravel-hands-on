@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\LoginRequest;
+use App\Http\Requests\Api\v1\UserIndexRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,53 @@ class UserController extends Controller
             'data' => $user,
             'token' => $user->createToken($request->header('User-Agent') ?? $request->ip())->plainTextToken,
             'message' => __('messages.user_login'),
+            'status' => '1'
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \App\Http\Requests\Api\v1\UserIndexRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(UserIndexRequest $request)
+    {
+        $data = User::query();
+        if ($request->has('latitude') && $request->has('longitude')) {
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+            if ($latitude && $longitude) {
+                $data = $data->selectRaw(
+                    "*,
+                round(( 6371 * acos( cos( radians(?) ) *
+                cos( radians( latitude ) )
+                * cos( radians( longitude ) - radians(?)
+                ) + sin( radians(?) ) *
+                sin( radians( latitude ) ) )
+                ),2) AS distance ",
+                    [$latitude, $longitude, $latitude]
+                );
+
+                $data = $data->orderBy('distance', 'asc');
+            }
+
+            if ($request->has('distance')) {
+                $data = $data->having('distance', '<', $request->distance);
+            }
+        }
+
+        if ($request->has('page')) {
+            return response()->json(
+                collect([
+                    'message' => __('messages.user_list_returned'),
+                    'status' => '1',
+                ])->merge($data->simplePaginate($request->has('per_page') ? $request->per_page : 10))
+            );
+        }
+        return response()->json([
+            'data' => $data->get(),
+            'message' => __('messages.user_list_returned'),
             'status' => '1'
         ]);
     }
