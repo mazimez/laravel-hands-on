@@ -45,7 +45,7 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)------------------->`same as 10`
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)------------------->`same as 10`
 12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)----------->`same as 10`
-13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)
+13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)------>`same as 10`
 14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)
 15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)
 16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)
