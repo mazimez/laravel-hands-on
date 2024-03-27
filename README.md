@@ -46,8 +46,8 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)------------------->`same as 10`
 12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)----------->`same as 10`
 13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)------>`same as 10`
-14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)-------------->[enhanced-crud-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud-v11)
-15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)
+14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)-------------->`same as 10`
+15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)------>[enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11)
 16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)
 17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)
 18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
