@@ -78,3 +78,4 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 43. [livewire-part-2](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-2)
 44. [livewire-part-3](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-3)
 
+
