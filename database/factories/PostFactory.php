@@ -22,6 +22,8 @@ class PostFactory extends Factory
             'user_id' => $user->id,
             'title' => fake()->text(100),
             'description' => fake()->text(500),
+            'is_verified' => fake()->randomElement([1, 1, 0]),
+            'is_blocked' => fake()->randomElement([1, 1, 1, 0]),
             'meta_data' => [
                 'mentioned_people' => [fake()->name, fake()->name, fake()->name],
             ]

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\CreatePostCommentRequest;
+use App\Http\Requests\Api\v1\EditPostCommentRequest;
 use App\Http\Requests\CommonPaginationRequest;
 use App\Models\Post;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostCommentController extends Controller
 {
@@ -19,6 +22,7 @@ class PostCommentController extends Controller
      */
     public function index(Post $post, CommonPaginationRequest $request)
     {
+        Gate::authorize('viewAny', [PostComment::class, $post]);
         $data = $post->comments()->with(['user']);
 
         $data = $data->latest();
@@ -45,6 +49,7 @@ class PostCommentController extends Controller
      */
     public function store(Post $post, CreatePostCommentRequest $request)
     {
+        Gate::authorize('create', [PostComment::class, $post]);
         $auth_user = Auth::user();
         $comment = $post->comments()->create([
             'user_id' => $auth_user->id,
@@ -75,9 +80,16 @@ class PostCommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Post $post, PostComment $comment, EditPostCommentRequest $request)
     {
-        //
+        Gate::authorize('update', [PostComment::class, $comment, $post]);
+        $comment->comment = $request->comment;
+        $comment->save();
+        return response()->json([
+            'data' => $comment->refresh()->loadMissing(['user']),
+            'message' => __('messages.post_comment_updated'),
+            'status' => '1'
+        ]);
     }
 
     /**
@@ -86,8 +98,13 @@ class PostCommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Post $post, PostComment $comment)
     {
-        //
+        Gate::authorize('delete', [PostComment::class, $comment, $post]);
+        $comment->delete();
+        return response()->json([
+            'message' => __('messages.comment_deleted'),
+            'status' => '1'
+        ]);
     }
 }

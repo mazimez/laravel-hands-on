@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::group(['prefix' => '{post}/comments'], function () {
             Route::get('/', 'v1\PostCommentController@index');
             Route::post('/create', 'v1\PostCommentController@store');
+            Route::post('/{comment}/edit', 'v1\PostCommentController@update');
+            Route::delete('/{comment}/delete', 'v1\PostCommentController@destroy');
         });
 
         //POST-FILES

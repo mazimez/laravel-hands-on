@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommonPaginationRequest;
 use App\Models\User;
+use App\Models\UserFollows;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserFollowController extends Controller
 {
@@ -65,6 +67,7 @@ class UserFollowController extends Controller
     public function toggle(User $user)
     {
         $auth_user = Auth::user();
+        Gate::authorize('toggle', [UserFollows::class, $user]);
         if ($auth_user->id == $user->id) {
             return response()->json([
                 'message' => __('messages.can_not_follow_self'),

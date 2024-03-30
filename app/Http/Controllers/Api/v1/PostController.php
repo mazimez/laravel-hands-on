@@ -11,6 +11,7 @@ use App\Models\PostFile;
 use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -25,9 +26,12 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request)
     {
-        $data = Post::with(['user', 'file'])->withCount(['likers']);
+        $data = Post::with(['user', 'file'])->withCount(['likers', 'comments']);
 
         if ($request->has('user_id')) {
+            if (Auth::id() == $request->user_id) {
+                $data = $data->withoutGlobalScope('active');
+            }
             $data = $data->where('user_id', $request->user_id);
         }
 
@@ -42,7 +46,6 @@ class PostController extends Controller
             });
         }
 
-
         if ($request->has('sort_field')) {
             $sort_field = $request->sort_field;
             $sort_order = $request->input('sort_order', 'asc'); //default ascending
@@ -54,7 +57,7 @@ class PostController extends Controller
             }
             $data = $data->orderBy($sort_field, $sort_order);
         } else {
-            $data = $data->latest();
+            $data = $data->mostLikedFirst()->latest();
         }
 
         if ($request->has('page')) {
@@ -124,6 +127,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        Gate::authorize('view', [Post::class, $post]);
         return response()->json([
             'data' => $post->loadMissing(['user', 'files']),
             'message' => __('messages.post_detail_returned'),
@@ -141,6 +145,7 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
+        Gate::authorize('update', [Post::class, $post]);
         if ($request->has('title')) {
             $post->title = $request->title;
         }
@@ -195,6 +200,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        Gate::authorize('delete', [Post::class, $post]);
         $post->delete();
         return response()->json([
             'message' => __('messages.post_deleted'),

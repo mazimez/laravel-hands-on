@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -61,5 +62,15 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, UserFollows::class, 'follower_id', 'followed_id', 'id', 'id');
+    }
+
+    //ATTRIBUTES
+    public function getIsFollowingAttribute()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+        return UserFollows::where('followed_id', $user->id)->where('follower_id', $this->id)->exists();
     }
 }
