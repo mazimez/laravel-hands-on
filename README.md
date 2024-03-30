@@ -34,7 +34,7 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 
 
 
-| Laravel-10 | Laravel-11 |
+| **Laravel-10** | **Laravel-11** |
 | :-----------: | :------------: |
 | [laravel-10](https://github.com/mazimez/laravel-hands-on/tree/master) | [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11) |
 | [traits](https://github.com/mazimez/laravel-hands-on/tree/traits) | `same as 10` |
