@@ -49,7 +49,7 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)-------------->`same as 10`
 15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)------>[enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11)
 16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)-------------->`same as 10`
-17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)
+17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)----------------------->[policies-v11](https://github.com/mazimez/laravel-hands-on/tree/policies-v11)
 18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
 19. [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1)
 20. [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2)
