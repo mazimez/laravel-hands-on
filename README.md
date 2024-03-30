@@ -30,52 +30,55 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 
 ## Where to Start
 - you can directly go to any branch for the topic that you want to understand, and if you want to see all the branches then following MAP that you should follow to go thorough each branch
-- with laravel-11, each topic has it's new version of laravel-11 and  if there is no change for that topic in laravel-11 then it will be shown as `same as 10`
+- with laravel-11, each topic may has it's new version of laravel-11 and  if there is no change for that topic in laravel-11 then it will be shown as `same as 10`
 
-0. [laravel-10](https://github.com/mazimez/laravel-hands-on/tree/master)   ------------------> [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11)  
-1. [traits](https://github.com/mazimez/laravel-hands-on/tree/traits) -----------------------> `same as 10`
-2. [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling) -------> [exception-handling-v11](https://github.com/mazimez/laravel-hands-on/tree/exception-handling-v11)
-3. [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning) -------------> [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11)
-4. [localization](https://github.com/mazimez/laravel-hands-on/tree/localization)----------------->[localization-v11](https://github.com/mazimez/laravel-hands-on/tree/localization-v11)
-5. [migration](https://github.com/mazimez/laravel-hands-on/tree/migration)--------------------> [migration-v11](https://github.com/mazimez/laravel-hands-on/tree/migration-v11)
-6. [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory)--------------> `same as 10`
-7. [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs)------------------------> `same as 10`
-8. [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum)--------------->[auth-sanctum-v11](https://github.com/mazimez/laravel-hands-on/tree/auth-sanctum-v11)
-9. [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment)------------>`same as 10`
-10. [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder)------------------->`same as 10`
-11. [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud)------------------->`same as 10`
-12. [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching)----------->`same as 10`
-13. [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships)------>`same as 10`
-14. [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud)-------------->`same as 10`
-15. [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship)------>[enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11)
-16. [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute)-------------->`same as 10`
-17. [policies](https://github.com/mazimez/laravel-hands-on/tree/policies)----------------------->[policies-v11](https://github.com/mazimez/laravel-hands-on/tree/policies-v11)
-18. [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware)
-19. [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1)
-20. [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2)
-21. [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails)
-22. [observers](https://github.com/mazimez/laravel-hands-on/tree/observers)
-23. [events-listners-queue](https://github.com/mazimez/laravel-hands-on/tree/events-listners-queue)
-24. [error-handling](https://github.com/mazimez/laravel-hands-on/tree/error-handling)
-25. [scheduler-cron](https://github.com/mazimez/laravel-hands-on/tree/scheduler-cron)
-26. [testing](https://github.com/mazimez/laravel-hands-on/tree/testing)
-27. [deployment](https://github.com/mazimez/laravel-hands-on/tree/deployment)
-28. [social-login](https://github.com/mazimez/laravel-hands-on/tree/social-login)
-29. [enhanced-storage-management](https://github.com/mazimez/laravel-hands-on/tree/enhanced-storage-management)
-30. [user-verification](https://github.com/mazimez/laravel-hands-on/tree/user-verification)
-31. [debugging-telescope](https://github.com/mazimez/laravel-hands-on/tree/debugging-telescope)
-32. [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing)
-33. [fcm-notification-part-1](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-1)
-34. [fcm-notification-part-2-optimization](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-2-optimization)
-35. [job-queues](https://github.com/mazimez/laravel-hands-on/tree/job-queues)
-36. [laravel-pint](https://github.com/mazimez/laravel-hands-on/tree/laravel-pint)
-37. [pdf-generation](https://github.com/mazimez/laravel-hands-on/tree/pdf-generation)
-38. [excel-generation](https://github.com/mazimez/laravel-hands-on/tree/excel-generation)
-39. [caching](https://github.com/mazimez/laravel-hands-on/tree/caching)
-40. [web-basics](https://github.com/mazimez/laravel-hands-on/tree/web-basics)
-41. [datatables](https://github.com/mazimez/laravel-hands-on/tree/datatables)
-42. [livewire-part-1](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-1)
-43. [livewire-part-2](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-2)
-44. [livewire-part-3](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-3)
 
+
+| Laravel-10 | Laravel-11 |
+| :-----------: | :------------: |
+| [laravel-10](https://github.com/mazimez/laravel-hands-on/tree/master) | [laravel-11](https://github.com/mazimez/laravel-hands-on/tree/laravel-11) |
+| [traits](https://github.com/mazimez/laravel-hands-on/tree/traits) | `same as 10` |
+| [exception-handling](https://github.com/mazimez/laravel-hands-on/tree/exception-handling) | [exception-handling-v11](https://github.com/mazimez/laravel-hands-on/tree/exception-handling-v11) |
+| [api-versioning](https://github.com/mazimez/laravel-hands-on/tree/api-versioning) | [api-versioning-v11](https://github.com/mazimez/laravel-hands-on/tree/api-versioning-v11) |
+| [localization](https://github.com/mazimez/laravel-hands-on/tree/localization) | [localization-v11](https://github.com/mazimez/laravel-hands-on/tree/localization-v11) |
+| [migration](https://github.com/mazimez/laravel-hands-on/tree/migration) | [migration-v11](https://github.com/mazimez/laravel-hands-on/tree/migration-v11) |
+| [seeder-factory](https://github.com/mazimez/laravel-hands-on/tree/seeder-factory) | `same as 10` |
+| [stubs](https://github.com/mazimez/laravel-hands-on/tree/stubs) | `same as 10` |
+| [Auth-sanctum](https://github.com/mazimez/laravel-hands-on/tree/Auth-sanctum) | [auth-sanctum-v11](https://github.com/mazimez/laravel-hands-on/tree/auth-sanctum-v11) |
+| [files-managment](https://github.com/mazimez/laravel-hands-on/tree/files-managment) | `same as 10` |
+| [file-seeder](https://github.com/mazimez/laravel-hands-on/tree/file-seeder) | `same as 10` |
+| [basic-crud](https://github.com/mazimez/laravel-hands-on/tree/basic-crud) | `same as 10` |
+| [sorting-searching](https://github.com/mazimez/laravel-hands-on/tree/sorting-searching) | `same as 10` |
+| [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships) | `same as 10` |
+| [enhanced-crud](https://github.com/mazimez/laravel-hands-on/tree/enhanced-crud) | `same as 10` |
+| [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship) | [enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11) |
+| [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute) | `same as 10` |
+| [policies](https://github.com/mazimez/laravel-hands-on/tree/policies) | [policies-v11](https://github.com/mazimez/laravel-hands-on/tree/policies-v11) |
+| [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) | |
+| [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1) | |
+| [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2) | |
+| [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) | |
+| [observers](https://github.com/mazimez/laravel-hands-on/tree/observers) | |
+| [events-listners-queue](https://github.com/mazimez/laravel-hands-on/tree/events-listners-queue) | |
+| [error-handling](https://github.com/mazimez/laravel-hands-on/tree/error-handling) | |
+| [scheduler-cron](https://github.com/mazimez/laravel-hands-on/tree/scheduler-cron) | |
+| [testing](https://github.com/mazimez/laravel-hands-on/tree/testing) | |
+| [deployment](https://github.com/mazimez/laravel-hands-on/tree/deployment) | |
+| [social-login](https://github.com/mazimez/laravel-hands-on/tree/social-login) | |
+| [enhanced-storage-management](https://github.com/mazimez/laravel-hands-on/tree/enhanced-storage-management) | |
+| [user-verification](https://github.com/mazimez/laravel-hands-on/tree/user-verification) | |
+| [debugging-telescope](https://github.com/mazimez/laravel-hands-on/tree/debugging-telescope) | |
+| [indexing](https://github.com/mazimez/laravel-hands-on/tree/indexing) | |
+| [fcm-notification-part-1](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-1) | |
+| [fcm-notification-part-2-optimization](https://github.com/mazimez/laravel-hands-on/tree/fcm-notification-part-2-optimization) | |
+| [job-queues](https://github.com/mazimez/laravel-hands-on/tree/job-queues) | |
+| [laravel-pint](https://github.com/mazimez/laravel-hands-on/tree/laravel-pint) | |
+| [pdf-generation](https://github.com/mazimez/laravel-hands-on/tree/pdf-generation) | |
+| [excel-generation](https://github.com/mazimez/laravel-hands-on/tree/excel-generation) | |
+| [caching](https://github.com/mazimez/laravel-hands-on/tree/caching) | |
+| [web-basics](https://github.com/mazimez/laravel-hands-on/tree/web-basics) | |
+| [datatables](https://github.com/mazimez/laravel-hands-on/tree/datatables) | |
+| [livewire-part-1](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-1) | |
+| [livewire-part-2](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-2) | |
+| [livewire-part-3](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-3) | |
 
