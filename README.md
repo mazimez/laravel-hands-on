@@ -13,7 +13,7 @@ the main concept of policy is still the same that it uses to define user access 
 - the parameters we used to pass into `authorize` are same and this will work the same way it used to in `Laravel-10`. `Gate` is actually the correct place to use our policies and you can still use `policies` with `middleware` as well.
 
 # DIY (Do It Yourself)
-- go over the new v1 documentation for policies and see what's new and how you can improve use of policies.
+- go over the new v11 documentation for policies and see what's new and how you can improve use of policies.
 
 ## Next branch
  - `coming soon`
