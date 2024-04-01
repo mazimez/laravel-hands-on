@@ -16,4 +16,4 @@ the main concept of policy is still the same that it uses to define user access 
 - go over the new v11 documentation for policies and see what's new and how you can improve use of policies.
 
 ## Next branch
- - `coming soon`
+ - [middleware-v11](https://github.com/mazimez/laravel-hands-on/tree/middleware-v11)
