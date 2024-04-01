@@ -207,4 +207,26 @@ class PostController extends Controller
             'status' => '1'
         ]);
     }
+
+    public function blockToggle(Post $post)
+    {
+        $post->is_blocked = !$post->is_blocked;
+        $post->save();
+        return response()->json([
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
+            'message' => __('messages.post_detail_returned'),
+            'status' => '1'
+        ]);
+    }
+
+    public function verifyToggle(Post $post)
+    {
+        $post->is_verified = !$post->is_verified;
+        $post->save();
+        return response()->json([
+            'data' => $post->refresh()->loadMissing(['user', 'files']),
+            'message' => __('messages.post_detail_returned'),
+            'status' => '1'
+        ]);
+    }
 }

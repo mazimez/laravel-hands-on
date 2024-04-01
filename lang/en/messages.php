@@ -39,4 +39,8 @@ return [
     "post_not_verified_can_not_see_comments" => "This post is not verified, you can not see the comments of it",
     "post_blocked_can_not_add_comments" => "This post is blocked, you can not add the comments on it",
     "post_not_verified_can_not_add_comments" => "This post is not verified, you can not add the comments on it",
+    "unauthenticated" => "Unauthenticated",
+    "only_admin_allowed" => "Only admins are allowed",
+    "only_user_allowed" => "Only users are allowed",
+    "only_admin_can_use_this_filter" => "Only admin can use these filters",
 ];

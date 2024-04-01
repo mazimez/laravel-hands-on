@@ -21,6 +21,8 @@ class Post extends Model
         'title',
         'description',
         'meta_data',
+        'is_verified',
+        'is_blocked'
     ];
 
     /**
