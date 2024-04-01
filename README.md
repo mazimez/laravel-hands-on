@@ -54,7 +54,7 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 | [enhanced-relationship](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship) | [enhanced-relationship-v11](https://github.com/mazimez/laravel-hands-on/tree/enhanced-relationship-v11) |
 | [scope-attribute](https://github.com/mazimez/laravel-hands-on/tree/scope-attribute) | `same as 10` |
 | [policies](https://github.com/mazimez/laravel-hands-on/tree/policies) | [policies-v11](https://github.com/mazimez/laravel-hands-on/tree/policies-v11) |
-| [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) | |
+| [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) | [middleware-v11](https://github.com/mazimez/laravel-hands-on/tree/middleware-v11) |
 | [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1) | |
 | [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2) | |
 | [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) | |
