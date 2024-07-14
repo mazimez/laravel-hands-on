@@ -16,11 +16,7 @@ trait Base64ToFile
      * already exists on the specified storage disk. If it exists, it regenerates a new
      * random filename until a unique one is found.
      *
-     * @param string $disk The name of the disk to use for uniqueness checks.
      * @return string A unique random filename without the extension.
-     *
-     * @throws RuntimeException If a unique filename cannot be generated after a
-     *   reasonable number of attempts.
      */
     protected function generateFileName()
     {
