@@ -8,6 +8,7 @@ use App\Http\Requests\Api\v1\PostIndexRequest;
 use App\Http\Requests\Api\v1\PostUpdateRequest;
 use App\Models\Post;
 use App\Models\PostFile;
+use App\Models\User;
 use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,16 +43,27 @@ class PostController extends Controller
         if ($request->has('sort_field')) {
             $sort_field = $request->sort_field;
             $sort_order = $request->input('sort_order', 'asc'); //default ascending
-            if (!in_array($sort_field, Schema::getColumnListing((new Post())->table))) {
+            
+            // Check if the sort_field is a column in the posts table or the related user's table
+            $postColumns = Schema::getColumnListing((new Post())->table);
+            $userColumns = Schema::getColumnListing((new User())->table);
+            
+            if (in_array($sort_field, $postColumns)) {
+                $data = $data->orderBy($sort_field, $sort_order);
+            } elseif (in_array($sort_field, $userColumns)) {
+                $data = $data->join('users', 'posts.user_id', '=', 'users.id')
+                             ->orderBy('users.' . $sort_field, $sort_order)
+                             ->select('posts.*'); 
+
+            } else {
                 return response()->json([
                     'message' => __('messages.invalid_field_for_sorting'),
                     'status' => '0'
                 ]);
             }
-            $data = $data->orderBy($sort_field, $sort_order);
         } else {
             $data = $data->latest();
-        }
+        }        
 
         if ($request->has('page')) {
             return response()->json(

@@ -34,9 +34,10 @@ class Post extends Model
     protected $casts = [];
 
     //RELATIONSHIPS
-    //public function example(){
-    //    return $this->hasMany();
-    //}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     //ATTRIBUTES
     //public function getExampleAttribute()
