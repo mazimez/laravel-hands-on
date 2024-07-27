@@ -26,7 +26,7 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request)
     {
-        $data = Post::query();
+        $data = Post::with(['user']);
 
         if ($request->has('user_id')) {
             $data = $data->where('user_id', $request->user_id);
@@ -37,23 +37,35 @@ class PostController extends Controller
             $data = $data->where(function ($query) use ($search) {
                 $query = $query->where('title', 'like', $search)
                     ->orWhere('description', 'like', $search);
+            })->orWhereHas('users',function($query)use($search){
+                $query = $query->where('name','like',$search)
+                ->orWhere('email','like',$search);
             });
         }
 
         if ($request->has('sort_field')) {
             $sort_field = $request->sort_field;
             $sort_order = $request->input('sort_order', 'asc'); //default ascending
-            
+
             // Check if the sort_field is a column in the posts table or the related user's table
             $postColumns = Schema::getColumnListing((new Post())->table);
-            $userColumns = Schema::getColumnListing((new User())->table);
-            
+
+
             if (in_array($sort_field, $postColumns)) {
                 $data = $data->orderBy($sort_field, $sort_order);
-            } elseif (in_array($sort_field, $userColumns)) {
+            } elseif (strpos($sort_field, 'users') !== false) {
+
+                $userColumns = Schema::getColumnListing((new User())->table);
+                $sort_field = str_replace('users.', '', $sort_field);
+                if(!in_array($sort_field, $userColumns)){
+                    return response()->json([
+                        'message' => __('messages.invalid_field_for_sorting'),
+                        'status' => '0'
+                    ]);
+                }
                 $data = $data->join('users', 'posts.user_id', '=', 'users.id')
-                             ->orderBy('users.' . $sort_field, $sort_order)
-                             ->select('posts.*'); 
+                             ->orderBy('users.'.$sort_field, $sort_order)
+                             ->select('posts.*');
 
             } else {
                 return response()->json([
@@ -63,7 +75,7 @@ class PostController extends Controller
             }
         } else {
             $data = $data->latest();
-        }        
+        }
 
         if ($request->has('page')) {
             return response()->json(

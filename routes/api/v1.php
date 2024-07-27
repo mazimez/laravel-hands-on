@@ -7,15 +7,6 @@ Route::group(['middleware' => ['localization']], function () {
         return __('messages.test');
     });
 
-    //POST
-    Route::group(['prefix' => 'posts'], function () {
-        Route::get('/', 'v1\PostController@index');
-        Route::get('/{post}', 'v1\PostController@show');
-        Route::post('/store', 'v1\PostController@store');
-        Route::post('{post}/update', 'v1\PostController@update');
-        Route::delete('{post}/delete', 'v1\PostController@destroy');
-    });
-
 
     Route::post('upload-file', 'v1\TestController@fileUpload');
     Route::post('delete-file', 'v1\TestController@fileDestroy');
@@ -28,6 +19,13 @@ Route::group(['middleware' => ['localization']], function () {
             Route::get('/detail', 'v1\UserController@show');
         });
 
-        
+        //POST
+        Route::group(['prefix' => 'posts'], function () {
+            Route::get('/', 'v1\PostController@index');
+            Route::get('/{post}', 'v1\PostController@show');
+            Route::post('/store', 'v1\PostController@store');
+            Route::post('{post}/update', 'v1\PostController@update');
+            Route::delete('{post}/delete', 'v1\PostController@destroy');
+        });
     });
 });

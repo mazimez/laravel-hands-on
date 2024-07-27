@@ -19,13 +19,13 @@ To enable sorting and searching options for our Post list API, follow these step
 
 1. In the `index` method of [PostController.php](app/Http/Controllers/Api/v1/PostController.php), check if the `search` parameter is present in the request. If it is, utilize the `where` method with `LIKE` to search across different columns of the `posts` table. Adjust this code according to the database you are using (the example focuses on `MySQL`).
 
-2. With the `search` option added, you can call the API and pass any word in the `search` parameter. This word will be searched within the `title` and `description` columns. This same process can be applied to any table with any columns.
+2. With the `search` option added, you can call the API and pass any word in the `search` parameter. This word will be searched within the `title` and `description` columns. This same process can be applied to any table with any columns. also you can search into other connected tables like `users` as well with `orWhereHas` method. for that you might need have a basic knowledge about `eloquent-relationships`, you can learn that from our branch [eloquent-relationships](https://github.com/mazimez/laravel-hands-on/tree/eloquent-relationships).
 
 3. The previous step covers the basic search functionality. For more advanced and efficient search features, you can utilize the [Laravel Scout](https://laravel.com/docs/10.x/scout) package, which integrates external services like [Algolia](https://www.algolia.com/) and [Meilisearch](https://www.meilisearch.com/). We will cover this topic in future branches.
 
 4. Next, let's focus on sorting. To achieve this, take two parameters: `sort_field` and `sort_order`. These parameters allow sorting the data based on different columns. If no sorting parameters are provided, the default sorting will be the [latest](https://laravel.com/docs/10.x/queries#latest-oldest) option, displaying the newest posts first.
 
-5. The `sort_field` parameter represents the name of the field (column) from the table that the user wants to sort. First, check if the given `sort_field` exists in the `Post` model (table). If it doesn't exist, return an error. If the `sort_field` does exist, use the [orderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset) method to sort the data accordingly.
+5. The `sort_field` parameter represents the name of the field (column) from the table that the user wants to sort. First, check if the given `sort_field` exists in the `Post` model (table). If it doesn't exist, return an error. If the `sort_field` does exist, use the [orderBy](https://laravel.com/docs/10.x/queries#ordering-grouping-limit-and-offset) method to sort the data accordingly. there also comes time when you want to sort by columns on connected tables `users`, there you will pass the table name and column name both like `users.name`, `users.email` etc.  
 
 6. The `sort_order` parameter determines whether the result should be in ascending or descending order. By default, it is set to `Ascending`. Adjust this parameter according to your requirements.
 
