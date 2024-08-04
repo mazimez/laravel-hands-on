@@ -82,3 +82,24 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 | [livewire-part-2](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-2) | |
 | [livewire-part-3](https://github.com/mazimez/laravel-hands-on/tree/livewire-part-3) | |
 
+
+## Contributors
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/mazimez">
+        <img src="https://github.com/mazimez.png" width="100px;" alt="username1"/>
+        <br />
+        <sub><b>Mazimez</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/chopincodeshere">
+        <img src="https://github.com/chopincodeshere.png" width="100px;" alt="username2"/>
+        <br />
+        <sub><b>Jil Patel</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
