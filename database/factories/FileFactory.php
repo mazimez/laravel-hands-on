@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
-use App\Models\PostFile;
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostFile>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\File>
  */
-class PostFileFactory extends Factory
+class FileFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,15 +20,13 @@ class PostFileFactory extends Factory
         $is_photo = fake()->randomElement([1, 0]);
         if ($is_photo) {
             return [
-                'post_id' => Post::inRandomOrder()->first()->id,
                 'file_path' => fake()->randomElement(config('default_images')),
-                'type' => PostFile::PHOTO,
+                'type' => File::PHOTO,
             ];
         } else {
             return [
-                'post_id' => Post::inRandomOrder()->first()->id,
                 'file_path' => fake()->randomElement(config('default_videos')),
-                'type' => PostFile::VIDEO,
+                'type' => File::VIDEO,
             ];
         }
     }

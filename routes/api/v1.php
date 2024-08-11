@@ -19,11 +19,22 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         });
         Route::get('/detail', 'v1\UserController@show');
 
+        //USER FILES
+        Route::group(['prefix' => '{user}/files'], function () {
+            Route::get('/', 'v1\UserFileController@index');
+            Route::delete('/{file}/delete', 'v1\UserFileController@destroy');
+            Route::middleware([OnlyUserAllowed::class])->group(function () {
+                Route::post('/add', 'v1\UserFileController@store');
+            });
+        });
+
         //USER FOLLOW
         Route::middleware([OnlyUserAllowed::class])->group(function () {
             Route::get('/{user}/followers', 'v1\UserFollowController@followers');
             Route::get('/{user}/following', 'v1\UserFollowController@following');
-            Route::post('/{user}/follow-toggle', 'v1\UserFollowController@toggle');
+            Route::middleware([OnlyUserAllowed::class])->group(function () {
+                Route::post('/{user}/follow-toggle', 'v1\UserFollowController@toggle');
+            });
         });
     });
 
@@ -50,6 +61,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
                 Route::post('/{comment}/edit', 'v1\PostCommentController@update');
             });
             Route::delete('/{comment}/delete', 'v1\PostCommentController@destroy');
+
+            //POST-COMMENT-LIKE
+            Route::group(['prefix' => '{comment}/likes'], function () {
+                Route::get('/', 'v1\PostCommentController@likeIndex');
+                Route::middleware([OnlyUserAllowed::class])->group(function () {
+                    Route::post('/toggle', 'v1\PostCommentController@likeToggle');
+                });
+            });
         });
 
         //POST-FILES

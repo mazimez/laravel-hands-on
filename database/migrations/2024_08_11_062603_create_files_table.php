@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_files', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('post_id')->nullable()->constrained('posts')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('file_path')->nullable();
             $table->string('type')->nullable();
+            $table->morphs('fileable');
 
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts_files');
+        Schema::dropIfExists('files');
     }
 };

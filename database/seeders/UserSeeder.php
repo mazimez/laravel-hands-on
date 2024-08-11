@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\File;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -28,7 +29,10 @@ class UserSeeder extends Seeder
         $unverified_users = User::factory(10)->unverified()->create();
         $verified_users = User::factory(10)->verified()->create();
         foreach ($verified_users as $user) {
-            $user_ids = User::inRandomOrder()->where('id', '!=', $user->id)->limit(4)->get()->pluck('id');
+            $files = File::factory(3)->for($user, 'owner')->make();
+            $user->files()->saveMany($files);
+
+            $user_ids = User::inRandomOrder()->where('id', '!=', $user->id)->limit(rand(0, 5))->get()->pluck('id');
             $user->followers()->sync($user_ids);
         }
     }

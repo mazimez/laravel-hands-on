@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\PostCreateRequest;
 use App\Http\Requests\Api\v1\PostIndexRequest;
 use App\Http\Requests\Api\v1\PostUpdateRequest;
+use App\Models\File;
 use App\Models\Post;
-use App\Models\PostFile;
 use App\Traits\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,18 +94,18 @@ class PostController extends Controller
             foreach ($request['files'] as $file) {
                 $file_type = null;
                 if (Str::of($file->getMimeType())->contains('image/')) {
-                    $file_type = PostFile::PHOTO;
+                    $file_type = File::PHOTO;
                 }
                 if (Str::of($file->getMimeType())->contains('video/')) {
-                    $file_type = PostFile::VIDEO;
+                    $file_type = File::VIDEO;
                 }
-                if (!in_array($file_type, [PostFile::PHOTO, PostFile::VIDEO])) {
+                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('messages.file_type_not_supported'),
                         'status' => '0'
                     ]);
                 }
-                PostFile::create([
+                File::create([
                     'post_id' => $post->id,
                     'file_path' => $this->saveFile($file, 'posts'),
                     'type' => $file_type
@@ -160,18 +160,18 @@ class PostController extends Controller
             foreach ($request['files'] as $file) {
                 $file_type = null;
                 if (Str::of($file->getMimeType())->contains('image/')) {
-                    $file_type = PostFile::PHOTO;
+                    $file_type = File::PHOTO;
                 }
                 if (Str::of($file->getMimeType())->contains('video/')) {
-                    $file_type = PostFile::VIDEO;
+                    $file_type = File::VIDEO;
                 }
-                if (!in_array($file_type, [PostFile::PHOTO, PostFile::VIDEO])) {
+                if (!in_array($file_type, [File::PHOTO, File::VIDEO])) {
                     return response()->json([
                         'message' => __('messages.file_type_not_supported'),
                         'status' => '0'
                     ]);
                 }
-                PostFile::create([
+                File::create([
                     'post_id' => $post->id,
                     'file_path' => $this->saveFile($file, 'posts'),
                     'type' => $file_type

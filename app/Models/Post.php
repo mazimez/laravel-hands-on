@@ -46,7 +46,6 @@ class Post extends Model
         });
     }
 
-
     //HIDDEN
     protected $hidden = [];
 
@@ -66,21 +65,55 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function files()
     {
-        return $this->hasMany(PostFile::class);
+        return $this->morphMany(
+            File::class, //model that stores data about polymorphic relationship
+            'fileable', //prefix for the polymorphic relationship
+            'fileable_type', //type column in that polymorphic table
+            'fileable_id', //id column in that polymorphic table
+            'id', //primary key on this table(model)
+        );
     }
+
+    // public function files()
+    // {
+    //     return $this->hasMany(PostFile::class);
+    // }
+
+
+    // public function file()
+    // {
+    //     return $this->hasOne(PostFile::class)->where('type', PostFile::PHOTO);
+    // }
+
     public function file()
     {
-        return $this->hasOne(PostFile::class)->where('type', PostFile::PHOTO);
+        return $this->morphOne(
+            File::class, //model that stores data about polymorphic relationship
+            'fileable', //prefix for the polymorphic relationship
+            'fileable_type', //type column in that polymorphic table
+            'fileable_id', //id column in that polymorphic table
+            'id', //primary key on this table(model)
+        )->where('type', File::PHOTO);
     }
     public function comments()
     {
         return $this->hasMany(PostComment::class);
     }
+
+    //with polymorphism
     public function likers()
     {
-        return $this->belongsToMany(User::class, PostLike::class, 'post_id', 'user_id', 'id', 'id');
+        return $this->morphToMany(
+            User::class, //class to which we finally wanted to connect
+            'likable', //prefix for the polymorphic relationship
+            'likables', //table name in which the polymorphic relationship data is stored
+            'likable_id', //id column in that polymorphic table
+            'user_id', //column name that connects to the final table(in our case `users`)
+            'id', //primary key on final table(users)
+        );
     }
 
     //SCOPES
