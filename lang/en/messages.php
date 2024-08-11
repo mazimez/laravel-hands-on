@@ -67,4 +67,6 @@ return [
     "user_files_returned" => "User files returned successfully",
     "user_file_deleted" => "User file deleted successfully",
     "user_files_added" => "User files added successfully",
+    "send_mail" => "Mail Sent successfully",
+    "mail_language_text" => "Mail language Text(en)",
 ];

@@ -9,6 +9,8 @@ Route::get('test', function () {
 });
 Route::post('upload-file', 'v1\TestController@fileUpload');
 Route::post('delete-file', 'v1\TestController@fileDestroy');
+Route::post('send-mail', 'v1\TestController@sendMail');
+
 Route::post('users/login', 'v1\UserController@login');
 Route::group(['middleware' => ['auth:sanctum']], function () {
     //USER
