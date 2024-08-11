@@ -57,7 +57,7 @@ so whenever learning about any topic, first read about that with laravel-10's ve
 | [middleware](https://github.com/mazimez/laravel-hands-on/tree/middleware) | [middleware-v11](https://github.com/mazimez/laravel-hands-on/tree/middleware-v11) |
 | [polymorphism-part-1](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-1) | `same as 10` |
 | [polymorphism-part-2](https://github.com/mazimez/laravel-hands-on/tree/polymorphism-part-2) | `same as 10` |
-| [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) | |
+| [sending-mails](https://github.com/mazimez/laravel-hands-on/tree/sending-mails) | `same as 10` |
 | [observers](https://github.com/mazimez/laravel-hands-on/tree/observers) | |
 | [events-listners-queue](https://github.com/mazimez/laravel-hands-on/tree/events-listners-queue) | |
 | [error-handling](https://github.com/mazimez/laravel-hands-on/tree/error-handling) | |
