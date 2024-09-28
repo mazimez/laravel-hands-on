@@ -69,4 +69,6 @@ return [
     "user_files_added" => "User files added successfully",
     "send_mail" => "Mail Sent successfully",
     "mail_language_text" => "Mail language Text(en)",
+    "user_registered" => "User Registered successfully",
+    "user_updated" => "User Updated successfully",
 ];
